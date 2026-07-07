@@ -590,9 +590,10 @@ function playVid(e){var box=e.currentTarget;var id=box.getAttribute('data-id');i
       s.wrap.addEventListener('wheel',mark,{passive:true});
       s.wrap.addEventListener('touchstart',mark,{passive:true});
       s.wrap.addEventListener('touchmove',mark,{passive:true});
-      s.wrap.addEventListener('pointerdown',function(e){mark();if(e.pointerType!=='mouse')return;dragging=true;moved=0;startX=e.clientX;startScroll=s.wrap.scrollLeft;s.wrap.style.cursor='grabbing';try{s.wrap.setPointerCapture(e.pointerId);}catch(_){}}); 
-      s.wrap.addEventListener('pointermove',function(e){if(!dragging)return;var dx=e.clientX-startX;moved=Math.max(moved,Math.abs(dx));s.wrap.scrollLeft=startScroll-dx;mark();});
-      function end(){dragging=false;s.wrap.style.cursor='grab';mark();}
+      var captured=false,pid=null;
+      s.wrap.addEventListener('pointerdown',function(e){mark();if(e.pointerType!=='mouse')return;dragging=true;captured=false;pid=e.pointerId;moved=0;startX=e.clientX;startScroll=s.wrap.scrollLeft;});
+      s.wrap.addEventListener('pointermove',function(e){if(!dragging)return;var dx=e.clientX-startX;moved=Math.max(moved,Math.abs(dx));if(!captured&&moved>6){captured=true;s.wrap.style.cursor='grabbing';try{s.wrap.setPointerCapture(pid);}catch(_){}}if(captured){s.wrap.scrollLeft=startScroll-dx;}mark();});
+      function end(){dragging=false;s.wrap.style.cursor='grab';if(captured&&pid!=null){try{s.wrap.releasePointerCapture(pid);}catch(_){}}captured=false;mark();}
       s.wrap.addEventListener('pointerup',end);s.wrap.addEventListener('pointercancel',end);
       s.wrap.addEventListener('click',function(e){if(moved>6){e.stopPropagation();e.preventDefault();moved=0;}},true);
     });
