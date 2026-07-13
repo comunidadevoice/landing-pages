@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview Mobile — Imersão Método VOICE</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:#2b2b22;font-family:'Hanken Grotesk',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100%;padding:28px 16px 40px;gap:18px}
+.bar{display:flex;align-items:center;gap:14px;color:#efe7d2}
+.bar h1{font-size:15px;font-weight:700;margin:0;letter-spacing:.01em}
+.bar .tag{font-size:12px;color:#b9b29c;font-weight:500}
+.seg{display:flex;background:rgba(255,255,255,.08);border-radius:999px;padding:4px;gap:4px}
+.seg button{border:none;background:none;color:#cfc8b4;font-weight:700;font-size:12px;padding:7px 14px;border-radius:999px;cursor:pointer;font-family:inherit;transition:.2s}
+.seg button.on{background:#E8B23D;color:#3B3A28}
+.phone{flex-shrink:0;position:relative;background:#111;border-radius:46px;padding:12px;box-shadow:0 30px 70px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.06) inset;transition:width .25s,height .25s}
+.phone::before{content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);width:120px;height:26px;background:#111;border-radius:999px;z-index:3}
+.screen{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;background:#F1EAD8}
+iframe{width:100%;height:100%;border:0;display:block}
+.hint{color:#b9b29c;font-size:12.5px;text-align:center;max-width:360px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="bar">
+<h1>IMERSÃO MÉTODO VOICE</h1>
+<span class="tag">pré-visualização mobile · 1080×2400</span>
+</div>
+<div class="seg">
+<button data-w="393" data-h="852" class="on">1080×2400 (escala)</button>
+<button data-w="360" data-h="800">Android (360)</button>
+<button data-w="430" data-h="932">14 Pro Max</button>
+</div>
+<div class="phone" id="phone" style="width:417px;height:876px">
+<div class="screen"><iframe id="frame" src="dist-lowticket/index.html" title="Imersão Método VOICE mobile"></iframe></div>
+</div>
+<p class="hint">Tela 1080×2400 px (proporção 9:20, mostrada em escala). Role a página dentro do celular e me diga o que quer ajustar.</p>
+<script>
+const phone=document.getElementById('phone');
+const btns=document.querySelectorAll('.seg button');
+btns.forEach(b=>b.addEventListener('click',()=>{
+  btns.forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  phone.style.width=(+b.dataset.w+24)+'px';
+  phone.style.height=(+b.dataset.h+24)+'px';
+}));
+</script>
+</body>
+</html>
