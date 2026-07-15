@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOICE — 30 dias para soltar a voz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6F2; --card:#FFFFFF; --ink:#1B231F; --muted:#6B726C; --line:#E4E7E1;
+  --e1:#1D9E75; --e1d:#0F6E56;
+  --e2:#C0801C; --e2d:#7E520F;
+  --e3:#DD5733; --e3d:#9B381C;
+  --e4:#2F6FB5; --e4d:#1D4A7C;
+  --e5:#6B4FB0; --e5d:#48327D; --gold:#F0A93C;
+  --flame:#F0842C; --flame2:#E0613A; --lock:#AFB4AE; --ok:#1D9E75; --err:#C4453F;
+  --disp:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Inter',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.55;padding-bottom:60px;overflow-x:hidden}
+.wrap{max-width:780px;margin:0 auto;padding:0 18px}
+.top{position:sticky;top:0;z-index:30;background:rgba(244,246,242,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:14px;height:58px}
+.brand{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.02em;display:flex;align-items:center;gap:9px;margin-right:auto}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--flame2)}
+.brand small{font-family:var(--body);font-weight:500;font-size:10px;color:var(--muted);text-transform:uppercase}
+.stat{display:flex;align-items:center;gap:5px;font-weight:600;font-size:14px}
+.stat .lab{color:var(--muted);font-weight:500;font-size:12px}
+.flame{font-size:17px;display:inline-block}
+@keyframes flick{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.12) rotate(2deg)}}
+.flame.on{animation:flick 1.6s ease-in-out infinite}
+.hero{padding:28px 0 6px}
+.eyebrow{font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--flame2)}
+.hero h1{font-family:var(--disp);font-weight:800;font-size:clamp(27px,7vw,42px);line-height:1.03;letter-spacing:-.03em;margin:8px 0 10px}
+.hero p{color:var(--muted);max-width:50ch;font-size:15px}
+.bar{margin:18px 0 6px;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--e1),var(--e2),var(--e3),var(--e4),var(--e5));transition:width .5s}
+.barlab{font-size:12px;color:var(--muted)}
+.era{margin:26px 0 8px}
+.ehead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:0 2px 12px;border-bottom:1px dashed var(--line)}
+.etag{font-family:var(--disp);font-weight:700;font-size:12px;padding:3px 10px;border-radius:99px;color:#fff}
+.ename{font-family:var(--disp);font-weight:700;font-size:18px;letter-spacing:-.01em}
+.everse{font-size:13px;color:var(--muted);font-style:italic;width:100%}
+.nodes{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;margin-top:14px}
+.node{position:relative;cursor:pointer;font-family:var(--body);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 6px 11px;text-align:center;transition:transform .12s,box-shadow .2s;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink)}
+.node:hover:not(.locked){transform:translateY(-2px);box-shadow:0 6px 18px rgba(27,35,31,.10)}
+.node:focus-visible{outline:3px solid var(--flame);outline-offset:2px}
+.node .circle{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:16px;color:#fff}
+.node .who{font-size:11px;font-weight:600;color:var(--muted);line-height:1.15}
+.node.locked{cursor:not-allowed;background:#F0F1EE;border-color:#E8EAE5}
+.node.locked .circle{background:var(--lock)!important}
+.node.locked .who{color:var(--lock)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px var(--flame),0 0 0 0 rgba(240,132,44,.35)}50%{box-shadow:0 0 0 2px var(--flame),0 0 0 7px rgba(240,132,44,0)}}
+.node.current{animation:pulse 2.2s ease-in-out infinite}
+.node .badge{position:absolute;top:-7px;right:-6px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;color:#fff;font-family:var(--disp)}
+.svgi{width:15px;height:15px}
+.ov{position:fixed;inset:0;z-index:50;background:rgba(20,26,22,.5);display:none;align-items:flex-end;justify-content:center}
+.ov.show{display:flex}
+@media(min-width:560px){.ov{align-items:center;padding:20px}}
+.sheet{background:var(--card);width:100%;max-width:540px;max-height:94vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:20px 20px 26px;animation:up .28s cubic-bezier(.2,.8,.2,1)}
+@media(min-width:560px){.sheet{border-radius:22px}}
+@keyframes up{from{transform:translateY(24px);opacity:.4}to{transform:translateY(0);opacity:1}}
+.shtop{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.pill{font-family:var(--disp);font-weight:700;font-size:11px;padding:4px 11px;border-radius:99px;color:#fff}
+.x{margin-left:auto;border:1px solid var(--line);background:var(--card);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:17px;color:var(--muted);line-height:1;flex:none}
+.who2{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.sheet h2{font-family:var(--disp);font-weight:800;font-size:24px;letter-spacing:-.02em;line-height:1.06;margin:2px 0 10px}
+.hook{font-size:15px;color:#3a423c;margin-bottom:14px}
+.verse{background:var(--bg);border-radius:14px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.verse .en{font-family:var(--disp);font-weight:700;font-size:16px}
+.verse .ref{font-size:12px;color:var(--muted);margin-top:2px}
+.spk{flex:none;border:1px solid var(--line);background:var(--card);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px}
+.spk:hover{border-color:var(--ink)}
+.steps{display:flex;gap:6px;margin-bottom:16px}
+.step{flex:1;height:5px;border-radius:99px;background:var(--line)}
+.step.on{background:var(--flame)}
+.step.done{background:var(--ok)}
+.blk{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.btitle{font-family:var(--disp);font-weight:700;font-size:17px;margin-bottom:10px}
+.instr{font-size:14px;color:var(--muted);margin-bottom:14px}
+.cards{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.opt{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:13px 14px;cursor:pointer;font-size:15px;font-weight:500;text-align:left;font-family:var(--body);transition:.12s;width:100%;color:var(--ink)}
+.opt:hover{border-color:var(--ink)}
+.opt.ok{background:#E9F7F1;border-color:var(--ok)}
+.opt.no{background:#FBECEB;border-color:var(--err);color:var(--err)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:11px;padding:9px 13px;cursor:pointer;font-weight:600;font-size:15px;font-family:var(--body);color:var(--ink)}
+.chip:hover{border-color:var(--ink)}
+.chip.used{opacity:.3;pointer-events:none}
+.chip.no{border-color:var(--err);color:var(--err)}
+.slot{min-height:52px;border:1.5px dashed var(--line);border-radius:12px;padding:10px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.slot .chip{border-color:var(--ink);pointer-events:none}
+.slot.ok{border-color:var(--ok);border-style:solid;background:#E9F7F1}
+.fc{border:1px solid var(--line);border-radius:16px;padding:26px 16px;text-align:center;cursor:pointer;background:var(--card);margin-bottom:12px;user-select:none}
+.fc .w{font-family:var(--disp);font-weight:800;font-size:30px;letter-spacing:-.02em}
+.fc .t{color:var(--muted);font-size:15px;margin-top:6px;min-height:23px}
+.fc .hint{font-size:12px;color:var(--muted);margin-top:10px}
+.rev{display:inline-block;font-size:10px;font-weight:700;color:var(--flame2);border:1px solid var(--flame2);border-radius:99px;padding:1px 8px;margin-bottom:8px}
+.inp{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px;font-family:var(--body);font-size:16px;background:var(--bg);color:var(--ink)}
+.inp:focus{outline:none;border-color:var(--ink)}
+textarea.inp{min-height:92px;resize:vertical}
+.sent{font-family:var(--disp);font-weight:700;font-size:19px;text-align:center;margin:6px 0 14px;line-height:1.4}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}
+.mc{aspect-ratio:1;border:1px solid var(--line);border-radius:11px;background:var(--card);cursor:pointer;font-size:11px;font-weight:600;font-family:var(--body);padding:3px;display:flex;align-items:center;justify-content:center;text-align:center;color:transparent;overflow:hidden}
+.mc.flip{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mc.got{background:#E9F7F1;border-color:var(--ok);color:var(--e1d);pointer-events:none}
+.alvo{background:var(--bg);border-radius:14px;padding:16px;text-align:center;font-family:var(--disp);font-weight:700;font-size:20px;line-height:1.7;margin-bottom:14px}
+.pw{padding:2px 4px;border-radius:6px;transition:.25s}
+.pw.hit{background:#D6F2E6;color:var(--e1d)}
+.pw.miss{background:#FBD9D6;color:var(--err);text-decoration:underline wavy var(--err)}
+.mic{width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:16px;padding:18px;cursor:pointer;
+  font-family:var(--disp);font-weight:800;font-size:16px;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:10px}
+.mic .mi{font-size:24px;line-height:1}
+.mic:hover{border-color:var(--ink)}
+@keyframes recp{0%,100%{box-shadow:0 0 0 0 rgba(196,69,63,.45)}50%{box-shadow:0 0 0 12px rgba(196,69,63,0)}}
+.mic.rec{background:#FBECEB;border-color:var(--err);color:var(--err);animation:recp 1.4s ease-in-out infinite}
+.heard{min-height:22px;text-align:center;font-size:14px;color:var(--muted);font-style:italic;margin:12px 0 4px}
+.nota{font-family:var(--disp);font-weight:800;font-size:30px;text-align:center;margin:8px 0 4px;border-radius:12px;padding:10px}
+.nota.ok{color:var(--e1d);background:#E9F7F1}
+.nota.meio{color:var(--e2d);background:#F7EFDC}
+.nota.err{color:var(--err);background:#FBECEB}
+.checks{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.ck{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:14px;line-height:1.45}
+.ck b:first-child{font-family:var(--disp);font-size:15px;flex:none;width:16px;text-align:center}
+.ck.ok{background:#E9F7F1;border-color:#B8E6D4}.ck.ok b:first-child{color:var(--ok)}
+.ck.meio{background:#F9F2E2;border-color:#EBD9AE}.ck.meio b:first-child{color:var(--e2d)}
+.ck.err{background:#FBECEB;border-color:#F0C9C6}.ck.err b:first-child{color:var(--err)}
+.timer{font-family:var(--disp);font-weight:800;font-size:38px;text-align:center;margin:10px 0}
+.prog{font-size:12px;color:var(--muted);text-align:right;margin-bottom:8px}
+.key{border:1.5px solid var(--flame);background:#FFF7F0;border-radius:14px;padding:14px;margin-bottom:14px}
+.key .blk{color:var(--flame2)}
+.key p{font-size:15px;font-weight:500}
+.go{width:100%;border:none;border-radius:14px;padding:15px;cursor:pointer;font-family:var(--disp);font-weight:800;font-size:16px;color:#fff;background:var(--ink);transition:.12s}
+.go:hover{filter:brightness(1.12)}.go:active{transform:scale(.98)}
+.go:disabled{opacity:.35;cursor:not-allowed}
+.go.gr{background:var(--ok)}
+.ghost{background:none;border:1px solid var(--line);border-radius:99px;padding:9px 16px;cursor:pointer;font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.ghost:hover{border-color:var(--ink);color:var(--ink)}
+.note{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+.treino{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--flame);border-radius:18px;padding:14px 16px;margin:16px 0 4px;cursor:pointer;transition:.15s}
+.treino:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(224,97,58,.16)}
+.treino.off{opacity:.5;border-color:var(--line);cursor:not-allowed}
+.treino .tw{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--flame),var(--e5));display:flex;align-items:center;justify-content:center;flex:none}
+.treino .twi{font-size:22px}
+.treino .tt{font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:-.01em}
+.treino .td{font-size:13px;color:var(--muted)}
+.treino .ta{font-family:var(--disp);font-weight:800;font-size:20px;color:var(--flame2)}
+.foot{margin:32px 0 10px;text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.demo{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
+.rou{text-align:center}
+.wheelbox{position:relative;width:240px;height:240px;margin:0 auto 16px}
+.point{position:absolute;top:-4px;left:50%;transform:translateX(-50%);z-index:3;width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:18px solid var(--ink)}
+.wheel{position:absolute;inset:0;border-radius:50%;border:6px solid var(--card);box-shadow:0 6px 26px rgba(27,35,31,.22),0 0 0 1px var(--line);background:conic-gradient(#1D9E75 0 60deg,#C0801C 60deg 120deg,#D8922A 120deg 180deg,#DD5733 180deg 240deg,#B0492A 240deg 300deg,#A32D2D 300deg 360deg)}
+.needle{position:absolute;left:50%;top:50%;width:3px;height:104px;background:var(--ink);transform-origin:bottom center;transform:translate(-50%,-100%) rotate(0deg);z-index:4;border-radius:3px;transition:transform 3.6s cubic-bezier(.17,.67,.16,1)}
+.hub{position:absolute;left:50%;top:50%;width:28px;height:28px;border-radius:50%;background:var(--card);transform:translate(-50%,-50%);z-index:5;box-shadow:0 0 0 1px var(--line)}
+.wlab{position:absolute;font-size:11px;font-weight:700;color:#fff;transform:translate(-50%,-50%);width:58px;text-align:center;line-height:1.1;text-shadow:0 1px 2px rgba(0,0,0,.3);pointer-events:none}
+.result{min-height:44px;font-size:14px;margin:4px 0 14px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:13px 20px;border-radius:14px;z-index:80;font-weight:600;font-size:14px;opacity:0;transition:.3s;pointer-events:none;max-width:90vw}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="dot"></span>VOICE <small>nome provisório</small></div>
+  <div class="stat"><span class="flame on" id="flameIco">🔥</span><span id="streak">0</span><span class="lab">chama</span></div>
+  <div class="stat"><span id="prog">0</span><span class="lab">/ 30</span></div>
+  <button class="ghost" style="padding:6px 12px" onclick="openVoices()">🎙 <span id="voiceLab">voz</span></button>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">30 dias · fé + inglês</div>
+    <h1>Solte a sua voz,<br>um dia de cada vez.</h1>
+    <p>Do sopro em Adão até o Verbo em pessoa. Cada dia tem um personagem, um exercício de 2 a 3 minutos e uma porta que só abre quando você fala.</p>
+    <div class="bar"><i id="barfill"></i></div>
+    <div class="barlab" id="barlab">Comece pelo Dia 1.</div>
+  </section>
+  <div class="treino" id="treinoCard" onclick="openTreino()">
+    <div class="tw"><div class="twi">🎡</div></div>
+    <div style="flex:1">
+      <div class="tt">Área de treino</div>
+      <div class="td" id="treinoDesc">Conclua o Dia 1 para abrir o seu baralho.</div>
+    </div>
+    <div class="ta">→</div>
+  </div>
+  <div id="map"></div>
+  <div class="foot">
+    <button class="ghost" onclick="auditAudio()">conferir áudios gravados</button>
+    <button class="ghost" onclick="openRoulette()">testar a roleta da graça</button>
+    <button class="ghost" onclick="resetGame()">recomeçar do zero</button>
+  </div>
+  <p class="demo">Modo demonstração: aqui você avança livremente para testar. No jogo real, cada porta só abre no dia seguinte.</p>
+</main>
+
+<div class="ov" id="dayOv"><div class="sheet" id="daySheet"></div></div>
+
+<div class="ov" id="rouOv">
+  <div class="sheet rou">
+    <button class="x" style="float:right" onclick="closeRoulette()">×</button>
+    <h2>Roleta da Graça e do Deserto</h2>
+    <p class="instr">Esta roleta não se gira por vontade: ela aparece sozinha quando você <b>perde um dia</b>. Você nunca volta ao zero — mas o deserto cobra o preço dele. (Aqui é só demonstração.)</p>
+    <div class="wheelbox"><div class="point"></div><div class="wheel" id="wheel"></div><div class="needle" id="needle"></div><div class="hub"></div></div>
+    <div class="result" id="rouResult">Toque em girar para sortear a consequência.</div>
+    <button class="go" id="spinBtn" onclick="spin()" style="background:var(--flame2)">girar a roleta</button>
+  </div>
+</div>
+
+<div class="ov" id="voiceOv">
+  <div class="sheet">
+    <div class="shtop"><span class="pill" style="background:var(--flame2)">áudio</span>
+      <button class="x" onclick="closeVoices()">×</button></div>
+    <h2>Escolha a voz do inglês</h2>
+    <p class="instr">As vozes marcadas como <b>online</b> são bem melhores que as locais. Toque no 🔊 para testar cada uma e em “usar” para escolher.</p>
+    <div id="voiceList"></div>
+    <p class="note">Isso é temporário: no produto final o inglês vai ser gravado com voz humana ou com um TTS neural de qualidade.</p>
+  </div>
+</div>
+
+<div class="ov" id="treinoOv">
+  <div class="sheet">
+    <div class="shtop"><span class="pill" style="background:var(--flame2)">treino livre</span>
+      <button class="x" onclick="closeTreino()">×</button></div>
+    <h2>A roda do treino</h2>
+    <div id="treinoBox"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const AUD_DATA={};   /* na versão web os áudios são arquivos na pasta audio/ */
+
+/* ===== CONTEÚDO — 5 ERAS ===== */
+const ERAS=[
+ {id:1,tag:"Era 1",name:"O Primeiro Sopro",verse:"“Trust in the Lord with all your heart.” — Proverbs 3:5",c:"--e1",cd:"--e1d"},
+ {id:2,tag:"Era 2",name:"A Voz que Liberta",verse:"“Be strong and courageous.” — Joshua 1:9",c:"--e2",cd:"--e2d"},
+ {id:3,tag:"Era 3",name:"O Barro e o Fogo",verse:"“Like clay in the hand of the potter.” — Jeremiah 18:6",c:"--e3",cd:"--e3d"},
+ {id:4,tag:"Era 4",name:"Até os Confins da Terra",verse:"“You will be my witnesses to the ends of the earth.” — Acts 1:8",c:"--e4",cd:"--e4d"},
+ {id:5,tag:"O Verbo",name:"Jesus",verse:"“In the beginning was the Word.” — John 1:1",c:"--e5",cd:"--e5d"}
+];
+
+const D=[
+{era:1,who:"Adão",title:"O primeiro fôlego",pillar:"V · verse",
+ hook:"Deus formou o homem do pó e soprou fôlego de vida nele. Toda voz começa num sopro — a sua também começa aqui.",
+ en:"God breathed. I live.",voc:[["breath","fôlego"],["life","vida"],["dust","pó"]],
+ eng:{t:"read",items:[["God breathed.","Deus soprou."],["I live.","Eu vivo."],["I am alive today.","Eu estou vivo hoje."]]},
+ seal:{t:"speak",prompt:"Leia em voz alta, uma vez: “God breathed. I live.” Pode ser baixinho.",tgt:"God breathed. I live.",sec:15}},
+{era:1,who:"Noé",title:"Obedecer antes da chuva",pillar:"V · verse",
+ hook:"Noé construiu um barco gigante num lugar sem mar, sob a risada de todos. Às vezes obedecer vem antes de fazer sentido.",
+ en:"I build, even in the sun.",voc:[["build","construir"],["rain","chuva"],["obey","obedecer"]],
+ eng:{t:"match",items:[["build","construir"],["rain","chuva"],["obey","obedecer"],["breath","fôlego"]]},
+ seal:{t:"write",prompt:"Escreva 1 frase curta em inglês usando build ou obey.",min:8}},
+{era:1,who:"Abraão",title:"O primeiro passo no escuro",pillar:"O · open ears",
+ hook:"Deus mandou Abraão sair sem dizer para onde. Ele foi mesmo assim. Confiar é dar o passo antes de ver a estrada.",
+ en:"I trust and I go.",voc:[["trust","confiar"],["go","ir"],["land","terra"]],
+ eng:{t:"listen_choose",items:[{say:"trust",opts:["trust","truck","dust"]},{say:"go",opts:["go","grow","good"]},{say:"land",opts:["land","lamp","hand"]}]},
+ seal:{t:"speak",prompt:"Fale em voz alta, 3 vezes: “I trust and I go.”",tgt:"I trust and I go.",sec:20}},
+{era:1,who:"Isaque",title:"O carneiro no mato",pillar:"I · interaction",
+ hook:"Subindo o monte, Isaque perguntou onde estava o cordeiro. A resposta veio no lugar certo, na hora certa: Deus proverá.",
+ en:"God will provide.",voc:[["provide","prover"],["see","ver"],["son","filho"]],
+ eng:{t:"shadow",items:["God will provide.","God sees me.","I am His son.","God will provide for me."]},
+ seal:{t:"speak",prompt:"Repita 3 vezes, olhando pra frente: “God will provide.”",tgt:"God will provide.",sec:20}},
+{era:1,who:"Jacó",title:"A escada e a luta",pillar:"C · connection",
+ hook:"Jacó lutou a noite toda e disse: não te deixarei ir se não me abençoares. Oração também é insistir.",
+ en:"I will not let You go.",voc:[["bless","abençoar"],["night","noite"],["stay","ficar"]],
+ eng:{t:"pray",tpl:"Lord, ___ me today.",hint:"Use bless (abençoar).",answer:"bless"},
+ seal:{t:"write",prompt:"Escreva uma oração curta em inglês começando com “Lord, ...”",min:12}},
+{era:1,who:"José",title:"O que era mal, Deus tornou bem",pillar:"E · expression",
+ hook:"Vendido pelos irmãos, José chegou ao palácio e perdoou. O que era mal, Deus tornou em bem.",
+ en:"God turned it into good.",voc:[["good","bem"],["save","salvar"],["dream","sonho"]],
+ eng:{t:"order",answer:"God turned it into good"},
+ seal:{t:"speak",prompt:"Fale até 20s contando em inglês, como der, algo bom que Deus fez por você.",sec:20}},
+{era:1,who:"Jó",title:"Mesmo assim",pillar:"portão · chefão",boss:true,
+ hook:"Jó perdeu tudo e ainda assim confiou. Portão da Era 1: junte tudo o que você aprendeu.",
+ en:"Even so, I trust.",voc:[["pain","dor"],["hope","esperança"],["still","ainda"]],
+ eng:{t:"quiz",era:1},
+ seal:{t:"speak",prompt:"Prova da era: fale até 30s dizendo o versículo + 3 palavras que você aprendeu.",sec:30}},
+
+{era:2,who:"Moisés",title:"Pesado de língua",pillar:"V · verse",
+ hook:"Moisés disse a Deus: eu não sei falar. Deus respondeu: Eu serei com a tua boca. Se ele começou assim, você também pode.",
+ en:"I will be with your mouth.",voc:[["mouth","boca"],["speak","falar"],["slow","lento"]],
+ eng:{t:"read",items:[["I am slow to speak.","Eu falo devagar."],["God is with my mouth.","Deus está com a minha boca."],["I can speak today.","Eu posso falar hoje."]]},
+ seal:{t:"speak",prompt:"Leia em voz alta 2 vezes: “God is with my mouth.”",tgt:"God is with my mouth.",sec:20}},
+{era:2,who:"Josué",title:"Atravessar o Jordão",pillar:"V · verse",
+ hook:"Deus disse: seja forte e corajoso. O rio só abriu quando os pés entraram na água.",
+ en:"Be strong and courageous.",voc:[["strong","forte"],["cross","atravessar"],["river","rio"]],
+ eng:{t:"verse",text:"Be ___ and courageous. Do not be ___.",blanks:["strong","afraid"],opts:["strong","afraid","slow","rain"]},
+ seal:{t:"write",prompt:"Escreva 1 frase em inglês usando strong.",min:8}},
+{era:2,who:"Débora",title:"Liderar com fé",pillar:"O · open ears",
+ hook:"Débora julgava debaixo de uma palmeira e liderou um povo inteiro com fé e firmeza. Hoje o foco é o ouvido.",
+ en:"I rise with faith.",voc:[["rise","levantar"],["lead","liderar"],["faith","fé"]],
+ eng:{t:"listen_fill",say:"I rise with faith.",text:"I ___ with faith.",answer:"rise"},
+ seal:{t:"speak",prompt:"Fale 3 vezes: “I rise with faith.”",tgt:"I rise with faith.",sec:20}},
+{era:2,who:"Gideão",title:"Poucos, mas com Deus",pillar:"I · interaction",
+ hook:"Gideão venceu um exército com 300 homens e tochas. Coragem não é número — é com quem você está.",
+ en:"Few, but not alone.",voc:[["few","poucos"],["light","luz"],["alone","sozinho"]],
+ eng:{t:"speak_complete",items:[{txt:"I am not ___.",say:"I am not alone"},{txt:"God is my ___.",say:"God is my light"}]},
+ seal:{t:"speak",prompt:"Fale em voz alta, 3 vezes: “I am not alone.”",tgt:"I am not alone",sec:20}},
+{era:2,who:"Samuel",title:"Fala, Senhor",pillar:"C · connection",
+ hook:"Menino ainda, Samuel ouviu seu nome na noite e respondeu: fala, Senhor, o teu servo ouve. Orar também é escutar.",
+ en:"Speak, Lord. I am listening.",voc:[["listen","ouvir"],["call","chamar"],["servant","servo"]],
+ eng:{t:"pray",tpl:"Speak, Lord. I am ___.",hint:"Use listening (ouvindo).",answer:"listening"},
+ seal:{t:"write",prompt:"Escreva em inglês o que você quer ouvir de Deus hoje. Uma frase basta.",min:12}},
+{era:2,who:"Davi",title:"Maior que o gigante",pillar:"E · expression",
+ hook:"Todos viam o tamanho de Golias. Davi via o tamanho de Deus. Hoje você põe a sua voz pra fora.",
+ en:"God is bigger than my fear.",voc:[["fear","medo"],["giant","gigante"],["win","vencer"]],
+ eng:{t:"order",answer:"God is bigger than my fear"},
+ seal:{t:"speak",prompt:"Fale até 20s em inglês sobre um “gigante” que você enfrenta.",sec:20}},
+{era:2,who:"Salomão",title:"Pedi sabedoria",pillar:"portão · chefão",boss:true,
+ hook:"Podia pedir o que quisesse. Pediu um coração sábio. Portão da Era 2: mostre o que ficou.",
+ en:"Give me a wise heart.",voc:[["wise","sábio"],["heart","coração"],["ask","pedir"]],
+ eng:{t:"memory",era:2},
+ seal:{t:"speak",prompt:"Prova da era: fale até 30s com o versículo + 3 palavras da era.",sec:30}},
+
+{era:3,who:"Elias",title:"Coragem depois do cansaço",pillar:"V · verse",
+ hook:"Elias venceu e depois quis desistir debaixo de uma árvore. Deus não veio no terremoto: veio num sussurro.",
+ en:"Even tired, I listen.",voc:[["tired","cansado"],["rest","descansar"],["whisper","sussurro"]],
+ eng:{t:"read",items:[["I am tired.","Eu estou cansado."],["God gives me rest.","Deus me dá descanso."],["Even tired, I listen.","Mesmo cansado, eu escuto."]]},
+ seal:{t:"speak",prompt:"Leia em voz alta 2 vezes: “Even tired, I listen.”",tgt:"Even tired, I listen.",sec:20}},
+{era:3,who:"Eliseu",title:"Porção dobrada",pillar:"V · verse",
+ hook:"Eliseu largou tudo e seguiu Elias. Pediu porção dobrada do espírito — e continuou a obra.",
+ en:"Let me follow.",voc:[["follow","seguir"],["double","dobro"],["ask","pedir"]],
+ eng:{t:"match",items:[["follow","seguir"],["double","dobro"],["tired","cansado"],["rest","descansar"]]},
+ seal:{t:"write",prompt:"Escreva 1 frase em inglês usando follow.",min:8}},
+{era:3,who:"Isaías",title:"Eis-me aqui, envia-me",pillar:"O · open ears",
+ hook:"Isaías viu o trono, sentiu seus lábios impuros — e uma brasa os tocou. Então ele disse: eis-me aqui, envia-me.",
+ en:"Here am I. Send me.",voc:[["send","enviar"],["here","aqui"],["lips","lábios"]],
+ eng:{t:"listen_choose",items:[{say:"send",opts:["send","sand","spend"]},{say:"here",opts:["here","hair","hear"]},{say:"lips",opts:["lips","lift","list"]}]},
+ seal:{t:"speak",prompt:"Fale 3 vezes, com convicção: “Here am I. Send me.”",tgt:"Here am I. Send me.",sec:20}},
+{era:3,who:"Jeremias",title:"Fogo nos ossos",pillar:"I · interaction",
+ hook:"Jeremias quis calar, mas a palavra ardia como fogo nos ossos. Na casa do oleiro, viu o barro estragado ser refeito.",
+ en:"Like clay in Your hand.",voc:[["clay","barro"],["shape","moldar"],["fire","fogo"]],
+ eng:{t:"shadow",items:["Like clay in Your hand.","Shape me, Lord.","Your word is fire.","I cannot be silent."]},
+ seal:{t:"speak",prompt:"Repita 3 vezes: “Shape me, Lord.”",tgt:"Shape me, Lord.",sec:20}},
+{era:3,who:"Ezequiel",title:"Ossos que voltam a viver",pillar:"C · connection",
+ hook:"No vale de ossos secos Deus perguntou: podem estes ossos viver? E o sopro voltou. O mesmo sopro do Dia 1.",
+ en:"Can these bones live?",voc:[["bones","ossos"],["live","viver"],["valley","vale"]],
+ eng:{t:"pray",tpl:"Lord, give me new ___.",hint:"Use life (vida).",answer:"life"},
+ seal:{t:"write",prompt:"Escreva uma oração curta em inglês pedindo vida nova em alguma área sua.",min:12}},
+{era:3,who:"Daniel",title:"Calma na cova dos leões",pillar:"E · expression",
+ hook:"Jogado entre leões por causa da oração, Daniel não gritou: dormiu em paz.",
+ en:"I pray, and I am safe.",voc:[["lion","leão"],["pray","orar"],["safe","seguro"]],
+ eng:{t:"order",answer:"I pray and I am safe"},
+ seal:{t:"speak",prompt:"Fale até 20s em inglês sobre uma “cova de leões” da sua vida.",sec:20}},
+{era:3,who:"Ester",title:"Se perecer, perecerei",pillar:"portão · chefão",boss:true,
+ hook:"Ester arriscou a vida para falar diante do rei. Portão da Era 3: use a sua voz.",
+ en:"I am brave. I speak.",voc:[["brave","corajoso"],["speak","falar"],["voice","voz"]],
+ eng:{t:"scramble",era:3},
+ seal:{t:"speak",prompt:"Prova da era: fale até 30s com o versículo + 3 palavras da era.",sec:30}},
+
+{era:4,who:"João Batista",title:"A voz que clama",pillar:"V · verse",
+ hook:"A Bíblia o chama literalmente de “a voz do que clama no deserto”. Não um homem com uma voz: uma voz.",
+ en:"I am a voice in the desert.",voc:[["voice","voz"],["way","caminho"],["water","água"]],
+ eng:{t:"read",items:[["I am a voice.","Eu sou uma voz."],["Prepare the way.","Preparem o caminho."],["I am a voice in the desert.","Eu sou uma voz no deserto."]]},
+ seal:{t:"speak",prompt:"Leia em voz alta, firme: “I am a voice.”",tgt:"I am a voice.",sec:15}},
+{era:4,who:"Pedro",title:"De quem negou a quem prega",pillar:"O · open ears",
+ hook:"O mesmo Pedro que negou Jesus com medo pregou para uma multidão no Pentecostes. A voz que tremia virou voz que anuncia.",
+ en:"I was afraid. Now I am bold.",voc:[["bold","ousado"],["preach","pregar"],["crowd","multidão"]],
+ eng:{t:"listen_fill",say:"Now I am bold.",text:"Now I am ___.",answer:"bold"},
+ seal:{t:"speak",prompt:"Fale 3 vezes: “I was afraid. Now I am bold.”",tgt:"I was afraid. Now I am bold.",sec:20}},
+{era:4,who:"João",title:"O amor que permanece",pillar:"I · interaction",
+ hook:"O discípulo amado escreveu a frase mais simples e mais funda da Bíblia: Deus é amor.",
+ en:"God is love.",voc:[["love","amor"],["light","luz"],["stay","permanecer"]],
+ eng:{t:"speak_complete",items:[{txt:"God is ___.",say:"God is love"},{txt:"God is ___.",say:"God is light"}]},
+ seal:{t:"speak",prompt:"Fale em voz alta, 3 vezes: “God is love.”",tgt:"God is love",sec:20}},
+{era:4,who:"Tiago",title:"Fé com mãos",pillar:"C · connection",
+ hook:"Tiago foi direto: fé sem obras é morta. Fé de verdade tem mãos, pés e voz.",
+ en:"I show my faith.",voc:[["show","mostrar"],["work","obra"],["do","fazer"]],
+ eng:{t:"order",answer:"I show my faith today"},
+ seal:{t:"write",prompt:"Escreva em inglês uma coisa prática que você vai fazer hoje pela sua fé.",min:12}},
+{era:4,who:"Paulo",title:"Cantar na prisão",pillar:"E · expression",
+ hook:"Presos e machucados, Paulo e Silas cantaram à meia-noite — e a prisão tremeu. A voz não espera boas condições.",
+ en:"At midnight, we sing.",voc:[["sing","cantar"],["prison","prisão"],["free","livre"]],
+ eng:{t:"shadow",items:["At midnight, we sing.","I am free in You.","We pray and we sing.","The doors are open."]},
+ seal:{t:"speak",prompt:"Fale ou cante até 20s: “I am free in You.”",tgt:"I am free in You.",sec:20}},
+{era:4,who:"Timóteo",title:"Ninguém despreze a sua juventude",pillar:"portão · chefão",boss:true,
+ hook:"Jovem e tímido, Timóteo recebeu a tocha de Paulo. Portão da Era 4: a voz passa adiante.",
+ en:"I am young, and I speak.",voc:[["young","jovem"],["teach","ensinar"],["keep","guardar"]],
+ eng:{t:"quiz",era:4},
+ seal:{t:"speak",prompt:"Prova da era: fale até 30s com o versículo + 3 palavras da era.",sec:30}},
+
+{era:5,who:"Jesus · O Verbo",title:"No princípio era o Verbo",pillar:"revisão · eras 1 e 2",boss:true,
+ hook:"João 1:1 chama Jesus de o Verbo — the Word. O jogo chamado VOICE termina n'Aquele que é a própria Palavra.",
+ en:"In the beginning was the Word.",voc:[["word","palavra"],["begin","começar"],["light","luz"]],
+ eng:{t:"verse",text:"In the ___ was the Word, and the Word was with ___.",blanks:["beginning","God"],opts:["beginning","God","voice","fire"]},
+ seal:{t:"speak",prompt:"Fale até 30s em inglês usando 3 palavras que você aprendeu nas Eras 1 e 2.",sec:30}},
+{era:5,who:"Jesus · O Mestre",title:"Segue-me",pillar:"revisão · eras 3 e 4",boss:true,
+ hook:"Ele não pediu currículo nem fluência. Chamou pescadores no meio do trabalho e disse duas palavras: follow me.",
+ en:"Follow me.",voc:[["follow","seguir"],["teach","ensinar"],["way","caminho"]],
+ eng:{t:"memory",era:34},
+ seal:{t:"speak",prompt:"Fale até 30s em inglês usando 3 palavras que você aprendeu nas Eras 3 e 4.",sec:30}},
+{era:5,who:"Jesus · A Grande Comissão",title:"Ide por todo o mundo",pillar:"chefão final",boss:true,
+ hook:"30 dias atrás você quase não falava. Agora o chefão é você: conte a sua história. A voz foi liberada.",
+ en:"Go into all the world.",voc:[["go","ir"],["world","mundo"],["all","todo"]],
+ eng:{t:"scramble",era:5},
+ seal:{t:"speak",prompt:"Prova final: fale 1 minuto de testemunho em inglês — o que mudou em 30 dias.",sec:60}}
+];
+
+/* ===== ESTADO ===== */
+let S={done:0,streak:0,box:{},treinos:0};
+const KEY='voice_progress_v2';let mem=null;
+/* Progresso no aparelho do aluno. localStorage é o padrão de qualquer navegador:
+   sobrevive a fechar a aba, fechar o navegador e desligar o computador.
+   Se o navegador estiver em aba anônima e bloquear, cai na memória e o jogo segue. */
+function load(){try{const v=localStorage.getItem(KEY);if(v)S=Object.assign(S,JSON.parse(v));}catch(e){if(mem)S=mem;}render();}
+function save(){mem=Object.assign({},S);try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const cssv=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const eraOf=n=>ERAS.find(e=>e.id===n);
+const shuffle=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);
+const esc=s=>String(s).replace(/'/g,"\\'");
+function eraVocab(id){let out=[];D.forEach(d=>{const hit=(id===34)?(d.era===3||d.era===4):(d.era===id);if(hit)out=out.concat(d.voc);});
+  const seen={};return out.filter(w=>seen[w[0]]?false:(seen[w[0]]=1));}
+/* ===== ÁUDIO — SPRITE ÚNICO =====
+   As 154 falas vivem numa faixa só (voz.mp3). O mapa diz onde cada uma começa
+   e quanto dura. Isso troca 154 arquivos por 1: sobe fácil e carrega uma vez só.
+   Web Audio dá corte preciso na amostra. Sem ele, cai na voz do navegador. */
+const MAPA={"god-breathed-i-live":[0.0,2.043],"breath":[2.343,0.836],"life":[3.479,0.743],"dust":[4.522,0.929],"god-breathed":[5.751,1.207],"i-live":[7.259,1.022],"i-am-alive-today":[8.58,1.393],"i-build-even-in-the-sun":[10.273,1.858],"build":[12.431,0.882],"rain":[13.613,0.975],"obey":[14.889,0.836],"i-trust-and-i-go":[16.025,1.44],"trust":[17.764,0.882],"go":[18.947,0.697],"land":[19.943,0.836],"truck":[21.079,0.789],"grow":[22.169,0.882],"good":[23.351,0.789],"lamp":[24.44,0.743],"hand":[25.483,0.882],"god-will-provide":[26.666,1.393],"provide":[28.359,0.975],"see":[29.634,0.743],"son":[30.677,0.836],"god-sees-me":[31.813,1.3],"i-am-his-son":[33.413,1.207],"god-will-provide-for-me":[34.921,1.625],"i-will-not-let-you-go":[36.846,1.625],"bless":[38.772,0.836],"night":[39.908,0.743],"stay":[40.951,0.929],"lord-bless-me-today":[42.179,1.625],"god-turned-it-into-good":[44.105,1.625],"save":[46.03,0.882],"dream":[47.213,0.836],"even-so-i-trust":[48.349,1.533],"pain":[50.181,0.836],"hope":[51.317,0.743],"still":[52.36,0.929],"i-will-be-with-your-mouth":[53.589,1.533],"mouth":[55.421,0.836],"speak":[56.557,0.836],"slow":[57.693,0.929],"i-am-slow-to-speak":[58.922,1.533],"god-is-with-my-mouth":[60.754,1.579],"i-can-speak-today":[62.633,1.393],"be-strong-and-courageous":[64.327,1.718],"strong":[66.345,0.929],"cross":[67.574,1.068],"river":[68.942,0.836],"be-strong-and-courageous-do-not-be-afraid":[70.078,3.111],"afraid":[73.489,0.929],"i-rise-with-faith":[74.718,1.533],"rise":[76.551,0.882],"lead":[77.733,0.789],"faith":[78.822,0.929],"few-but-not-alone":[80.051,1.625],"few":[81.977,0.836],"light":[83.112,0.836],"alone":[84.248,0.929],"i-am-not-alone":[85.477,1.3],"god-is-my-light":[87.078,1.3],"speak-lord-i-am-listening":[88.678,1.718],"listen":[90.696,0.836],"call":[91.832,0.882],"servant":[93.014,1.022],"god-is-bigger-than-my-fear":[94.336,1.811],"fear":[96.447,0.836],"giant":[97.583,0.929],"win":[98.812,0.743],"give-me-a-wise-heart":[99.855,1.533],"wise":[101.687,0.929],"heart":[102.916,0.836],"ask":[104.052,0.789],"even-tired-i-listen":[105.142,1.625],"tired":[107.067,0.929],"rest":[108.296,0.882],"whisper":[109.478,0.929],"i-am-tired":[110.707,1.115],"god-gives-me-rest":[112.122,1.579],"let-me-follow":[114.001,1.207],"follow":[115.508,0.975],"double":[116.783,0.789],"here-am-i-send-me":[117.873,1.765],"send":[119.937,0.882],"here":[121.12,0.836],"lips":[122.256,0.836],"sand":[123.392,0.929],"spend":[124.62,0.882],"hair":[125.803,0.882],"hear":[126.985,0.836],"lift":[128.121,0.789],"list":[129.211,0.836],"like-clay-in-your-hand":[130.346,1.533],"clay":[132.179,0.882],"shape":[133.361,0.789],"fire":[134.451,0.836],"shape-me-lord":[135.587,1.3],"your-word-is-fire":[137.187,1.533],"i-cannot-be-silent":[139.02,1.533],"can-these-bones-live":[140.852,1.486],"bones":[142.638,0.929],"live":[143.867,0.929],"valley":[145.096,0.836],"lord-give-me-new-life":[146.232,1.486],"i-pray-and-i-am-safe":[148.018,1.718],"lion":[150.036,0.836],"pray":[151.172,0.882],"safe":[152.354,0.836],"i-am-brave-i-speak":[153.49,1.672],"brave":[155.462,0.929],"voice":[156.691,0.882],"i-am-a-voice-in-the-desert":[157.873,1.672],"way":[159.845,0.789],"water":[160.935,0.929],"i-am-a-voice":[162.163,1.207],"prepare-the-way":[163.671,1.3],"i-was-afraid-now-i-am-bold":[165.271,2.415],"bold":[167.986,0.882],"preach":[169.168,0.836],"crowd":[170.304,0.929],"now-i-am-bold":[171.533,1.347],"god-is-love":[173.18,1.161],"love":[174.641,0.836],"god-is-light":[175.777,1.207],"i-show-my-faith":[177.284,1.393],"show":[178.977,0.836],"work":[180.113,0.836],"do":[181.249,0.697],"i-show-my-faith-today":[182.246,1.579],"at-midnight-we-sing":[184.125,1.533],"sing":[185.957,0.836],"prison":[187.093,0.929],"free":[188.322,0.882],"i-am-free-in-you":[189.504,1.393],"we-pray-and-we-sing":[191.198,1.533],"the-doors-are-open":[193.03,1.486],"i-am-young-and-i-speak":[194.816,1.672],"young":[196.788,0.789],"teach":[197.877,0.882],"keep":[199.06,0.789],"in-the-beginning-was-the-word":[200.149,1.718],"word":[202.168,0.882],"begin":[203.35,0.929],"in-the-beginning-was-the-word-and-the-word-was-with-god":[204.579,3.204],"beginning":[208.083,0.975],"god":[209.358,0.836],"follow-me":[210.494,1.115],"go-into-all-the-world":[211.909,1.672],"world":[213.881,0.789],"all":[214.97,0.697],"trust-in-the-lord-with-all-your-heart":[215.967,2.276],"like-clay-in-the-hand-of-the-potter":[218.542,2.322],"you-will-be-my-witnesses-to-the-ends-of-the-earth":[221.164,2.879]};
+const SPRITE='voz.mp3';
+let AC=null,BUF=null,FONTE=null,AUD_NOW=null,AUD_ON=true,CARREGANDO=false;
+function slug(t){return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .replace(/[^a-z0-9 ]/g,'').trim().replace(/\s+/g,'-').slice(0,60);}
+
+async function carregarVoz(){
+  if(BUF||CARREGANDO)return;CARREGANDO=true;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const r=await fetch(SPRITE);
+    if(!r.ok)throw new Error('voz.mp3 não encontrado');
+    BUF=await AC.decodeAudioData(await r.arrayBuffer());
+  }catch(e){console.log('Sprite indisponível, usando a voz do navegador:',e.message);}
+  CARREGANDO=false;
+}
+/* o navegador só libera áudio depois de um toque — então carregamos no primeiro */
+['click','touchstart','keydown'].forEach(ev=>document.addEventListener(ev,function once(){
+  carregarVoz();if(AC&&AC.state==='suspended')AC.resume();
+  document.removeEventListener(ev,once);
+},{once:true}));
+
+function pararSom(){
+  if(FONTE){try{FONTE.stop();}catch(e){}FONTE=null;}
+  if(AUD_NOW){try{AUD_NOW.pause();}catch(e){}}
+}
+function speak(t){
+  pararSom();
+  if(!AUD_ON){ttsSpeak(t);return;}
+  const m=MAPA[slug(t)];
+  if(!m||!BUF||!AC){carregarVoz();ttsSpeak(t);return;}
+  if(AC.state==='suspended')AC.resume();
+  const s=AC.createBufferSource();
+  s.buffer=BUF;s.connect(AC.destination);
+  s.start(0,m[0],m[1]);        /* começa em m[0] e toca por m[1] segundos */
+  FONTE=s;
+}
+function auditAudio(){
+  const alvo=[];D.forEach(d=>{alvo.push(d.en);d.voc.forEach(v=>alvo.push(v[0]));});
+  const ok=alvo.filter(t=>MAPA[slug(t)]).length;
+  toast(ok+' de '+alvo.length+' áudios no mapa · '+(BUF?'voz carregada ✓':'voz ainda não carregou'));
+}
+
+/* ===== MOTOR DE VOZ (usado só quando não existe o arquivo) =====
+   Três problemas resolvidos aqui:
+   1) sem escolher a voz, o navegador lê inglês com a voz PADRÃO em português;
+   2) cancel() seguido de speak() na mesma batida faz o Chrome desistir da voz de rede
+      e cair numa voz local ruim, em silêncio — o famoso "primeira vez bom, depois péssimo";
+   3) o objeto da voz apodrece: precisa ser buscado de novo na lista a cada fala. */
+let VOICE=null,VOICES=[],VOICE_NAME=null,SPK_LOCK=false;
+/* femininas conhecidas, americanas primeiro */
+const FEM=['google us english','samantha','ava','allison','susan','zoe','joanna','salli','kendra',
+ 'kimberly','ivy','microsoft aria','microsoft jenny','microsoft michelle','microsoft ana','microsoft zira',
+ 'microsoft eva','nicky','victoria','princess','serena','catherine','microsoft libby','microsoft sonia',
+ 'emma','amy','olivia','natasha','clara','linda','heather','hazel','karen','moira','tessa','fiona','shelley','sandy','flo','eddy'];
+/* masculinas e vozes de brinquedo: fora */
+const OUT=['daniel','alex','fred','guy','ryan','evan','tom','aaron','nathan','reed','rocko','grandpa','grandma',
+ 'junior','ralph','bruce','david','mark','george','james','matthew','joey','justin','kevin','brian','arthur',
+ 'christopher','liam','oliver','thomas','william','albert','rishi','gordon','bad news','bahh','bells','boing',
+ 'bubbles','cellos','deranged','good news','hysterical','jester','organ','superstar','trinoids','whisper',
+ 'wobble','zarvox','compact','eloquence','espeak','novelty','deer','sandy'];
+function scoreVoice(v){
+  const n=(v.name||'').toLowerCase(),l=(v.lang||'').toLowerCase();
+  if(l.indexOf('en')!==0)return -1;
+  if(OUT.some(x=>n.indexOf(x)>=0))return -1;
+  let s=0;
+  const f=FEM.findIndex(x=>n.indexOf(x)>=0);
+  if(f>=0)s+=300-f*3;
+  if(/natural|neural|premium|enhanced/.test(n))s+=140;
+  if(/female/.test(n))s+=90;
+  if(l.indexOf('en-us')===0)s+=150; else if(l.indexOf('en-gb')===0)s+=20; else s-=40;
+  if(v.localService===false)s+=40;
+  return s;
+}
+function loadVoices(){
+  const all=(window.speechSynthesis&&speechSynthesis.getVoices())||[];
+  VOICES=all.filter(v=>scoreVoice(v)>=0).sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  let saved=null;try{saved=localStorage.getItem('voice_tts');}catch(e){}
+  const pick=(saved&&VOICES.find(v=>v.name===saved))||VOICES[0]||null;
+  if(pick){VOICE=pick;VOICE_NAME=pick.name;}
+  const lab=document.getElementById('voiceLab');
+  if(lab)lab.textContent=VOICE?VOICE.name.replace(/microsoft |google |\s*\(.*\)/gi,'').trim():'voz';
+}
+/* busca a voz de novo na lista, sempre — objeto guardado apodrece no Chrome */
+function freshVoice(){
+  const all=(window.speechSynthesis&&speechSynthesis.getVoices())||[];
+  if(VOICE_NAME){const v=all.find(x=>x.name===VOICE_NAME);if(v)return v;}
+  const ok=all.filter(v=>scoreVoice(v)>=0).sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  return ok[0]||null;
+}
+function say(text,voice,rate){
+  const synth=window.speechSynthesis;
+  const u=new SpeechSynthesisUtterance(text);
+  if(voice){u.voice=voice;u.lang=voice.lang;}else{u.lang='en-US';}
+  u.rate=rate||.95;u.pitch=1;u.volume=1;
+  let started=false;
+  u.onstart=()=>{started=true;};
+  u.onend=()=>{SPK_LOCK=false;};
+  u.onerror=()=>{SPK_LOCK=false;};
+  synth.speak(u);
+  /* rede falhou e ele nem começou? tenta de novo com voz local em inglês */
+  setTimeout(()=>{
+    if(!started&&!synth.speaking&&!synth.pending){
+      const local=(synth.getVoices()||[]).filter(v=>scoreVoice(v)>=0&&v.localService!==false)[0];
+      if(local&&(!voice||local.name!==voice.name)){
+        const u2=new SpeechSynthesisUtterance(text);
+        u2.voice=local;u2.lang=local.lang;u2.rate=rate||.95;
+        u2.onend=u2.onerror=()=>{SPK_LOCK=false;};
+        synth.speak(u2);
+      }else SPK_LOCK=false;
+    }
+  },900);
+}
+function ttsSpeak(t){
+  if(!('speechSynthesis' in window)){toast('Áudio não disponível neste navegador.');return;}
+  const synth=window.speechSynthesis;
+  if(!VOICE)loadVoices();
+  synth.cancel();
+  SPK_LOCK=true;
+  /* o respiro é obrigatório: sem ele o Chrome abandona a voz de rede e cai na ruim */
+  setTimeout(()=>say(t,freshVoice(),.95),260);
+}
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=loadVoices;setTimeout(loadVoices,120);}
+
+function openVoices(){
+  loadVoices();
+  const box=document.getElementById('voiceList');
+  if(!VOICES.length){box.innerHTML='<p class="instr">Nenhuma voz em inglês encontrada neste aparelho. No celular, instale um pacote de voz em inglês nas configurações do sistema. No computador, o Chrome costuma trazer a “Google US English”.</p>';}
+  else{
+    box.innerHTML='<div class="cards">'+VOICES.slice(0,12).map((v,k)=>
+      '<div class="opt'+(VOICE&&v.name===VOICE.name?' ok':'')+'" id="v'+k+'" style="display:flex;gap:8px;align-items:center">'+
+      '<span style="flex:1"><b>'+v.name.replace(/ \(.*\)/,'')+'</b><br><small style="color:var(--muted)">'+v.lang+(v.localService===false?' · online (melhor)':' · local')+'</small></span>'+
+      '<button class="spk" onclick="testVoice('+k+')">🔊</button>'+
+      '<button class="ghost" onclick="useVoice('+k+')">usar</button></div>').join('')+'</div>';
+  }
+  document.getElementById('voiceOv').classList.add('show');
+}
+function closeVoices(){document.getElementById('voiceOv').classList.remove('show');}
+function testVoice(k){const v=VOICES[k];window.speechSynthesis.cancel();
+  setTimeout(()=>say('Trust in the Lord with all your heart. God breathed. I live.',v,.95),260);}
+function useVoice(k){VOICE=VOICES[k];VOICE_NAME=VOICE.name;try{localStorage.setItem('voice_tts',VOICE.name);}catch(e){}
+  loadVoices();openVoices();toast('Voz definida ✓');testVoice(k);}
+
+/* ===== MAPA ===== */
+function render(){
+  document.getElementById('streak').textContent=S.streak;
+  document.getElementById('prog').textContent=S.done;
+  document.getElementById('barfill').style.width=Math.round(S.done/30*100)+'%';
+  document.getElementById('flameIco').style.opacity=S.streak>0?1:.3;
+  document.getElementById('barlab').textContent=S.done>=30?'Jornada completa. A voz foi liberada.':S.done===0?'Comece pelo Dia 1.':'Dia '+(S.done+1)+' liberado · '+(30-S.done)+' restantes.';
+  const v=(typeof tVocab==='function')?tVocab():[];
+  const card=document.getElementById('treinoCard'),desc=document.getElementById('treinoDesc');
+  if(card){card.classList.toggle('off',S.done<1);
+    desc.innerHTML=S.done<1?'Conclua o Dia 1 para abrir o seu baralho.':
+      '<b>'+v.length+' palavras</b> destravadas · <b>'+dominadas()+'</b> dominadas · gire e treine';}
+  const map=document.getElementById('map');map.innerHTML='';
+  ERAS.forEach(E=>{
+    const sec=document.createElement('section');sec.className='era';
+    sec.innerHTML='<div class="ehead"><span class="etag" style="background:'+cssv(E.c)+'">'+E.tag+'</span>'+
+      '<span class="ename">'+E.name+'</span><span class="everse">'+E.verse+'</span></div><div class="nodes"></div>';
+    const grid=sec.querySelector('.nodes');
+    D.forEach((d,i)=>{
+      if(d.era!==E.id)return;
+      const done=i<S.done,curr=i===S.done,locked=i>S.done;
+      const b=document.createElement('button');
+      b.className='node'+(curr?' current':'')+(locked?' locked':'');
+      const inner=done?'<svg class="svgi" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>'
+        :locked?'<svg class="svgi" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':(i+1);
+      b.innerHTML=(d.boss?'<span class="badge" style="background:'+cssv(E.cd)+'">'+(i===29?'final':E.id===5?'verbo':'portão')+'</span>':'')+
+        '<span class="circle" style="background:'+(locked?cssv('--lock'):cssv(E.c))+'">'+inner+'</span>'+
+        '<span class="who">'+d.who.replace('Jesus · ','')+'</span>';
+      if(!locked)b.onclick=function(){openDay(i);};
+      grid.appendChild(b);
+    });
+    map.appendChild(sec);
+  });
+}
+
+/* ===== DIA — 3 BLOCOS ===== */
+let cur={i:0,step:0,ok:[false,false,false]};
+function openDay(i){cur={i:i,step:0,ok:[false,false,false]};fcIdx=0;fcFlip=false;drawDay();document.getElementById('dayOv').classList.add('show');}
+function closeDay(){document.getElementById('dayOv').classList.remove('show');clearInterval(tInt);try{speechSynthesis.cancel()}catch(e){}}
+function drawDay(){
+  const d=D[cur.i],E=eraOf(d.era);
+  document.getElementById('daySheet').innerHTML=
+   '<div class="shtop"><span class="pill" style="background:'+cssv(E.c)+'">'+d.pillar+'</span>'+
+   '<button class="x" onclick="closeDay()">×</button></div>'+
+   '<div class="who2">Dia '+(cur.i+1)+' · '+d.who+'</div><h2>'+d.title+'</h2>'+
+   '<p class="hook">'+d.hook+'</p>'+
+   '<div class="verse"><div style="flex:1"><div class="en">“'+d.en+'”</div><div class="ref">'+E.verse+'</div></div>'+
+   '<button class="spk" onclick="speak(\''+esc(d.en)+'\')">🔊</button></div>'+
+   '<div class="steps">'+[0,1,2].map(k=>'<span class="step '+(cur.ok[k]?'done':cur.step===k?'on':'')+'"></span>').join('')+'</div>'+
+   '<div id="blockArea"></div>';
+  drawBlock();
+}
+function nextBlock(){if(cur.step<2){cur.step++;drawDay();}}
+function drawBlock(){const a=document.getElementById('blockArea');
+  if(cur.step===0)blockWarm(a);else if(cur.step===1)blockCore(a);else blockSeal(a);}
+
+/* BLOCO 1 — flash cards + revisão espaçada */
+let fcIdx=0,fcFlip=false;
+function warmList(){const d=D[cur.i];const rev=cur.i>=3?D[cur.i-3].voc[0]:null;return d.voc.concat(rev?[rev]:[]);}
+function blockWarm(a){
+  const list=warmList();if(fcIdx>=list.length)fcIdx=0;
+  const w=list[fcIdx],isRev=cur.i>=3&&fcIdx===list.length-1;
+  a.innerHTML='<p class="blk">Bloco 1 · aquecimento</p><p class="btitle">Flash cards</p>'+
+   '<p class="instr">Toque no card para ver a tradução e no alto-falante para ouvir.</p>'+
+   '<p class="prog">'+(fcIdx+1)+' de '+list.length+'</p>'+
+   (isRev?'<span class="rev">revisão do dia '+(cur.i-2)+'</span>':'')+
+   '<div class="fc" onclick="fcTap()"><div class="w">'+w[0]+'</div>'+
+   '<div class="t">'+(fcFlip?w[1]:'toque para traduzir')+'</div></div>'+
+   '<div style="display:flex;gap:8px;margin-bottom:12px">'+
+   '<button class="ghost" style="flex:1" onclick="speak(\''+esc(w[0])+'\')">🔊 ouvir</button>'+
+   '<button class="ghost" style="flex:1" onclick="fcNext()">'+(fcIdx+1===list.length?'terminei':'próxima →')+'</button></div>'+
+   '<button class="go '+(cur.ok[0]?'gr':'')+'" onclick="'+(cur.ok[0]?'nextBlock()':'')+'" '+(cur.ok[0]?'':'disabled')+'>'+
+   (cur.ok[0]?'ir para o exercício →':'veja todas as palavras')+'</button>';
+}
+function fcTap(){fcFlip=!fcFlip;drawBlock();}
+function fcNext(){const n=warmList().length;
+  if(fcIdx+1>=n){fcIdx=0;fcFlip=false;cur.ok[0]=true;drawDay();}
+  else{fcIdx++;fcFlip=false;drawBlock();}}
+
+/* BLOCO 2 — engines */
+function blockCore(a){
+  const e=D[cur.i].eng;
+  a.innerHTML='<p class="blk">Bloco 2 · exercício</p><div id="eng"></div>';
+  const box=document.getElementById('eng');
+  const map={read:engRead,match:engMatch,listen_choose:engListenChoose,listen_fill:engListenFill,
+    order:engOrder,shadow:engShadow,speak_complete:engSpeakComplete,pray:engPray,
+    verse:engVerse,quiz:engQuiz,memory:engMemory,scramble:engScramble};
+  map[e.t](box,e);
+}
+function coreDone(){cur.ok[1]=true;toast('Exercício concluído ✓');drawDay();}
+function coreBtn(txt){return '<button class="go '+(cur.ok[1]?'gr':'')+'" onclick="'+(cur.ok[1]?'nextBlock()':'')+'" '+(cur.ok[1]?'':'disabled')+'>'+(cur.ok[1]?'ir para o selo do dia →':txt)+'</button>';}
+
+function engRead(b,e){
+  b.innerHTML='<p class="btitle">Leitura por frases</p>'+
+   '<p class="instr">Toque em cada frase para ouvir e ver a tradução. Leia junto, em voz alta.</p>'+
+   '<div class="cards">'+e.items.map((it,k)=>'<button class="opt" id="r'+k+'" onclick="readTap('+k+',\''+esc(it[0])+'\',\''+esc(it[1])+'\')">'+
+   '<b>'+it[0]+'</b><br><small style="color:var(--muted)" id="rt'+k+'">toque para ouvir</small></button>').join('')+'</div>'+
+   coreBtn('leia todas as frases');
+  window._read=new Set();window._readN=e.items.length;}
+function readTap(k,en,pt){speak(en);document.getElementById('rt'+k).textContent=pt;
+  document.getElementById('r'+k).classList.add('ok');window._read.add(k);
+  if(window._read.size>=window._readN&&!cur.ok[1])coreDone();}
+
+function engMatch(b,e){
+  const pt=shuffle(e.items.map(i=>i[1]));
+  b.innerHTML='<p class="btitle">Associação</p><p class="instr">Toque na palavra em inglês e depois na tradução certa.</p>'+
+   '<div class="chips" id="mEn">'+e.items.map(i=>'<button class="chip" onclick="mPick(this,\''+esc(i[0])+'\')">'+i[0]+'</button>').join('')+'</div>'+
+   '<div class="chips" id="mPt">'+pt.map(p=>'<button class="chip" onclick="mDrop(this,\''+esc(p)+'\')">'+p+'</button>').join('')+'</div>'+
+   coreBtn('associe todos os pares');
+  window._m={sel:null,map:{},n:e.items.length,got:0};e.items.forEach(i=>{window._m.map[i[0]]=i[1];});}
+function mPick(el,en){document.querySelectorAll('#mEn .chip').forEach(c=>c.style.borderColor='');
+  el.style.borderColor=cssv('--ink');window._m.sel={el:el,en:en};}
+function mDrop(el,pt){const m=window._m;if(!m.sel){toast('Escolha primeiro a palavra em inglês.');return;}
+  if(m.map[m.sel.en]===pt){speak(m.sel.en);m.sel.el.classList.add('used');el.classList.add('used');m.got++;m.sel=null;
+    if(m.got>=m.n&&!cur.ok[1])coreDone();}
+  else{el.classList.add('no');setTimeout(()=>el.classList.remove('no'),500);}}
+
+function engListenChoose(b,e){
+  b.innerHTML='<p class="btitle">Escute e escolha</p><p class="instr">Ouça e escolha a palavra que você ouviu.</p><div id="lcBox"></div>'+coreBtn('responda todas');
+  window._lc={i:0,items:e.items};lcDraw();}
+function lcDraw(){const L=window._lc,it=L.items[L.i];
+  document.getElementById('lcBox').innerHTML='<p class="prog">'+(L.i+1)+' de '+L.items.length+'</p>'+
+   '<button class="go" style="background:var(--flame2);margin-bottom:12px" onclick="speak(\''+esc(it.say)+'\')">🔊 ouvir de novo</button>'+
+   '<div class="cards">'+shuffle(it.opts).map(o=>'<button class="opt" onclick="lcPick(this,\''+esc(o)+'\',\''+esc(it.say)+'\')">'+o+'</button>').join('')+'</div>';
+  speak(it.say);}
+function lcPick(el,o,a){const L=window._lc;
+  if(o===a){el.classList.add('ok');setTimeout(()=>{L.i++;if(L.i>=L.items.length){if(!cur.ok[1])coreDone();}else lcDraw();},550);}
+  else{el.classList.add('no');setTimeout(()=>el.classList.remove('no'),500);}}
+
+function engListenFill(b,e){
+  b.innerHTML='<p class="btitle">Complete ouvindo</p><p class="instr">Ouça a frase e escreva a palavra que falta.</p>'+
+   '<button class="go" style="background:var(--flame2);margin-bottom:12px" onclick="speak(\''+esc(e.say)+'\')">🔊 ouvir a frase</button>'+
+   '<p class="sent">'+e.text+'</p>'+
+   '<input class="inp" id="lfIn" placeholder="escreva aqui" autocomplete="off" style="margin-bottom:12px">'+
+   '<button class="ghost" style="width:100%;margin-bottom:12px" onclick="lfCheck(\''+esc(e.answer)+'\')">verificar</button>'+
+   coreBtn('complete a frase');
+  speak(e.say);}
+function lfCheck(a){const el=document.getElementById('lfIn');
+  if(el.value.trim().toLowerCase()===a.toLowerCase()){el.style.borderColor=cssv('--ok');if(!cur.ok[1])coreDone();}
+  else{el.style.borderColor=cssv('--err');toast('Quase! Ouça de novo.');}}
+
+function engOrder(b,e){
+  const w=shuffle(e.answer.split(' '));
+  b.innerHTML='<p class="btitle">Organize a frase</p><p class="instr">Toque nas palavras na ordem certa.</p>'+
+   '<div class="slot" id="oSlot"></div>'+
+   '<div class="chips" id="oPool">'+w.map(x=>'<button class="chip" onclick="oAdd(this,\''+esc(x)+'\')">'+x+'</button>').join('')+'</div>'+
+   '<button class="ghost" style="width:100%;margin-bottom:12px" onclick="oClear()">limpar</button>'+
+   coreBtn('monte a frase');
+  window._o={ans:e.answer,cur:[]};}
+function oAdd(el,w){el.classList.add('used');window._o.cur.push(w);
+  document.getElementById('oSlot').innerHTML=window._o.cur.map(x=>'<span class="chip">'+x+'</span>').join('');
+  if(window._o.cur.length===window._o.ans.split(' ').length){
+    if(window._o.cur.join(' ')===window._o.ans){document.getElementById('oSlot').classList.add('ok');speak(window._o.ans);if(!cur.ok[1])coreDone();}
+    else toast('Ainda não. Toque em limpar e tente de novo.');}}
+function oClear(){window._o.cur=[];const s=document.getElementById('oSlot');s.innerHTML='';s.classList.remove('ok');
+  document.querySelectorAll('#oPool .chip').forEach(c=>c.classList.remove('used'));}
+
+function engShadow(b,e){
+  b.innerHTML='<p class="btitle">Shadowing</p><p class="instr">Ouça a Rachel, repita junto e grave. Ela confere se saiu.</p>'+
+   '<div id="shBox"></div>'+coreBtn('repita todas as frases');
+  window._sh={i:0,items:e.items,ok:0};shDraw();}
+function shDraw(){const H=window._sh;
+  if(H.i>=H.items.length){if(!cur.ok[1])coreDone();return;}
+  const f=H.items[H.i];
+  document.getElementById('shBox').innerHTML='<p class="prog">'+(H.i+1)+' de '+H.items.length+'</p>'+
+   '<div class="alvo" id="alvo_sh">'+f+'<button class="spk" style="margin-left:6px" onclick="speak(\''+esc(f)+'\')">🔊</button></div>'+
+   micBtn('sh','micStart(\'sh\',\''+esc(f)+'\',shPronto,12)')+
+   '<div id="res_sh"></div>';
+  speak(f);}
+function shPronto(ouviu,r){
+  const H=window._sh,f=H.items[H.i];
+  pintar('alvo_sh',r.marcas);
+  const res=document.getElementById('res_sh');
+  const botoes='<div style="display:flex;gap:8px;margin:10px 0">'+
+    '<button class="ghost" style="flex:1" onclick="ouvirVoce()">▶ ouvir você</button>'+
+    '<button class="ghost" style="flex:1" onclick="speak(\''+esc(f)+'\')">🔊 ouvir a Rachel</button></div>';
+  if(r.nota>=60){
+    res.innerHTML='<div class="nota ok">'+r.nota+'% · saiu!</div>'+botoes;
+    H.ok++;setTimeout(()=>{H.i++;shDraw();},1400);
+  }else{
+    const f2=r.marcas.filter(m=>!m.ok).map(m=>m.w);
+    res.innerHTML='<div class="nota '+(r.nota>=40?'meio':'err')+'">'+r.nota+'% entendido</div>'+
+     (f2.length?'<p class="instr" style="text-align:center">Não peguei: <b>'+f2.join(', ')+'</b></p>':'')+botoes+
+     '<button class="ghost" style="width:100%" onclick="shPular()">pular esta frase</button>';
+  }}
+function shPular(){const H=window._sh;H.i++;shDraw();}
+
+function engSpeakComplete(b,e){
+  b.innerHTML='<p class="btitle">Complete falando</p><p class="instr">Leia a frase incompleta e fale ela inteira em voz alta. Grave — a gente confere.</p>'+
+   '<div id="scBox"></div>'+coreBtn('fale as frases');
+  window._sc={i:0,items:e.items};scDraw();}
+function scDraw(){const C=window._sc;
+  if(C.i>=C.items.length){if(!cur.ok[1])coreDone();return;}
+  const it=C.items[C.i];
+  document.getElementById('scBox').innerHTML='<p class="prog">'+(C.i+1)+' de '+C.items.length+'</p>'+
+   '<div class="alvo" id="alvo_sc">'+it.txt+'</div>'+
+   micBtn('sc','micStart(\'sc\',\''+esc(it.say)+'\',scPronto,12)')+
+   '<div id="res_sc"></div>';}
+function scPronto(ouviu,r){
+  const C=window._sc,it=C.items[C.i];
+  const res=document.getElementById('res_sc');
+  const botoes='<div style="display:flex;gap:8px;margin:10px 0">'+
+    '<button class="ghost" style="flex:1" onclick="ouvirVoce()">▶ ouvir você</button>'+
+    '<button class="ghost" style="flex:1" onclick="speak(\''+esc(it.say)+'\')">🔊 ouvir a Rachel</button></div>';
+  document.getElementById('alvo_sc').innerHTML='';pintar('alvo_sc',r.marcas);
+  if(r.nota>=60){
+    res.innerHTML='<div class="nota ok">'+r.nota+'% · era isso!</div>'+botoes;
+    setTimeout(()=>{C.i++;scDraw();},1400);
+  }else{
+    res.innerHTML='<div class="nota '+(r.nota>=40?'meio':'err')+'">'+r.nota+'%</div>'+
+     '<p class="instr" style="text-align:center">A frase inteira é: <b>'+it.say+'</b></p>'+botoes+
+     '<button class="ghost" style="width:100%" onclick="scPular()">pular</button>';
+  }}
+function scPular(){const C=window._sc;C.i++;scDraw();}
+
+function engPray(b,e){
+  b.innerHTML='<p class="btitle">Transforme em oração</p><p class="instr">Complete a oração com a palavra certa e leia em voz alta.</p>'+
+   '<p class="sent">'+e.tpl+'</p><p class="instr" style="text-align:center">'+e.hint+'</p>'+
+   '<input class="inp" id="pIn" placeholder="escreva a palavra" autocomplete="off" style="margin-bottom:12px">'+
+   '<button class="ghost" style="width:100%;margin-bottom:12px" onclick="pCheck(\''+esc(e.answer)+'\',\''+esc(e.tpl)+'\')">verificar e ouvir</button>'+
+   coreBtn('complete a oração');}
+function pCheck(a,tpl){const el=document.getElementById('pIn');
+  if(el.value.trim().toLowerCase()===a.toLowerCase()){el.style.borderColor=cssv('--ok');
+    speak(tpl.replace('___',a));if(!cur.ok[1])coreDone();}
+  else{el.style.borderColor=cssv('--err');toast('Tente de novo — a dica está logo acima.');}}
+
+function engVerse(b,e){
+  b.innerHTML='<p class="btitle">Complete o versículo</p><p class="instr">Toque nas palavras para preencher os espaços, na ordem.</p>'+
+   '<p class="sent" id="vSent">'+e.text+'</p>'+
+   '<div class="chips">'+shuffle(e.opts).map(o=>'<button class="chip" onclick="vAdd(this,\''+esc(o)+'\')">'+o+'</button>').join('')+'</div>'+
+   coreBtn('preencha os espaços');
+  window._v={text:e.text,blanks:e.blanks,i:0};}
+function vAdd(el,w){const V=window._v;
+  if(w===V.blanks[V.i]){el.classList.add('used');
+    V.text=V.text.replace('___','<b style="color:var(--ok)">'+w+'</b>');
+    document.getElementById('vSent').innerHTML=V.text;V.i++;
+    if(V.i>=V.blanks.length){speak(document.getElementById('vSent').textContent);if(!cur.ok[1])coreDone();}}
+  else{el.classList.add('no');setTimeout(()=>el.classList.remove('no'),450);}}
+
+function engQuiz(b,e){
+  const all=eraVocab(e.era);
+  const voc=shuffle(all).slice(0,6);
+  const qs=voc.map(w=>{const wrong=shuffle(all.filter(x=>x[1]!==w[1])).slice(0,2).map(x=>x[1]);
+    return {q:w[0],a:w[1],opts:shuffle([w[1]].concat(wrong))};});
+  b.innerHTML='<p class="btitle">Quiz relâmpago</p><p class="instr">O que significa cada palavra? Revisão de toda a era.</p><div id="qBox"></div>'+coreBtn('responda o quiz');
+  window._q={i:0,qs:qs};qDraw();}
+function qDraw(){const Q=window._q;if(Q.i>=Q.qs.length){if(!cur.ok[1])coreDone();return;}
+  const q=Q.qs[Q.i];
+  document.getElementById('qBox').innerHTML='<p class="prog">'+(Q.i+1)+' de '+Q.qs.length+'</p>'+
+   '<p class="sent">'+q.q+' <button class="spk" onclick="speak(\''+esc(q.q)+'\')">🔊</button></p>'+
+   '<div class="cards">'+q.opts.map(o=>'<button class="opt" onclick="qPick(this,\''+esc(o)+'\',\''+esc(q.a)+'\')">'+o+'</button>').join('')+'</div>';}
+function qPick(el,o,a){if(o===a){el.classList.add('ok');setTimeout(()=>{window._q.i++;qDraw();},450);}
+  else{el.classList.add('no');setTimeout(()=>el.classList.remove('no'),450);}}
+
+function engMemory(b,e){
+  const voc=shuffle(eraVocab(e.era)).slice(0,6);
+  const cards=shuffle(voc.map((w,k)=>[{k:k,t:w[0],en:1},{k:k,t:w[1],en:0}]).reduce((a,x)=>a.concat(x),[]));
+  b.innerHTML='<p class="btitle">Jogo da memória</p><p class="instr">Ache os pares: a palavra em inglês e a tradução.</p>'+
+   '<div class="mem">'+cards.map((c,i)=>'<button class="mc" id="mc'+i+'" onclick="memTap('+i+','+c.k+','+c.en+')">'+c.t+'</button>').join('')+'</div>'+
+   coreBtn('ache todos os pares');
+  window._mm={sel:null,got:0,n:voc.length};}
+function memTap(i,k,en){const M=window._mm,el=document.getElementById('mc'+i);
+  if(el.classList.contains('got')||el.classList.contains('flip'))return;
+  el.classList.add('flip');if(en)speak(el.textContent);
+  if(!M.sel){M.sel={i:i,k:k,el:el};return;}
+  if(M.sel.k===k&&M.sel.i!==i){M.sel.el.classList.add('got');el.classList.add('got');M.got++;M.sel=null;
+    if(M.got>=M.n&&!cur.ok[1])coreDone();}
+  else{const a=M.sel.el;M.sel=null;setTimeout(()=>{a.classList.remove('flip');el.classList.remove('flip');},700);}}
+
+function engScramble(b,e){
+  const src=e.era===5?eraVocab(1).concat(eraVocab(2),eraVocab(3),eraVocab(4)):eraVocab(e.era);
+  const ws=shuffle(src.filter(w=>w[0].length>=3&&w[0].indexOf(' ')<0)).slice(0,4);
+  b.innerHTML='<p class="btitle">Palavra embaralhada</p><p class="instr">Toque nas letras para montar a palavra em inglês.</p><div id="scBox"></div>'+coreBtn('monte as palavras');
+  window._sb={i:0,ws:ws,cur:''};sbDraw();}
+function sbDraw(){const B=window._sb;if(B.i>=B.ws.length){if(!cur.ok[1])coreDone();return;}
+  const w=B.ws[B.i];const letters=shuffle(w[0].split(''));B.cur='';
+  document.getElementById('scBox').innerHTML='<p class="prog">'+(B.i+1)+' de '+B.ws.length+'</p>'+
+   '<p class="instr" style="text-align:center;font-size:16px;color:var(--ink)">tradução: <b>'+w[1]+'</b></p>'+
+   '<div class="slot" id="sbSlot"></div>'+
+   '<div class="chips" id="sbPool">'+letters.map(l=>'<button class="chip" onclick="sbAdd(this,\''+esc(l)+'\')">'+l+'</button>').join('')+'</div>'+
+   '<button class="ghost" style="width:100%;margin-bottom:12px" onclick="sbClear()">limpar</button>';}
+function sbAdd(el,l){const B=window._sb;el.classList.add('used');B.cur+=l;
+  document.getElementById('sbSlot').innerHTML=B.cur.split('').map(x=>'<span class="chip">'+x+'</span>').join('');
+  const w=B.ws[B.i][0];
+  if(B.cur.length===w.length){
+    if(B.cur===w){document.getElementById('sbSlot').classList.add('ok');speak(w);setTimeout(()=>{B.i++;sbDraw();},800);}
+    else toast('Ainda não — toque em limpar.');}}
+function sbClear(){const B=window._sb;B.cur='';const s=document.getElementById('sbSlot');s.innerHTML='';s.classList.remove('ok');
+  document.querySelectorAll('#sbPool .chip').forEach(c=>c.classList.remove('used'));}
+
+/* ===== MICROFONE REUTILIZÁVEL =====
+   Um só motor de escuta, usado pelo selo e pelos exercícios de fala.
+   Cada chamada diz: qual a frase-alvo, onde desenhar e o que fazer quando terminar. */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let REC={rec:null,media:null,chunks:[],url:null,heard:'',on:false,id:null};
+
+function norm(s){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .replace(/[^a-z0-9' ]/g,' ').replace(/\s+/g,' ').trim();}
+/* compara palavra a palavra, sem exigir ordem — iniciante troca ordem e tudo bem */
+function conferir(alvo,ouvido){
+  const A=norm(alvo).split(' ').filter(Boolean);
+  const O=norm(ouvido).split(' ').filter(Boolean);
+  const sobra=O.slice();
+  const marcas=A.map(w=>{const i=sobra.indexOf(w);
+    if(i>=0){sobra.splice(i,1);return {w:w,ok:true};}return {w:w,ok:false};});
+  const acertos=marcas.filter(m=>m.ok).length;
+  return {marcas:marcas,nota:A.length?Math.round(acertos/A.length*100):0};
+}
+/* desenha a frase com cada palavra pintada de verde ou vermelho */
+function pintar(id,marcas){const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=marcas.map(m=>'<span class="pw '+(m.ok?'hit':'miss')+'">'+m.w+'</span>').join(' ');}
+
+async function micStart(id,alvo,aoTerminar,segundos){
+  if(REC.on){micStop();return;}
+  REC.id=id;REC.heard='';REC.alvo=alvo;REC.cb=aoTerminar;
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    REC.chunks=[];REC.media=new MediaRecorder(stream);
+    REC.media.ondataavailable=e=>REC.chunks.push(e.data);
+    REC.media.onstop=()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      if(REC.url)URL.revokeObjectURL(REC.url);
+      REC.url=URL.createObjectURL(new Blob(REC.chunks,{type:'audio/webm'}));
+      const r=alvo?conferir(alvo,REC.heard):{nota:0,marcas:[]};
+      if(REC.cb)REC.cb(REC.heard,r);
+    };
+    REC.media.start();
+  }catch(e){toast('Não consegui abrir o microfone. Autorize o acesso.');return;}
+
+  if(SR){
+    const r=new SR();r.lang='en-US';r.interimResults=true;r.continuous=true;
+    r.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript+' ';
+      REC.heard=t.trim();const h=document.getElementById('heard_'+id);if(h)h.textContent='“'+REC.heard+'”';};
+    r.onerror=e=>{if(e.error==='not-allowed')toast('Autorize o microfone para a conferência funcionar.');};
+    REC.rec=r;try{r.start();}catch(e){}
+  }
+  REC.on=true;
+  const b=document.getElementById('mic_'+id);
+  if(b){b.classList.add('rec');const t=b.querySelector('.mt');if(t)t.textContent='gravando... tocar para parar';}
+  const h=document.getElementById('heard_'+id);if(h)h.textContent='ouvindo...';
+  clearTimeout(REC.auto);REC.auto=setTimeout(micStop,(segundos||20)*1000+8000);
+}
+function micStop(){
+  if(!REC.on)return;REC.on=false;clearTimeout(REC.auto);
+  try{REC.rec&&REC.rec.stop();}catch(e){}
+  try{REC.media&&REC.media.state!=='inactive'&&REC.media.stop();}catch(e){}
+  const b=document.getElementById('mic_'+REC.id);
+  if(b){b.classList.remove('rec');const t=b.querySelector('.mt');if(t)t.textContent='gravar de novo';}
+}
+function micBtn(id,rot){return '<button class="mic" id="mic_'+id+'" onclick="'+rot+'"><span class="mi">🎤</span><span class="mt">tocar para gravar</span></button>'+
+  '<div class="heard" id="heard_'+id+'"></div>';}
+function ouvirVoce(){if(!REC.url)return toast('Grave primeiro.');
+  try{speechSynthesis.cancel();}catch(e){}
+  if(AUD_NOW){try{AUD_NOW.pause();}catch(e){}}
+  const a=new Audio(REC.url);AUD_NOW=a;a.play();}
+
+/* ===== BLOCO 3 — SELO ===== */
+function sealTarget(d){return d.seal.tgt||null;}
+function blockSeal(a){
+  const d=D[cur.i],done=cur.i<S.done,alvo=sealTarget(d);
+  const btn='<button class="go '+(cur.ok[2]?'gr':'')+'" id="sealBtn" onclick="finishDay()" '+(cur.ok[2]?'':'disabled')+'>'+
+    (done?'✓ concluído — refazer':'completei, abrir a próxima porta')+'</button>';
+  let ui;
+  if(d.seal.t==='write'){
+    ui='<textarea class="inp" id="wIn" placeholder="escreva em inglês aqui..."></textarea>'+
+     '<div id="wBank"></div>'+
+     '<button class="go" style="background:var(--flame2);margin:10px 0" onclick="corrigirEscrita()">conferir o que escrevi</button>'+
+     '<div id="wRes"></div>'+btn+'<p class="note">Não precisa ser perfeito. Precisa ser seu.</p>';
+  }else if(SR){
+    ui=(alvo?'<div class="alvo" id="alvo_selo">'+alvo+
+         '<button class="spk" style="margin-left:6px" onclick="speak(\''+esc(alvo)+'\')">🔊</button></div>':
+        '<p class="instr" style="text-align:center">Fala livre — solte o que vier. A gente escreve o que entendeu.</p>')+
+     micBtn('selo','micStart(\'selo\','+(alvo?'\''+esc(alvo)+'\'':'null')+',seloPronto,'+(d.seal.sec||20)+')')+
+     '<div id="res_selo"></div>'+btn+'<p class="note">O microfone é seu, o áudio não sai deste aparelho.</p>';
+  }else{
+    ui='<div class="timer" id="tmr">'+d.seal.sec+'s</div>'+
+     '<button class="go" style="background:var(--flame2);margin-bottom:10px" id="tBtn" onclick="startTimer('+d.seal.sec+')">▶ começar o cronômetro</button>'+
+     btn+'<p class="note">Este navegador não escuta. Use o Chrome para ganhar a conferência da fala.</p>';
+  }
+  a.innerHTML='<p class="blk">Bloco 3 · selo do dia</p><p class="btitle">A chave que abre a porta</p>'+
+   '<div class="key"><p class="blk">'+(d.seal.t==='speak'?'fale em voz alta':'escreva')+'</p><p>'+d.seal.prompt+'</p></div>'+ui;
+  if(d.seal.t==='write')montarBanco();
+}
+
+function seloPronto(ouviu,r){
+  const d=D[cur.i],alvo=sealTarget(d),res=document.getElementById('res_selo');if(!res)return;
+  const botoes='<div style="display:flex;gap:8px;margin:12px 0">'+
+    '<button class="ghost" style="flex:1" onclick="ouvirVoce()">▶ ouvir você</button>'+
+    (alvo?'<button class="ghost" style="flex:1" onclick="speak(\''+esc(alvo)+'\')">🔊 ouvir a Rachel</button>':'')+'</div>';
+  if(!ouviu.trim()){
+    res.innerHTML='<div class="nota err">Não captei nada</div>'+
+     '<p class="instr" style="text-align:center">Chegue mais perto do microfone e fale mais alto.</p>'+botoes+
+     '<button class="ghost" style="width:100%;margin-bottom:12px" onclick="liberar()">seguir assim mesmo</button>';return;}
+  if(!alvo){
+    const n=norm(ouviu).split(' ').filter(Boolean).length;
+    res.innerHTML='<div class="nota ok">'+n+' palavras em inglês</div>'+
+     '<p class="instr" style="text-align:center">É isso. Em testemunho, falar mais vale mais que falar certo.</p>'+botoes;
+    liberar();return;}
+  pintar('alvo_selo',r.marcas);
+  const falhou=r.marcas.filter(m=>!m.ok).map(m=>m.w);
+  res.innerHTML='<div class="nota '+(r.nota>=80?'ok':r.nota>=50?'meio':'err')+'">'+r.nota+'% entendido</div>'+
+   (falhou.length?'<p class="instr" style="text-align:center">Não peguei: <b>'+falhou.join(', ')+'</b>. Ouça a Rachel e tente de novo.</p>'
+     :'<p class="instr" style="text-align:center">Perfeito. Entendi cada palavra.</p>')+botoes+
+   (r.nota<60?'<button class="ghost" style="width:100%;margin-bottom:12px" onclick="liberar()">seguir assim mesmo</button>':'');
+  if(r.nota>=60)liberar();
+}
+function liberar(){cur.ok[2]=true;const b=document.getElementById('sealBtn');
+  if(b){b.disabled=false;b.classList.add('gr');}}
+
+let tInt=null;
+function startTimer(sec){clearInterval(tInt);let n=sec;const t=document.getElementById('tmr');
+  document.getElementById('tBtn').disabled=true;t.textContent=n+'s';
+  tInt=setInterval(()=>{n--;t.textContent=n+'s';
+    if(n<=0){clearInterval(tInt);t.textContent='✓ isso!';cur.ok[2]=true;
+      const b=document.getElementById('sealBtn');if(b){b.disabled=false;b.classList.add('gr');}}},1000);}
+/* ===== CORRETOR DE ESCRITA =====
+   Honesto sobre o que é: um conferidor, não um professor.
+   Ele checa o que dá para checar sem erro: idioma, grafia contra um dicionário de
+   476 palavras (todo o inglês do jogo + o básico), uso da palavra do dia e pontuação.
+   Gramática de verdade fica para a Fase 5, quando houver servidor. */
+const DIC=new Set(["a","about","afraid","after","again","alive","all","alone","already","also","although","always","am","an","and","another","any","are","as","ask","at","bad","be","beautiful","because","been","before","begin","beginning","being","believe","believed","believes","believing","bible","big","bigger","bless","bold","bones","both","brave","bread","breath","breathed","brother","build","but","by","bye","call","came","can","cannot","child","children","christ","church","clay","come","comes","coming","could","courageous","cross","crowd","dark","daughter","day","days","death","desert","did","different","do","does","done","doors","double","down","dream","during","dust","each","earth","easy","eight","either","ends","even","evening","every","eye","eyes","faith","false","family","far","father","fear","feel","feeling","feels","felt","few","find","finding","finds","fine","fire","first","five","follow","food","for","found","four","free","friend","friends","from","gave","get","gets","getting","giant","give","gives","giving","go","god","goes","going","gone","good","got","grace","great","grow","had","hair","hand","hands","happy","hard","has","have","he","hear","heard","hearing","hears","heart","hearts","heaven","hello","help","helped","helping","helps","her","here","hers","herself","hi","high","him","himself","his","holy","home","hope","house","how","however","husband","i","if","in","inside","into","is","it","its","jesus","joy","keep","knew","know","knowing","knows","lamp","land","last","lead","learn","learned","learning","learns","least","left","less","let","life","lift","light","like","lion","lips","list","listen","listened","listening","listens","live","lived","lives","living","long","look","looked","looking","looks","lord","love","loved","loves","loving","low","made","make","makes","making","man","many","may","me","men","midnight","might","mine","month","more","morning","most","mother","mouth","much","must","my","myself","name","names","near","need","needed","needing","needs","neither","never","new","next","nice","night","nights","nine","no","not","now","obey","of","often","ok","okay","old","on","one","open","or","other","our","ours","out","outside","over","pain","path","peace","play","played","playing","plays","please","potter","pray","prayed","praying","prays","preach","prepare","prison","provide","rain","ran","read","reading","reads","rest","right","rise","river","road","run","running","runs","sad","safe","said","same","sand","save","saw","say","saying","says","second","see","seeing","sees","send","servant","seven","shall","shape","she","short","should","show","sick","silent","since","sing","sister","six","slow","small","so","some","sometimes","son","sorry","speak","speaking","speaks","spend","spirit","spoke","stay","still","strong","sun","take","takes","taking","talk","talked","talking","talks","teach","ten","than","thank","thanked","thanking","thanks","that","the","their","theirs","them","then","there","therefore","these","they","think","thinking","thinks","third","this","those","though","thought","three","time","times","tired","to","today","tomorrow","too","took","truck","true","trust","trusted","trusting","trusts","turned","two","under","until","up","us","valley","very","voice","walk","walked","walking","walks","want","wanted","wanting","wants","was","water","way","ways","we","weak","week","well","went","were","what","when","where","which","while","whisper","who","whose","why","wife","will","win","wise","with","without","witnesses","woman","women","word","words","work","worked","working","works","world","would","write","writes","writing","wrong","wrote","yeah","year","yes","yesterday","yet","you","young","your","yours","yourself"]);
+const PTW=new Set(["a","ajuda","ajudar","alegria","amando","amar","amor","ano","anos","as","boa","bom","cada","caminho","ceu","com","como","confiando","confiar","coracao","cora\u00e7\u00e3o","cristo","c\u00e9u","da","das","de","deus","dia","dias","dificil","dif\u00edcil","dizer","do","dos","e","ela","elas","ele","eles","em","entao","ent\u00e3o","era","esperan\u00e7a","espirito","esp\u00edrito","estamos","estar","estou","est\u00e1","eu","facil","falando","falar","favor","fazendo","fazer","feito","filho","foi","forte","fraco","f\u00e1cil","f\u00e9","grande","gra\u00e7a","havia","hora","jesus","jovem","luz","mais","manha","manh\u00e3","mas","menos","mes","mesma","mesmo","meu","minha","morte","muito","m\u00eas","na","nao","nas","no","noite","nos","nossa","nosso","novo","n\u00e3o","n\u00f3s","o","obrigada","obrigado","ola","ol\u00e1","onde","orando","orar","os","ou","outra","outro","ouvindo","ouvir","pai","palavra","para","paz","pequeno","pois","por","porque","porqu\u00ea","posso","pouco","preciso","quais","qual","quando","que","quem","quero","ruim","santo","se","sem","semana","senhor","ser","seu","sim","sobre","sou","sua","s\u00e3o","tarde","tchau","tem","temos","tempo","tenho","terra","teu","tinha","toda","todas","todo","todos","tu","tua","um","uma","umas","uns","vamos","velho","verdade","vida","vos","vou","voz","\u00e9"]);
+
+function montarBanco(){
+  const d=D[cur.i],el=document.getElementById('wBank');if(!el)return;
+  el.innerHTML='<p class="blk" style="margin:12px 0 6px">use pelo menos uma destas</p><div class="chips">'+
+    d.voc.map(v=>'<button class="chip" onclick="inserir(\''+esc(v[0])+'\')">'+v[0]+' <small style="color:var(--muted);font-weight:400">'+v[1]+'</small></button>').join('')+'</div>';
+}
+function inserir(w){const t=document.getElementById('wIn');
+  const s=t.value.trim();t.value=(s?s+' ':'')+w;t.focus();}
+
+function corrigirEscrita(){
+  const d=D[cur.i],txt=(document.getElementById('wIn').value||'').trim();
+  const res=document.getElementById('wRes');
+  const linhas=[];let bloqueia=false;
+
+  if(txt.length<d.seal.min){
+    res.innerHTML='<div class="nota err">Curto demais</div><p class="instr" style="text-align:center">'+
+      'Escreva pelo menos '+d.seal.min+' caracteres. Você escreveu '+txt.length+'.</p>';return;}
+
+  const pal=txt.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z' ]/g,' ').split(/\s+/).filter(Boolean);
+
+  /* 1. está em português? */
+  const emPt=pal.filter(w=>PTW.has(w)&&!DIC.has(w));
+  const temAcento=/[áàâãéêíóôõúüç]/i.test(txt);
+  if(emPt.length>=2||temAcento){
+    linhas.push(['err','Isto está em português','Palavras em português: <b>'+(emPt.slice(0,4).join(', ')||'acentos')+'</b>. Tente em inglês, mesmo que fique simples. Simples é permitido.']);
+    bloqueia=true;
+  }
+  /* 2. usou a palavra do dia? */
+  const alvos=d.voc.map(v=>v[0].toLowerCase());
+  const usou=alvos.filter(a=>pal.includes(a));
+  if(usou.length)linhas.push(['ok','Usou a palavra do dia','Você escreveu <b>'+usou.join(', ')+'</b>. É disso que se trata.']);
+  else linhas.push(['meio','Faltou a palavra do dia','Encaixe pelo menos uma: <b>'+alvos.join(', ')+'</b>. Os botões acima inserem para você.']);
+  /* 3. grafia */
+  const fora=[...new Set(pal.filter(w=>!DIC.has(w)&&w.length>2))];
+  if(fora.length)linhas.push(['meio','Confira a grafia','Não conheço: <b>'+fora.slice(0,5).join(', ')+'</b>. Pode ser erro de digitação — ou palavra nova que ainda não está no meu dicionário.']);
+  else linhas.push(['ok','Grafia conferida','Todas as palavras existem.']);
+  /* 4. o I é sempre maiúsculo em inglês */
+  if(/\bi\b/.test(txt))linhas.push(['meio','O <b>I</b> é sempre maiúsculo','Em inglês, "eu" se escreve <b>I</b>, com letra grande, em qualquer lugar da frase.']);
+  /* 5. começo e fim */
+  if(txt[0]&&txt[0]!==txt[0].toUpperCase())linhas.push(['meio','Comece com letra maiúscula','']);
+  if(!/[.!?]$/.test(txt))linhas.push(['meio','Falta o ponto final','']);
+  /* 6. tamanho */
+  linhas.push(['ok',pal.length+' palavras em inglês','']);
+
+  const erros=linhas.filter(l=>l[0]==='err').length, avisos=linhas.filter(l=>l[0]==='meio').length;
+  const nota=erros?'err':avisos?'meio':'ok';
+  const titulo=erros?'Precisa de um ajuste':avisos?'Quase lá':'Está de pé';
+  res.innerHTML='<div class="nota '+nota+'">'+titulo+'</div>'+
+    '<div class="checks">'+linhas.map(l=>'<div class="ck '+l[0]+'"><b>'+
+      (l[0]==='ok'?'✓':l[0]==='meio'?'!':'✗')+'</b><span><b>'+l[1]+'</b>'+(l[2]?'<br>'+l[2]:'')+'</span></div>').join('')+'</div>'+
+    (bloqueia?'<button class="ghost" style="width:100%;margin:10px 0" onclick="liberar()">seguir assim mesmo</button>':'');
+  if(!bloqueia)liberar();
+}
+
+function finishDay(){clearInterval(tInt);
+  if(cur.i===S.done){S.done++;S.streak++;save();
+    toast(S.done>=30?'🎉 Jornada completa! A voz foi liberada.':'Porta aberta! Chama +1 🔥');}
+  else toast('Dia revisado.');
+  closeDay();render();}
+
+/* ===== ÁREA DE TREINO — A RODA DO TREINO =====
+   Fora da jornada. Só entra vocabulário de dia já concluído, então o baralho
+   cresce como troféu. A roda sorteia o desafio; as engines já existiam.
+   Repetição espaçada de verdade: cada palavra tem uma caixinha de 1 a 5.
+   Acertou sobe, errou volta pra 1. As de caixinha baixa aparecem primeiro. */
+const FATIAS=[
+ {n:'flash cards',cor:'--e1',f:tFlash},
+ {n:'escute e escolha',cor:'--e2',f:tEscuta},
+ {n:'fale a palavra',cor:'--flame2',f:tFala},
+ {n:'jogo da memória',cor:'--e3',f:tMemoria},
+ {n:'palavra embaralhada',cor:'--e4',f:tEmbaralha},
+ {n:'monte a frase',cor:'--e5',f:tFrase}
+];
+function tVocab(){
+  let v=[];D.slice(0,S.done).forEach(d=>{v=v.concat(d.voc);});
+  const visto={};return v.filter(w=>visto[w[0]]?false:(visto[w[0]]=1));
+}
+function tFrases(){return D.slice(0,S.done).map(d=>d.en).filter(f=>f.split(' ').length>=3);}
+function caixa(w){return (S.box&&S.box[w])||1;}
+function subir(w){S.box=S.box||{};S.box[w]=Math.min(5,caixa(w)+1);save();}
+function descer(w){S.box=S.box||{};S.box[w]=1;save();}
+/* pega as N palavras mais frágeis primeiro, com um tempero de sorte */
+function fracas(n){
+  const v=tVocab();
+  return v.map(w=>[w,caixa(w[0])+Math.random()*0.9]).sort((a,b)=>a[1]-b[1]).slice(0,n).map(x=>x[0]);
+}
+function dominadas(){const v=tVocab();return v.filter(w=>caixa(w[0])>=4).length;}
+
+function openTreino(){
+  if(S.done<1){toast('Conclua o Dia 1 primeiro — o treino usa só o que você já destravou.');return;}
+  tHome();                                   /* é o tHome que desenha e monta a roda */
+  document.getElementById('treinoOv').classList.add('show');
+}
+function closeTreino(){document.getElementById('treinoOv').classList.remove('show');micStop();
+  try{speechSynthesis.cancel();}catch(e){}render();}
+function tHome(){
+  const v=tVocab();
+  document.getElementById('treinoBox').innerHTML=
+   '<p class="instr" style="text-align:center">Seu baralho tem <b>'+v.length+' palavras</b> destravadas · <b>'+dominadas()+'</b> já dominadas.<br>Gire para sortear o desafio.</p>'+
+   '<div class="wheelbox"><div class="point"></div><div class="wheel" id="twheel"></div><div class="needle" id="tneedle"></div><div class="hub"></div></div>'+
+   '<button class="go" id="tSpin" onclick="tSpin()" style="background:var(--flame2)">girar a roda do treino</button>';
+  const w=document.getElementById('twheel');
+  if(!w.dataset.built){
+    const pos=[[150,55],[185,116],[150,177],[80,177],[45,116],[80,55]];
+    w.style.background='conic-gradient('+FATIAS.map((f,k)=>cssv(f.cor)+' '+(k*60)+'deg '+((k+1)*60)+'deg').join(',')+')';
+    FATIAS.forEach((f,k)=>{const e=document.createElement('div');e.className='wlab';
+      e.style.left=pos[k][0]+'px';e.style.top=pos[k][1]+'px';e.textContent=f.n;w.appendChild(e);});
+    w.dataset.built='1';
+  }
+}
+let tAng=0;
+function tSpin(){
+  const b=document.getElementById('tSpin');b.disabled=true;
+  const i=Math.floor(Math.random()*FATIAS.length);
+  tAng=tAng-(tAng%360)+360*5+(i*60+30);
+  document.getElementById('tneedle').style.transform='translate(-50%,-100%) rotate('+tAng+'deg)';
+  setTimeout(()=>{
+    S.treinos=(S.treinos||0)+1;save();
+    document.getElementById('treinoBox').innerHTML=
+      '<div class="shtop"><span class="pill" style="background:'+cssv(FATIAS[i].cor)+'">'+FATIAS[i].n+'</span>'+
+      '<button class="ghost" style="margin-left:auto" onclick="tHome()">← girar de novo</button></div><div id="tEx"></div>';
+    FATIAS[i].f(document.getElementById('tEx'));
+  },3700);
+}
+function tFim(msg){
+  document.getElementById('tEx').innerHTML+=
+   '<div class="nota ok" style="margin-top:14px">'+msg+'</div>'+
+   '<button class="go" onclick="tHome()" style="background:var(--flame2);margin-top:10px">girar de novo</button>';
+  render();
+}
+
+/* 1 — FLASH CARDS com caixinhas */
+function tFlash(b){
+  window._tf={ws:fracas(6),i:0,virado:false};
+  b.innerHTML='<div id="tfBox"></div>';tfDraw();
+}
+function tfDraw(){
+  const F=window._tf;
+  if(F.i>=F.ws.length){tFim('Baralho revisado ✓');return;}
+  const w=F.ws[F.i];
+  document.getElementById('tfBox').innerHTML=
+   '<p class="prog">'+(F.i+1)+' de '+F.ws.length+' · caixinha '+caixa(w[0])+' de 5</p>'+
+   '<div class="fc" onclick="tfVirar()"><div class="w">'+w[0]+'</div>'+
+   '<div class="t">'+(F.virado?w[1]:'o que significa? toque para ver')+'</div></div>'+
+   '<button class="ghost" style="width:100%;margin-bottom:10px" onclick="speak(\''+esc(w[0])+'\')">🔊 ouvir</button>'+
+   (F.virado?'<div style="display:flex;gap:8px"><button class="go" style="flex:1;background:var(--err)" onclick="tfResp(0)">errei</button>'+
+     '<button class="go gr" style="flex:1" onclick="tfResp(1)">acertei</button></div>':'');
+}
+function tfVirar(){window._tf.virado=true;tfDraw();}
+function tfResp(ok){const F=window._tf,w=F.ws[F.i][0];
+  ok?subir(w):descer(w);F.i++;F.virado=false;tfDraw();}
+
+/* 2 — ESCUTE E ESCOLHA */
+function tEscuta(b){
+  const v=tVocab();
+  if(v.length<3){b.innerHTML='<p class="instr">Precisa de pelo menos 3 palavras. Avance mais um dia.</p>';return;}
+  window._te={i:0,ws:fracas(5),v:v};
+  b.innerHTML='<div id="teBox"></div>';teDraw();
+}
+function teDraw(){
+  const E=window._te;
+  if(E.i>=E.ws.length){tFim('Ouvido afiado ✓');return;}
+  const w=E.ws[E.i];
+  const erradas=shuffle(E.v.filter(x=>x[0]!==w[0])).slice(0,2);
+  const opts=shuffle([w].concat(erradas));
+  document.getElementById('teBox').innerHTML='<p class="prog">'+(E.i+1)+' de '+E.ws.length+'</p>'+
+   '<button class="go" style="background:var(--flame2);margin-bottom:12px" onclick="speak(\''+esc(w[0])+'\')">🔊 ouvir de novo</button>'+
+   '<div class="cards">'+opts.map(o=>'<button class="opt" onclick="tePick(this,\''+esc(o[0])+'\',\''+esc(w[0])+'\')">'+o[0]+'</button>').join('')+'</div>';
+  speak(w[0]);
+}
+function tePick(el,o,a){const E=window._te;
+  if(o===a){el.classList.add('ok');subir(a);setTimeout(()=>{E.i++;teDraw();},600);}
+  else{el.classList.add('no');descer(a);setTimeout(()=>el.classList.remove('no'),500);}}
+
+/* 3 — FALE A PALAVRA */
+function tFala(b){
+  if(!SR){b.innerHTML='<p class="instr">Este navegador não escuta. Use o Chrome para este desafio.</p>';return;}
+  window._tp={ws:fracas(4),i:0};
+  b.innerHTML='<div id="tpBox"></div>';tpDraw();
+}
+function tpDraw(){
+  const P=window._tp;
+  if(P.i>=P.ws.length){tFim('Voz treinada ✓');return;}
+  const w=P.ws[P.i];
+  document.getElementById('tpBox').innerHTML='<p class="prog">'+(P.i+1)+' de '+P.ws.length+'</p>'+
+   '<p class="instr" style="text-align:center">Como se diz <b style="color:var(--ink)">'+w[1]+'</b>?</p>'+
+   '<div class="alvo" id="alvo_tp">'+w[0]+'<button class="spk" style="margin-left:6px" onclick="speak(\''+esc(w[0])+'\')">🔊</button></div>'+
+   micBtn('tp','micStart(\'tp\',\''+esc(w[0])+'\',tpPronto,8)')+
+   '<div id="res_tp"></div>';
+}
+function tpPronto(ouviu,r){
+  const P=window._tp,w=P.ws[P.i];
+  pintar('alvo_tp',r.marcas);
+  const res=document.getElementById('res_tp');
+  const botoes='<div style="display:flex;gap:8px;margin:10px 0">'+
+    '<button class="ghost" style="flex:1" onclick="ouvirVoce()">▶ ouvir você</button>'+
+    '<button class="ghost" style="flex:1" onclick="speak(\''+esc(w[0])+'\')">🔊 ouvir a Rachel</button></div>';
+  if(r.nota>=60){subir(w[0]);res.innerHTML='<div class="nota ok">saiu!</div>'+botoes;
+    setTimeout(()=>{P.i++;tpDraw();},1300);}
+  else{descer(w[0]);res.innerHTML='<div class="nota err">não peguei</div>'+botoes+
+    '<button class="ghost" style="width:100%" onclick="tpPular()">pular</button>';}
+}
+function tpPular(){window._tp.i++;tpDraw();}
+
+/* 4 — MEMÓRIA */
+function tMemoria(b){
+  const v=shuffle(tVocab()).slice(0,6);
+  if(v.length<3){b.innerHTML='<p class="instr">Precisa de pelo menos 3 palavras. Avance mais um dia.</p>';return;}
+  const cards=shuffle(v.map((w,k)=>[{k:k,t:w[0],en:1},{k:k,t:w[1],en:0}]).reduce((a,x)=>a.concat(x),[]));
+  b.innerHTML='<p class="instr">Ache os pares.</p><div class="mem">'+
+    cards.map((c,i)=>'<button class="mc" id="tmc'+i+'" onclick="tmTap('+i+','+c.k+','+c.en+')">'+c.t+'</button>').join('')+'</div>';
+  window._tm={sel:null,got:0,n:v.length,v:v};
+}
+function tmTap(i,k,en){
+  const M=window._tm,el=document.getElementById('tmc'+i);
+  if(el.classList.contains('got')||el.classList.contains('flip'))return;
+  el.classList.add('flip');if(en)speak(el.textContent);
+  if(!M.sel){M.sel={i:i,k:k,el:el};return;}
+  if(M.sel.k===k&&M.sel.i!==i){M.sel.el.classList.add('got');el.classList.add('got');
+    subir(M.v[k][0]);M.got++;M.sel=null;
+    if(M.got>=M.n)tFim('Memória em dia ✓');}
+  else{const a=M.sel.el;M.sel=null;setTimeout(()=>{a.classList.remove('flip');el.classList.remove('flip');},700);}
+}
+
+/* 5 — PALAVRA EMBARALHADA */
+function tEmbaralha(b){
+  const ws=fracas(10).filter(w=>w[0].length>=3&&w[0].indexOf(' ')<0).slice(0,4);
+  if(!ws.length){b.innerHTML='<p class="instr">Ainda não há palavras longas o bastante. Avance mais um dia.</p>';return;}
+  window._tb={ws:ws,i:0,cur:''};
+  b.innerHTML='<div id="tbBox"></div>';tbDraw();
+}
+function tbDraw(){
+  const B=window._tb;
+  if(B.i>=B.ws.length){tFim('Palavras montadas ✓');return;}
+  const w=B.ws[B.i];B.cur='';
+  document.getElementById('tbBox').innerHTML='<p class="prog">'+(B.i+1)+' de '+B.ws.length+'</p>'+
+   '<p class="instr" style="text-align:center;font-size:16px;color:var(--ink)">tradução: <b>'+w[1]+'</b></p>'+
+   '<div class="slot" id="tbSlot"></div>'+
+   '<div class="chips" id="tbPool">'+shuffle(w[0].split('')).map(l=>'<button class="chip" onclick="tbAdd(this,\''+esc(l)+'\')">'+l+'</button>').join('')+'</div>'+
+   '<button class="ghost" style="width:100%" onclick="tbClear()">limpar</button>';
+}
+function tbAdd(el,l){
+  const B=window._tb;el.classList.add('used');B.cur+=l;
+  document.getElementById('tbSlot').innerHTML=B.cur.split('').map(x=>'<span class="chip">'+x+'</span>').join('');
+  const w=B.ws[B.i][0];
+  if(B.cur.length===w.length){
+    if(B.cur===w){document.getElementById('tbSlot').classList.add('ok');speak(w);subir(w);
+      setTimeout(()=>{B.i++;tbDraw();},900);}
+    else{descer(w);toast('Ainda não — toque em limpar.');}}
+}
+function tbClear(){const B=window._tb;B.cur='';const s=document.getElementById('tbSlot');
+  s.innerHTML='';s.classList.remove('ok');
+  document.querySelectorAll('#tbPool .chip').forEach(c=>c.classList.remove('used'));}
+
+/* 6 — MONTE A FRASE */
+function tFrase(b){
+  const fs=shuffle(tFrases()).slice(0,3);
+  if(!fs.length){b.innerHTML='<p class="instr">Ainda não há frases suficientes. Avance mais um dia.</p>';return;}
+  window._tq={fs:fs,i:0,cur:[]};
+  b.innerHTML='<div id="tqBox"></div>';tqDraw();
+}
+function tqDraw(){
+  const Q=window._tq;
+  if(Q.i>=Q.fs.length){tFim('Frases montadas ✓');return;}
+  const f=Q.fs[Q.i];Q.cur=[];Q.pal=f.replace(/[.,!?]/g,'').split(' ');
+  document.getElementById('tqBox').innerHTML='<p class="prog">'+(Q.i+1)+' de '+Q.fs.length+'</p>'+
+   '<button class="ghost" style="width:100%;margin-bottom:10px" onclick="speak(\''+esc(f)+'\')">🔊 ouvir a frase</button>'+
+   '<div class="slot" id="tqSlot"></div>'+
+   '<div class="chips" id="tqPool">'+shuffle(Q.pal).map(x=>'<button class="chip" onclick="tqAdd(this,\''+esc(x)+'\')">'+x+'</button>').join('')+'</div>'+
+   '<button class="ghost" style="width:100%" onclick="tqClear()">limpar</button>';
+}
+function tqAdd(el,w){
+  const Q=window._tq;el.classList.add('used');Q.cur.push(w);
+  document.getElementById('tqSlot').innerHTML=Q.cur.map(x=>'<span class="chip">'+x+'</span>').join('');
+  if(Q.cur.length===Q.pal.length){
+    if(Q.cur.join(' ')===Q.pal.join(' ')){
+      document.getElementById('tqSlot').classList.add('ok');speak(Q.fs[Q.i]);
+      setTimeout(()=>{Q.i++;tqDraw();},1100);}
+    else toast('Ainda não. Toque em limpar e tente de novo.');}
+}
+function tqClear(){const Q=window._tq;Q.cur=[];const s=document.getElementById('tqSlot');
+  s.innerHTML='';s.classList.remove('ok');
+  document.querySelectorAll('#tqPool .chip').forEach(c=>c.classList.remove('used'));}
+
+/* ===== ROLETA DA GRAÇA (dispara quando você perde um dia) ===== */
+const CONS=[
+ {t:"Graça!",d:"Você foi perdoado. Siga em frente como se nada tivesse acontecido.",fx:function(){}},
+ {t:"Volta 1 dia.",d:"Refaça o dia anterior para retomar o ritmo.",fx:function(){S.done=Math.max(0,S.done-1);}},
+ {t:"Tarefa extra.",d:"Missão de resgate: recite um versículo de resgate em voz alta para voltar à trilha.",fx:function(){}},
+ {t:"Perde a chama.",d:"A sua ofensiva zerou. Mas você mantém a posição no mapa.",fx:function(){S.streak=0;}},
+ {t:"Dia em dobro.",d:"O próximo dia vale por dois — capricho redobrado.",fx:function(){}},
+ {t:"Volta à era.",d:"Você retorna ao início da era atual. Nunca ao zero.",fx:function(){const st=[0,7,14,21,27].filter(x=>x<S.done);S.done=st.length?st[st.length-1]:0;S.streak=0;}}
+];
+let needleAngle=0;
+function openRoulette(){const w=document.getElementById('wheel');
+  if(!w.dataset.built){const pos=[[150,55],[185,116],[150,177],[80,177],[45,116],[80,55]];
+    ['graça','volta 1 dia','tarefa extra','perde a chama','dia em dobro','volta à era'].forEach((n,k)=>{
+      const e=document.createElement('div');e.className='wlab';e.style.left=pos[k][0]+'px';e.style.top=pos[k][1]+'px';e.textContent=n;w.appendChild(e);});
+    w.dataset.built='1';}
+  document.getElementById('rouResult').textContent='Toque em girar para sortear a consequência.';
+  document.getElementById('spinBtn').disabled=false;document.getElementById('rouOv').classList.add('show');}
+function closeRoulette(){document.getElementById('rouOv').classList.remove('show');}
+function spin(){const btn=document.getElementById('spinBtn');btn.disabled=true;
+  const i=Math.floor(Math.random()*6);
+  needleAngle=needleAngle-(needleAngle%360)+360*5+(i*60+30);
+  document.getElementById('needle').style.transform='translate(-50%,-100%) rotate('+needleAngle+'deg)';
+  setTimeout(()=>{const c=CONS[i];
+    document.getElementById('rouResult').innerHTML='<b>'+c.t+'</b> '+c.d;
+    c.fx();save();render();btn.disabled=false;},3700);}
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
+function resetGame(){S={done:0,streak:0,box:{},treinos:0};save();render();closeDay();closeRoulette();toast('Tudo zerado. Bom recomeço.');}
+
+document.getElementById('dayOv').addEventListener('click',function(e){if(e.target.id==='dayOv')closeDay();});
+document.getElementById('rouOv').addEventListener('click',function(e){if(e.target.id==='rouOv')closeRoulette();});
+document.getElementById('voiceOv').addEventListener('click',function(e){if(e.target.id==='voiceOv')closeVoices();});
+document.getElementById('treinoOv').addEventListener('click',function(e){if(e.target.id==='treinoOv')closeTreino();});
+load();
+</script>
+</body>
+</html>

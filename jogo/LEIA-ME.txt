@@ -1,0 +1,54 @@
+JOGO VOICE — PACOTE PARA O GITHUB
+==================================
+
+SÃO DOIS ARQUIVOS. SÓ DOIS.
+
+  index.html   → o jogo          (95 KB)
+  voz.mp3      → as 154 falas    (1,8 MB)
+
+Os dois ficam JUNTOS, na mesma pasta, lado a lado. Nada de subpasta.
+
+
+COMO SUBIR
+----------
+1. No GitHub, entre na pasta onde o jogo vai morar (ex.: /jogo).
+
+2. Se ainda estiverem lá, APAGUE os arquivos antigos:
+   - jogo-voice-web.zip
+   - Jogo VOICE - EWP.html
+   (clique no arquivo → menu "..." → Delete file → Commit)
+
+3. Clique em "Adicionar arquivo" → "Fazer upload de arquivos".
+
+4. Arraste o index.html e o voz.mp3 juntos. São dois arquivos: sobe em segundos.
+
+5. Clique em "Confirmar alterações".
+
+6. Espere de 1 a 3 minutos e abra o endereço da pasta. Ex.:
+   https://lp.comunidadevoice.com.br/jogo/
+
+
+CONFERINDO
+----------
+Abra no Chrome, entre no Dia 1 e toque no alto-falante.
+- Voz feminina americana  → tudo certo.
+- Voz robótica            → o voz.mp3 não subiu, ou está em outra pasta.
+
+No selo do dia, toque no microfone. O Chrome pede permissão. Autorize.
+
+
+POR QUE UM ARQUIVO DE ÁUDIO SÓ
+-------------------------------
+Antes eram 154 mp3 — e o GitHub só aceita 100 arquivos por vez pelo site.
+Agora as 154 falas vivem numa faixa única, e o jogo sabe o segundo exato em que
+cada palavra começa e termina. Sobe fácil, carrega uma vez, e nunca mais engasga.
+
+
+O QUE VOCÊ PRECISA SABER
+-------------------------
+- O progresso é salvo no navegador do aluno. Se ele trocar de aparelho ou limpar
+  o navegador, perde a chama e o baralho. Progresso que segue a pessoa exige
+  conta e servidor: Fase 5.
+
+- O repositório é público. Qualquer um com o link joga. Não existe proteção real
+  do lado do navegador — vale para qualquer jogo web.
