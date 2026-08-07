@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Torre de Babel — Teste de Proficiência em Inglês</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6F2; --card:#FFFFFF; --ink:#1B231F; --muted:#6B726C; --line:#E4E7E1;
+  --e1:#1D9E75; --e1d:#0F6E56;
+  --e2:#C0801C; --e2d:#7E520F;
+  --e3:#DD5733; --e3d:#9B381C;
+  --e4:#2F6FB5; --e4d:#1D4A7C;
+  --e5:#6B4FB0; --e5d:#48327D;
+  --e6:#F0A93C; --e6d:#B8791E;
+  --flame:#F0842C; --flame2:#E0613A; --lock:#AFB4AE; --ok:#1D9E75; --err:#C4453F;
+  --disp:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Inter',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.55;padding-bottom:60px;overflow-x:hidden}
+.wrap{max-width:780px;margin:0 auto;padding:0 18px}
+.top{position:sticky;top:0;z-index:30;background:rgba(244,246,242,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:14px;height:58px}
+.brand{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.02em;display:flex;align-items:center;gap:9px;margin-right:auto}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--flame2)}
+.brand small{font-family:var(--body);font-weight:500;font-size:10px;color:var(--muted);text-transform:uppercase}
+.stat{display:flex;align-items:center;gap:5px;font-weight:600;font-size:14px}
+.stat .lab{color:var(--muted);font-weight:500;font-size:12px}
+.hero{padding:28px 0 6px}
+.eyebrow{font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--flame2)}
+.hero h1{font-family:var(--disp);font-weight:800;font-size:clamp(27px,7vw,42px);line-height:1.03;letter-spacing:-.03em;margin:8px 0 10px}
+.hero p{color:var(--muted);max-width:56ch;font-size:15px}
+.bar{margin:18px 0 6px;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--e1),var(--e2),var(--e3),var(--e4),var(--e5),var(--e6));transition:width .5s}
+.barlab{font-size:12px;color:var(--muted)}
+
+.layout{display:flex;gap:20px;align-items:flex-start;margin-top:22px}
+.towerCol{flex:none;width:190px}
+.nodes{display:flex;flex-direction:column-reverse;gap:6px}
+.node{position:relative;font-family:var(--body);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 12px;display:flex;flex-direction:row;align-items:center;gap:10px;color:var(--ink);transition:box-shadow .2s}
+.node .circle{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:13px;color:#fff}
+.node .who{font-size:12px;font-weight:600;color:var(--muted);line-height:1.15}
+.node.locked{background:#F0F1EE;border-color:#E8EAE5}
+.node.locked .circle{background:var(--lock)!important}
+.node.locked .who{color:var(--lock)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px var(--flame),0 0 0 0 rgba(240,132,44,.35)}50%{box-shadow:0 0 0 2px var(--flame),0 0 0 7px rgba(240,132,44,0)}}
+.node.current{animation:pulse 2.2s ease-in-out infinite}
+.svgi{width:14px;height:14px}
+
+.rightCol{flex:1;min-width:0}
+.counters{display:flex;gap:10px;margin-bottom:14px}
+.cnt{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;text-align:center}
+.cntlab{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.cntval{font-family:var(--disp);font-weight:800;font-size:19px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 20px 26px;box-shadow:0 6px 18px rgba(27,35,31,.06)}
+.who2{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.card h2{font-family:var(--disp);font-weight:800;font-size:20px;letter-spacing:-.02em;line-height:1.3;margin:8px 0 16px}
+.hint{display:inline-block;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:5px 12px;font-size:12px;color:var(--muted);margin-bottom:10px}
+.cards{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+.opt{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:13px 14px;cursor:pointer;font-size:15px;font-weight:500;text-align:left;font-family:var(--body);transition:.12s;width:100%;color:var(--ink)}
+.opt:hover{border-color:var(--ink)}
+.opt.ok{background:#E9F7F1;border-color:var(--ok)}
+.opt.no{background:#FBECEB;border-color:var(--err);color:var(--err)}
+.fb{font-size:13px;margin-top:10px;min-height:18px;font-weight:600}
+.go{width:100%;border:none;border-radius:14px;padding:15px;cursor:pointer;font-family:var(--disp);font-weight:800;font-size:16px;color:#fff;background:var(--ink);transition:.12s;margin-top:8px}
+.go:hover{filter:brightness(1.12)}.go:active{transform:scale(.98)}
+.ghost{background:none;border:1px solid var(--line);border-radius:99px;padding:9px 16px;cursor:pointer;font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted)}
+.ghost:hover{border-color:var(--ink);color:var(--ink)}
+.foot{display:flex;justify-content:center;gap:10px;margin-top:26px}
+.result h2{font-family:var(--disp);font-weight:800;font-size:26px;letter-spacing:-.02em;margin:6px 0 8px}
+.result p{color:var(--muted);font-size:15px;margin-bottom:10px}
+.nextlevel{font-size:13px;color:var(--muted);margin-bottom:18px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:13px 20px;border-radius:14px;z-index:80;font-weight:600;font-size:14px;opacity:0;transition:.3s;pointer-events:none;max-width:90vw}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:640px){.layout{flex-direction:column}.towerCol{width:100%}.nodes{flex-direction:row-reverse;flex-wrap:wrap}.node{flex:1;min-width:90px;flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="dot"></span>Torre de Babel<small>Teste de Inglês</small></div>
+  <div class="stat"><span class="lab">Andar</span><span id="curLevel">A1</span></div>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Teste de proficiência · base bíblica</div>
+    <h1>Construa sua Torre de Babel</h1>
+    <p>A cada acerto, um tijolo novo. Três acertos seguidos sobem um andar; dois erros seguidos derrubam um. Do alicerce em A1 até o topo em C2.</p>
+    <div class="bar"><i id="barfill"></i></div>
+    <div class="barlab" id="barlab">Comece respondendo a primeira pergunta.</div>
+  </section>
+
+  <div class="layout">
+    <div class="towerCol"><div class="nodes" id="towerNodes"></div></div>
+    <div class="rightCol">
+      <div class="counters" id="counters"></div>
+      <div class="card" id="panel"></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <button class="ghost" onclick="restart()">recomeçar do zero</button>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const LEVELS = ['A1','A2','B1','B2','C1','C2'];
+const LCOLOR = ['--e1','--e2','--e3','--e4','--e5','--e6'];
+const LCOLORD = ['--e1d','--e2d','--e3d','--e4d','--e5d','--e6d'];
+const THRESH = [3,3,3,3,3,3];
+const LEVEL_DESC = {
+  0:'Compreende e usa expressões cotidianas simples.',
+  1:'Comunica-se em tarefas rotineiras e diretas.',
+  2:'Lida com a maioria das situações em viagens e trabalho.',
+  3:'Interage com fluência e espontaneidade razoável.',
+  4:'Usa a língua de forma flexível para fins sociais e profissionais.',
+  5:'Compreende com facilidade praticamente tudo o que ouve ou lê.'
+};
+
+const RAW = {
+0:[
+ {q:"The Bible says Noah ___ a good man.",o:["is","are","am","be"],c:0,note:"presente"},
+ {q:"The apostles ___ from Galilee.",o:["is","are","am","be"],c:1},
+ {q:"I ___ happy in church.",o:["am","is","are","been"],c:0},
+ {q:"The Bible says Mary ___ two sons.",o:["has","have","is","are having"],c:0,note:"presente"},
+ {q:"In the parable, there ___ a lamb in the field.",o:["is","are","am","be"],c:0,note:"presente"},
+ {q:"In the story of Abraham, there ___ many stars in the sky.",o:["is","are","am","be"],c:1,note:"presente"},
+ {q:"The Bible ___ many wonderful stories.",o:["tell","tells","telling","told"],c:1},
+ {q:"In the story, Daniel ___ like the king's food.",o:["don't","doesn't","isn't","aren't"],c:1,note:"presente"},
+ {q:"In the story, ___ the disciples fish in the Sea of Galilee?",o:["Do","Does","Is","Are"],c:0,note:"presente"},
+ {q:"Nazareth ___ a small town in Galilee.",o:["is","are","am","be"],c:0},
+ {q:"This is ___ boat, said Peter.",o:["my","I","me","mine"],c:0},
+ {q:"That is ___ house, said Martha.",o:["she","her","hers","herself"],c:1},
+ {q:"Can you ___ me the story?",o:["tell","telling","told","tells"],c:0},
+ {q:"___ your name Simon?",o:["Is","Are","Am","Do"],c:0},
+ {q:"We ___ children of God.",o:["is","am","are","be"],c:2},
+ {q:"In the story, Job ___ many sheep.",o:["has","have","is","are having"],c:0,note:"presente"},
+ {q:"In the story, the shepherds ___ their sheep at night.",o:["watch","watches","watching","watched"],c:0,note:"presente"},
+ {q:"What ___ your name?",o:["is","are","am","be"],c:0},
+ {q:"In the story of the flood, there ___ an ark on the water.",o:["is","are","am","be"],c:0,note:"presente"},
+ {q:"The Bible says Adam and Eve ___ two sons, Cain and Abel.",o:["has","have","is","are having"],c:1,note:"presente"}
+],
+1:[
+ {q:"Yesterday, Jonah ___ onto the ship.",o:["go","goes","went","gone"],c:2},
+ {q:"Noah ___ the ark for many years.",o:["build","builds","built","building"],c:2},
+ {q:"While Noah ___ the ark, people laughed at him.",o:["builds","was building","has built","will build"],c:1},
+ {q:"Ruth ___ to Bethlehem with Naomi.",o:["travel","travels","traveled","traveling"],c:2},
+ {q:"David was ___ than his brothers.",o:["young","younger","youngest","more young"],c:1},
+ {q:"Solomon was the ___ king of all.",o:["wise","wiser","wisest","more wise"],c:2},
+ {q:"The shepherds ___ watching their sheep when the angel appeared.",o:["was","were","are","is"],c:1},
+ {q:"In the story, Mary is ___ to visit Elizabeth next week.",o:["go","goes","going","gone"],c:2,note:"presente"},
+ {q:"In the story, there isn't ___ water left in the jar.",o:["some","any","many","a"],c:1,note:"presente"},
+ {q:"In the parable, we need ___ oil for the lamps.",o:["some","any","many","a"],c:0,note:"presente"},
+ {q:"The travelers stopped ___ the well to drink.",o:["at","in","on","to"],c:0},
+ {q:"Paul often traveled ___ ship.",o:["by","on","in","with"],c:0},
+ {q:"You ___ obey the commandments.",o:["must","can","might","would"],c:0},
+ {q:"Servants ___ to work early every morning.",o:["has","have","having","had"],c:1},
+ {q:"___ Jesus feed the crowd with fish?",o:["Do","Does","Did","Was"],c:2},
+ {q:"Samson had ___ hair than most men.",o:["long","longer","longest","more long"],c:1},
+ {q:"In the morning they prayed; ___ they ate together.",o:["then","first","before","ago"],c:0},
+ {q:"Esther ___ the king for help.",o:["ask","asks","asked","asking"],c:2},
+ {q:"The soldiers ___ marching toward the city.",o:["was","were","is","are"],c:1},
+ {q:"Jacob was ___ than Esau.",o:["young","younger","youngest","more young"],c:1},
+ {q:"The prophet ___ wake up early to pray.",o:["use to","used to","was used","is used"],c:1}
+],
+2:[
+ {q:"I ___ never ___ manna before.",o:["have / eaten","has / eat","did / eat","was / eating"],c:0},
+ {q:"Peter ___ been fishing all night.",o:["have","has","is","was"],c:1},
+ {q:"If it rains, the harvest ___ well.",o:["grow","grows","will grow","would grow"],c:2},
+ {q:"By the time they arrived, Lazarus ___ died.",o:["already","has already","had already","was already"],c:2},
+ {q:"This ___ be the Messiah.",o:["might","must not","can't","won't"],c:0},
+ {q:"The temple ___ built by Solomon.",o:["was","is","were","did"],c:0},
+ {q:"The letters ___ written by Paul.",o:["is","are","was","were"],c:3},
+ {q:"She said that she ___ to see Elizabeth soon.",o:["want","wants","wanted","wanting"],c:2},
+ {q:"The man ___ was healed by Jesus was blind.",o:["who","which","whose","whom"],c:0},
+ {q:"The parable ___ Jesus told was about a lost sheep.",o:["who","that","whose","whom"],c:1},
+ {q:"Jonah gave ___ trying to run from God.",o:["up","in","away","off"],c:0},
+ {q:"The disciples looked ___ to Jesus for guidance.",o:["up","in","away","off"],c:0},
+ {q:"I wish I ___ more faith like Abraham.",o:["have","had","would have","has"],c:1},
+ {q:"In the temple, Anna has been praying ___ this morning.",o:["for","since","during","from"],c:1,note:"presente"},
+ {q:"In the story, the wedding has been ___ until next week.",o:["postpone","postponed","postponing","to postpone"],c:1,note:"presente"},
+ {q:"Despite ___ afraid, David faced Goliath.",o:["be","being","been","to be"],c:1},
+ {q:"The soldiers asked Jesus where he was ___.",o:["go","goes","going","gone"],c:2},
+ {q:"Job's camels ___ by raiders.",o:["steal","stole","were stolen","have stolen"],c:2}
+],
+3:[
+ {q:"Had Peter trusted more, he ___ have sunk.",o:["will","would","wouldn't","won't"],c:2},
+ {q:"In the story, the temple ___ by the people next year.",o:["will rebuild","is rebuilt","will be rebuilt","rebuilds"],c:2,note:"futuro"},
+ {q:"The prisoners ___ have been released by the guards.",o:["must","can","would","should not"],c:0},
+ {q:"He ___ have known the danger; he seemed too calm.",o:["must","can't","should","might"],c:1},
+ {q:"Solomon, ___ wisdom was famous, judged the case wisely.",o:["who","which","whose","whom"],c:2},
+ {q:"Nazareth, ___ Jesus grew up, was a small town.",o:["which","who","where","whose"],c:2},
+ {q:"Job wished he ___ never been born.",o:["has","have","had","would have"],c:2},
+ {q:"The king had his servants ___ the gates every night.",o:["lock","locked","locking","to lock"],c:0},
+ {q:"Not only ___ disobedient, Jonah also fled by sea.",o:["he was","was he","he is","is he"],c:1},
+ {q:"___ his doubts, Thomas eventually believed.",o:["Despite","Although","However","Because"],c:0},
+ {q:"The angel asked Mary whether she ___ afraid.",o:["is","was","be","being"],c:1},
+ {q:"It's high time we ___ a decision about following God.",o:["make","made","making","to make"],c:1},
+ {q:"The prophecies have given ___ to great hope.",o:["rise","risen","raised","rising"],c:0},
+ {q:"No sooner ___ Egypt than the people complained.",o:["they had left","had they left","they left","did they leave"],c:1},
+ {q:"I'd rather you ___ worship idols.",o:["don't","didn't","not","won't"],c:1},
+ {q:"The waters had ___ significantly during the flood.",o:["rose","risen","raised","raise"],c:1},
+ {q:"Job's friends tried to talk him ___ of trusting God.",o:["out","off","away","down"],c:0},
+ {q:"In the story, the report ___ by the scribes by sunset.",o:["will finish","will be finished","is finished","finishes"],c:1,note:"futuro"},
+ {q:"Moses had been leading the people ___ forty years.",o:["for","since","during","from"],c:0}
+],
+4:[
+ {q:"Had the Ninevites known, they ___ differently from the start.",o:["would act","would have acted","will act","acted"],c:1},
+ {q:"If Daniel weren't so faithful, he ___ have survived the lions' den.",o:["will","would","wouldn't","won't"],c:2},
+ {q:"Little ___ Esther know the danger awaiting her people.",o:["did","does","had","would"],c:0},
+ {q:"Nathan's rebuke was, to say the ___, unwelcome.",o:["least","less","most","more"],c:0},
+ {q:"It was Nathan ___ confronted David about his sin.",o:["who","which","whose","whom"],c:0},
+ {q:"It was through faith ___ the walls of Jericho fell.",o:["who","which","that","whom"],c:2},
+ {q:"The elders insisted that the matter ___ resolved immediately.",o:["is","was","be","being"],c:2},
+ {q:"The council recommended that the prisoner ___ released.",o:["is","was","be","being"],c:2},
+ {q:"You needn't ___ worried yesterday; the Lord had already provided.",o:["be","have been","being","to be"],c:1},
+ {q:"He ought to ___ listened to the prophet's warning.",o:["have","had","has","having"],c:0},
+ {q:"The prophet's message was met with ___ resistance.",o:["big","large","widespread","wide"],c:2},
+ {q:"Were it not ___ God's mercy, Nineveh would have been destroyed.",o:["for","of","by","with"],c:0},
+ {q:"The Pharisees had a tendency to ___ on minor rules.",o:["dwell","dwelt","dwelling","dwells"],c:0},
+ {q:"He was accused of ___ the poor unfairly.",o:["treat","treating","treated","treats"],c:1},
+ {q:"The parable sheds ___ on the nature of forgiveness.",o:["light","lights","lighten","lighting"],c:0},
+ {q:"Such was the power of the sermon ___ the crowd wept.",o:["that","which","so","as"],c:0},
+ {q:"___ his initial doubts, Thomas eventually believed.",o:["Notwithstanding","Because of","Due to","Owing"],c:0},
+ {q:"The disciples' faith, insofar ___ it could be measured, grew steadily.",o:["as","that","which","so"],c:0},
+ {q:"The prophecy's fulfillment was, in effect, a ___ to divine timing.",o:["testament","testify","attest","attests"],c:0},
+ {q:"The king's decree left no room ___ negotiation.",o:["for","of","with","to"],c:0},
+ {q:"If Jonah ___ more faith, he would have obeyed immediately.",o:["have","had","would have","has"],c:1},
+ {q:"The king ordered that the child ___ found.",o:["is","was","be","being"],c:2}
+],
+5:[
+ {q:"The apostle had a knack ___ explaining difficult truths simply.",o:["of","for","to","with"],c:1},
+ {q:"The elders' dispute reached an ___ before a decision was made.",o:["impasse","impossible","impress","imprint"],c:0},
+ {q:"Job took his suffering ___ stride, without cursing God.",o:["by","with","in","on"],c:2},
+ {q:"His testimony, ___ sincere, failed to convince the council.",o:["while","despite","albeit","nonetheless"],c:2},
+ {q:"The betrayal threatened to ___ the disciple's legacy.",o:["tarnish","tarnished","tarnishing","tarnishes"],c:0},
+ {q:"Rarely ___ such wisdom displayed by one so young as Solomon.",o:["one witnesses","does one witness","one does witness","witnesses one"],c:1},
+ {q:"The offering was dismissed by some as a mere ___ gesture.",o:["token","tokenize","tokening","tokened"],c:0},
+ {q:"Daniel remained ___ in the face of the king's threats.",o:["unfazed","unfazing","unfaze","unfazingly"],c:0},
+ {q:"The false prophet's claims were, at best, ___.",o:["tenuous","tenacious","tenable","tenderness"],c:0},
+ {q:"It would be remiss ___ to overlook the lesson of the parable.",o:["of us","for us","with us","to us"],c:0},
+ {q:"The prophet's warning was met with ___ derision.",o:["outright","outward","outlying","outset"],c:0},
+ {q:"His faith, ___ tested, never wavered.",o:["though","despite","because","since"],c:0},
+ {q:"The scandal threatened to cast a ___ over the entire ministry.",o:["shadow","shade","shadowy","shading"],c:0},
+ {q:"She bore the accusation with remarkable ___.",o:["equanimity","equality","equity","equation"],c:0},
+ {q:"The elders' verdict was, in no uncertain terms, ___.",o:["irrevocable","revocable","irreverent","irrelevant"],c:0},
+ {q:"His account of events, though compelling, was riddled with ___.",o:["inconsistencies","consistency","consistent","inconsistent"],c:0},
+ {q:"The prophecy's ambiguity left room for considerable ___.",o:["speculation","speculate","speculative","speculator"],c:0},
+ {q:"Never ___ such devotion been witnessed among the exiles.",o:["did","had","has","was"],c:1},
+ {q:"The congregation's response was, if anything, ___.",o:["muted","mute","muting","mutedly"],c:0},
+ {q:"It was not until the third warning ___ Pharaoh relented.",o:["when","which","that","so"],c:2}
+]
+};
+
+const FB_C = ['Certo!','Isso mesmo!','Muito bem!','Acertou!'];
+const FB_W = ['Errou.','Quase.','Essa foi difícil.'];
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+let currentLevel=0, highestPassed=-1, consecutiveCorrect=0, consecutiveWrong=0;
+let used=[[],[],[],[],[],[]], totalAsked=0, current=null;
+const MAX_TOTAL = 45;
+
+function pickQuestion(level){
+  const pool=[];
+  RAW[level].forEach((item,i)=>{ if(!used[level].includes(i)) pool.push(i); });
+  if(!pool.length) return null;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function checkSvg(){ return '<svg class="svgi" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>'; }
+function lockSvg(){ return '<svg class="svgi" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'; }
+
+function updateCounters(){
+  const box = document.getElementById('counters');
+  const regressed = currentLevel<=highestPassed;
+  if(regressed){
+    box.innerHTML = '<div class="cnt" style="flex:1"><span class="cntlab">Modo revisão</span><span class="cntval" style="font-size:14px">1 acerto = volta ao topo</span></div>';
+  } else {
+    box.innerHTML =
+      '<div class="cnt"><span class="cntlab">Acertos seguidos</span><span class="cntval">'+consecutiveCorrect+'/'+THRESH[currentLevel]+'</span></div>'+
+      '<div class="cnt"><span class="cntlab">Erros seguidos</span><span class="cntval">'+consecutiveWrong+'/2</span></div>';
+  }
+}
+
+function renderNodes(){
+  const el = document.getElementById('towerNodes');
+  let html='';
+  for(let i=0;i<6;i++){
+    const passed = i<=highestPassed;
+    const isCurrent = i===currentLevel;
+    const locked = !passed && !isCurrent;
+    const color = passed ? 'var('+LCOLORD[i]+')' : (isCurrent ? 'var('+LCOLOR[i]+')' : null);
+    const circleStyle = color ? 'background:'+color : '';
+    const inner = passed ? checkSvg() : (locked ? lockSvg() : LEVELS[i]);
+    html += '<div class="node'+(locked?' locked':'')+(isCurrent?' current':'')+'">'+
+      '<div class="circle" style="'+circleStyle+'">'+inner+'</div>'+
+      '<div class="who">'+LEVELS[i]+'</div></div>';
+  }
+  el.innerHTML = html;
+  document.getElementById('curLevel').textContent = LEVELS[currentLevel];
+  const bf = document.getElementById('barfill');
+  const pct = Math.round(((highestPassed+1)/6)*100);
+  bf.style.width = pct+'%';
+  document.getElementById('barlab').textContent = highestPassed>=0
+    ? 'Andar '+LEVELS[highestPassed]+' conquistado. Testando '+LEVELS[currentLevel]+' agora.'
+    : 'Testando o alicerce, andar '+LEVELS[currentLevel]+'.';
+  updateCounters();
+}
+
+function renderQuestion(){
+  const panel = document.getElementById('panel');
+  const item = RAW[currentLevel][current];
+  const regressed = currentLevel<=highestPassed;
+  let optsHtml='';
+  item.o.forEach((o,i)=>{
+    optsHtml += '<button class="opt" data-i="'+i+'" onclick="answer('+i+')">'+o+'</button>';
+  });
+  let hint='';
+  if(item.note==='presente') hint='<div class="hint">📖 Presente narrativo: a história é antiga, mas é contada no presente.</div>';
+  else if(item.note==='futuro') hint='<div class="hint">🔮 Futuro dentro da própria história (relativo àquele momento).</div>';
+  panel.innerHTML =
+    '<div class="who2">'+(regressed?'Revisando o andar '+LEVELS[currentLevel]+' já conquistado':'Andar '+LEVELS[currentLevel])+'</div>'+
+    hint+
+    '<h2>'+item.q+'</h2>'+
+    '<div class="cards" id="opts">'+optsHtml+'</div>'+
+    '<p class="fb" id="feedback"></p>';
+  renderNodes();
+}
+
+function decideNext(){
+  if(totalAsked>=MAX_TOTAL){ finish(); return; }
+  current = pickQuestion(currentLevel);
+  if(current===null){ finish(); return; }
+  renderQuestion();
+}
+
+function toast(m){
+  const t=document.getElementById('toast');
+  t.textContent=m;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+function answer(i){
+  const item = RAW[currentLevel][current];
+  used[currentLevel].push(current);
+  const correct = i===item.c;
+  const buttons = document.querySelectorAll('#opts .opt');
+  buttons.forEach(b=>{ b.onclick=null; b.style.pointerEvents='none'; });
+  buttons[i].classList.add(correct?'ok':'no');
+  if(!correct) buttons[item.c].classList.add('ok');
+  const fb = document.getElementById('feedback');
+  let leveledUp = false;
+  if(correct){
+    if(currentLevel<=highestPassed){
+      currentLevel = highestPassed+1;
+      consecutiveCorrect=0; consecutiveWrong=0;
+      fb.style.color = 'var(--ok)';
+      fb.textContent = 'Boa! Voltando direto para o andar '+LEVELS[currentLevel]+'.';
+    } else {
+      consecutiveCorrect++; consecutiveWrong=0;
+      fb.style.color = 'var(--ok)';
+      fb.textContent = pick(FB_C)+' '+consecutiveCorrect+'/'+THRESH[currentLevel]+' para subir.';
+      if(consecutiveCorrect>=THRESH[currentLevel]){
+        const passedLevel = currentLevel;
+        highestPassed = passedLevel;
+        consecutiveCorrect=0;
+        toast('🧱 Andar '+LEVELS[passedLevel]+' construído!');
+        if(passedLevel===5){
+          totalAsked++;
+          setTimeout(finish,900);
+          return;
+        }
+        currentLevel = passedLevel+1;
+        leveledUp = true;
+      }
+    }
+  } else {
+    consecutiveWrong++; consecutiveCorrect=0;
+    fb.style.color = 'var(--err)';
+    fb.textContent = pick(FB_W)+' '+consecutiveWrong+'/2 para recuar.';
+    if(consecutiveWrong>=2){
+      if(currentLevel>0) currentLevel--;
+      consecutiveWrong=0;
+      fb.textContent = 'Recuou para o andar '+LEVELS[currentLevel]+'.';
+    }
+  }
+  updateCounters();
+  totalAsked++;
+  setTimeout(decideNext, leveledUp?1000:900);
+}
+
+function restart(){
+  currentLevel=0; highestPassed=-1; consecutiveCorrect=0; consecutiveWrong=0;
+  used=[[],[],[],[],[],[]]; totalAsked=0;
+  current = pickQuestion(currentLevel);
+  renderQuestion();
+}
+
+function finish(){
+  currentLevel = highestPassed>=0 ? highestPassed : 0;
+  renderNodes();
+  const panel = document.getElementById('panel');
+  const label = highestPassed>=0?LEVELS[highestPassed]:'Pré-A1';
+  const desc = highestPassed>=0?LEVEL_DESC[highestPassed]:'Ainda construindo o alicerce do nível A1.';
+  const nextLevel = highestPassed+1<=5?LEVELS[highestPassed+1]:null;
+  panel.innerHTML =
+    '<div class="result">'+
+    '<div class="who2">Resultado</div>'+
+    '<h2>Nível '+label+'</h2>'+
+    '<p>'+desc+'</p>'+
+    (nextLevel ? '<p class="nextlevel">Andar em construção: '+nextLevel+'</p>' : '')+
+    '<button class="go" onclick="window.location.href=\'#oferta\'">Quero subir mais alto ↗</button>'+
+    '<button class="ghost" style="width:100%;margin-top:10px" onclick="restart()">recomeçar do zero</button>'+
+    '</div>';
+}
+
+current = pickQuestion(currentLevel);
+renderQuestion();
+</script>
+</body>
+</html>
