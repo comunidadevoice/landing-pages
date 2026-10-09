@@ -121,7 +121,7 @@
     <section class="col-summary">
       <div class="card">
         <p class="eyebrow">Assinatura mensal</p>
-        <h1 id="planName">Groups Voice</h1>
+        <h1 id="planName">Voice Groups</h1>
         <p class="lead">Conversação em inglês ao vivo, em turma pequena, com todo o material da Comunidade Voice incluso.</p>
 
         <div class="price"><b id="planPrice">R$&nbsp;250</b><em>/mês</em></div>
@@ -132,17 +132,18 @@
           <li>Turmas de até 8 alunas</li>
           <li>Acesso completo aos materiais da Comunidade Voice</li>
           <li>Método VOICE — Verse, Open Ears, Interaction, Connection, Expression</li>
-          <li>Recesso de 30 dias no ano (15 no verão, 15 no inverno), com aula gravada</li>
         </ul>
 
         <details class="terms" id="termos">
           <summary>Condições da assinatura</summary>
           <div class="body">
-            <p><strong>Fidelidade.</strong> 3 mensalidades completas. O período proporcional inicial não conta nesse prazo.</p>
-            <p><strong>Renovação.</strong> Depois da fidelidade, a assinatura renova automaticamente mês a mês e pode ser cancelada quando você quiser.</p>
-            <p><strong>Saída antecipada.</strong> Não há multa rescisória. Você paga apenas as parcelas já vencidas dentro da fidelidade.</p>
-            <p><strong>Recesso.</strong> 30 dias por ano, divididos em 15 no verão e 15 no inverno, com aula gravada disponibilizada no período.</p>
-            <p><strong>Cobrança.</strong> R$ 250 por mês no cartão de crédito, sempre no dia 10, processados pelo Mercado Pago. A primeira cobrança é proporcional: você paga apenas pelos dias entre a adesão e o próximo dia 10. O cancelamento pode ser feito a qualquer momento pelo Mercado Pago ou falando com a gente.</p>
+            <p><strong>Cobrança.</strong> R$ 250 por mês no cartão de crédito, com vencimento todo dia 10. A primeira cobrança é proporcional: você paga apenas pelos dias entre a sua adesão e o próximo dia 10.</p>
+            <p><strong>Fidelidade.</strong> 3 mensalidades completas. O período proporcional inicial não conta nesse prazo. Não há multa rescisória, mas se você cancelar antes de completá-las as mensalidades restantes seguem devidas.</p>
+            <p><strong>Renovação.</strong> Cumprida a fidelidade, a assinatura renova automaticamente mês a mês, por prazo indeterminado.</p>
+            <p><strong>Cancelamento.</strong> Depois da fidelidade você cancela quando quiser, sem multa, avisando por escrito pelo WhatsApp oficial ou por contato@comunidadevoice.com.br. Se o aviso chegar até o dia 10, é devida apenas a mensalidade daquele mês. Se chegar depois do vencimento, a mensalidade seguinte também é devida, e o seu acesso continua garantido durante todo esse período.</p>
+            <p><strong>Recesso.</strong> 30 dias por ano, divididos em 15 no verão e 15 no inverno, com aula gravada no período. O recesso não suspende a cobrança.</p>
+            <p><strong>Reajuste.</strong> O valor é corrigido uma vez por ano, em fevereiro, pelo IGP-M.</p>
+            <p style="margin-top:12px"><a href="contrato.pdf" target="_blank" rel="noopener" style="color:var(--navy);font-weight:500">Ler o contrato completo (PDF)</a></p>
           </div>
         </details>
       </div>
@@ -164,7 +165,7 @@
 
         <form id="form" novalidate>
           <h2>Dados de pagamento</h2>
-          <p class="sub">Seus dados de cartão vão direto para o Mercado Pago. Nosso servidor não os recebe nem armazena.</p>
+          <p class="sub">Seus dados de cartão são enviados criptografados direto para a operadora. Nosso servidor não os recebe nem armazena.</p>
 
           <div class="field">
             <label for="fullName">Nome completo</label>
@@ -177,6 +178,13 @@
             <input class="ctl" id="email" type="email" autocomplete="email" placeholder="voce@email.com" required>
             <div class="hint">É neste e-mail que chegam o recibo e o acesso.</div>
             <div class="err-msg" data-for="email">Informe um e-mail válido.</div>
+          </div>
+
+          <div class="field">
+            <label for="phone">WhatsApp</label>
+            <input class="ctl" id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="(48) 99999-9999" required>
+            <div class="hint">É por aqui que combinamos o horário da sua turma.</div>
+            <div class="err-msg" data-for="phone">Informe um número de WhatsApp válido, com DDD.</div>
           </div>
 
           <div class="field">
@@ -218,7 +226,7 @@
 
           <label class="check">
             <input type="checkbox" id="accept" required>
-            <span>Li e aceito as <a href="#termos" id="openTerms">condições da assinatura</a>, incluindo a fidelidade de 3 mensalidades e a renovação automática mensal.</span>
+            <span>Li e aceito o <a href="contrato.pdf" target="_blank" rel="noopener">contrato e as condições da assinatura</a>, incluindo a fidelidade de 3 mensalidades e a renovação automática mensal.</span>
           </label>
           <div class="err-msg" data-for="accept">É preciso aceitar as condições para continuar.</div>
 
@@ -229,7 +237,7 @@
 
           <div class="secure">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Pagamento processado pelo Mercado Pago
+            Pagamento criptografado de ponta a ponta
           </div>
         </form>
 
@@ -240,7 +248,7 @@
   <footer>
     Comunidade Voice · CNPJ 67.185.890/0001-24<br>
     Rua João Bernadino da Rosa, 2173 — Pedra Branca, Palhoça/SC — CEP 88137-010<br>
-    <a href="mailto:comunidadeewp@gmail.com">comunidadeewp@gmail.com</a>
+    <a href="mailto:contato@comunidadevoice.com.br">contato@comunidadevoice.com.br</a>
   </footer>
 </div>
 
@@ -258,13 +266,6 @@
   var mp = null, mounted = false, busy = false;
 
   payBtn.dataset.label = payBtn.querySelector('.label').textContent;
-
-  document.getElementById('openTerms').addEventListener('click', function (e) {
-    e.preventDefault();
-    var d = document.getElementById('termos');
-    d.open = true;
-    d.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
 
   function showAlert(msg) {
     alertBox.textContent = msg;
@@ -288,6 +289,26 @@
     payBtn.disabled = on;
     payBtn.classList.toggle('is-loading', on);
     payBtn.querySelector('.label').textContent = on ? 'Processando…' : payBtn.dataset.label;
+  }
+
+  var phone = document.getElementById('phone');
+  phone.addEventListener('input', function () {
+    var v = phone.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 10)      v = v.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+    else if (v.length > 6)  v = v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+    else if (v.length > 2)  v = v.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+    else if (v.length > 0)  v = v.replace(/^(\d{0,2})/, '($1');
+    phone.value = v;
+  });
+
+  function validPhone(s) {
+    s = s.replace(/\D/g, '');
+    if (s.length < 10 || s.length > 11) return false;
+    if (/^(\d)\1+$/.test(s)) return false;
+    var ddd = parseInt(s.slice(0, 2), 10);
+    if (ddd < 11 || ddd > 99) return false;
+    if (s.length === 11 && s[2] !== '9') return false;
+    return true;
   }
 
   var docType = document.getElementById('docType');
@@ -387,6 +408,7 @@
 
     var fullName       = document.getElementById('fullName').value.trim();
     var email          = document.getElementById('email').value.trim();
+    var phoneRaw       = phone.value.replace(/\D/g, '');
     var cardholderName = document.getElementById('cardholderName').value.trim();
     var accept         = document.getElementById('accept').checked;
     var docRaw         = docNumber.value.replace(/\D/g, '');
@@ -394,6 +416,7 @@
     var ok = true;
     if (fullName.split(/\s+/).length < 2)             { fieldError('fullName', true);       ok = false; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { fieldError('email', true);          ok = false; }
+    if (!validPhone(phoneRaw))                        { fieldError('phone', true);          ok = false; }
     if (!cardholderName)                              { fieldError('cardholderName', true); ok = false; }
     if (!accept)                                      { fieldError('accept', true);         ok = false; }
     if (docType.value === 'CPF'  && !validCPF(docRaw))  { fieldError('docNumber', true); ok = false; }
@@ -416,6 +439,7 @@
           cardTokenId: token.id,
           payerEmail: email,
           payerName: fullName,
+          payerPhone: phoneRaw,
           docType: docType.value,
           docNumber: docRaw,
           acceptedTerms: true
