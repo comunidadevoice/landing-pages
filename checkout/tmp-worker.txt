@@ -43,6 +43,8 @@ export default {
         planName:  env.PLAN_NAME || 'Groups Voice',
         priceText: env.PLAN_PRICE_TEXT || 'R$&nbsp;250',
         ctaText:   env.CTA_TEXT || 'Assinar por R$ 250/mês',
+        price:      Number(env.PLAN_PRICE || 250),
+        billingDay: Number(env.PLAN_BILLING_DAY || 10),
       }, 200, origin, { 'Cache-Control': 'public, max-age=60' });
     }
     if (path === '/subscribe' && request.method === 'POST') {
@@ -130,17 +132,27 @@ async function subscribe(request, env, origin, ctx) {
     return json({ message: friendly(data) }, 400, origin);
   }
 
-  console.log('Assinatura criada', data.id, data.status, payerEmail, payerName || '', docType || '');
+  const preco = Number(env.PLAN_PRICE || 250);
+  const diaCobranca = Number(env.PLAN_BILLING_DAY || 10);
+  const r = resumoCobranca(preco, diaCobranca);
+
+  console.log('Assinatura criada', data.id, data.status, payerEmail, payerName || '', docType || '', r.valorHoje);
 
   // inscreve no MailerLite -> dispara a automacao com o acesso a Comunidade
   if (env.MAILERLITE_TOKEN && env.MAILERLITE_GROUP_ID) {
-    ctx.waitUntil(mailerlite(env, payerEmail, payerName, payerPhone));
+    const pd = r.proximaCobranca.split('-');
+    ctx.waitUntil(mailerlite(env, payerEmail, payerName, payerPhone, env.MAILERLITE_GROUP_ID, {
+      valor_hoje: r.valorHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      proxima_cobranca: pd[2] + '/' + pd[1] + '/' + pd[0],
+    }));
   }
 
   return json({
     id: data.id,
     status: data.status,
     joinUrl: env.CIRCLE_JOIN_URL || null,
+    valorHoje: r.valorHoje,
+    proximaCobranca: r.proximaCobranca,
   }, 201, origin);
 }
 
