@@ -64,6 +64,17 @@
   .price b{font-family:Fraunces,Georgia,serif;font-size:38px;font-weight:600;line-height:1}
   .price em{font-style:normal;color:var(--muted);font-size:15px}
   .price-note{font-size:13px;color:var(--muted);margin:10px 0 0}
+  /* resumo da cobranca */
+  .resumo{background:var(--offwhite-2);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:16px 0 0}
+  .resumo .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .resumo .row + .row{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+  .resumo .lbl{font-size:14px;color:var(--navy);font-weight:500}
+  .resumo .lbl small{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-top:3px;max-width:30ch}
+  .resumo .val{font-family:Fraunces,Georgia,serif;font-size:24px;font-weight:600;white-space:nowrap}
+  .resumo .row.next .val{font-family:Inter,sans-serif;font-size:17px;font-weight:600;color:var(--muted)}
+  .resumo .row.next .lbl{color:var(--gold);font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+  .resumo .row.next .lbl small{text-transform:none;letter-spacing:0;color:var(--muted);font-size:12.5px}
+  .resumo.loading{opacity:.45}
   ul.feats{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:11px}
   ul.feats li{position:relative;padding-left:26px;font-size:14.5px}
   ul.feats li::before{content:"";position:absolute;left:0;top:7px;width:14px;height:8px;border-left:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(-45deg)}
@@ -124,8 +135,27 @@
   footer{margin-top:34px;text-align:center;font-size:12px;color:var(--muted);line-height:1.7}
   footer a{color:var(--muted)}
 </style>
+
+<!-- META PIXEL -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1268398628617400');
+fbq('track', 'PageView');
+</script>
+<!-- META PIXEL -->
 </head>
 <body>
+
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></noscript>
+
 <div class="wrap">
 
   <div class="brand">
@@ -142,13 +172,22 @@
         <p class="lead">Conversação em inglês ao vivo, em turma pequena, com todo o material da Comunidade Voice incluso.</p>
 
         <div class="price"><b id="planPrice">R$&nbsp;250</b><em>/mês</em></div>
-        <p class="price-note">Cobrança automática no cartão de crédito, <strong>todo dia 10</strong>. Na adesão você paga só o proporcional aos dias que faltam até o próximo dia 10.</p>
+        <div class="resumo loading" id="resumo">
+          <div class="row">
+            <div class="lbl">Hoje você paga<small id="resumoNota">calculando…</small></div>
+            <div class="val" id="resumoHoje">…</div>
+          </div>
+          <div class="row next">
+            <div class="lbl" id="resumoProxLabel">A partir de<small>todo dia 10, enquanto a assinatura estiver ativa</small></div>
+            <div class="val" id="resumoProx">…</div>
+          </div>
+        </div>
 
         <ul class="feats">
           <li>1 aula ao vivo por semana, de 1 hora</li>
           <li>Turmas de até 8 alunas</li>
           <li>Acesso completo aos materiais da Comunidade Voice</li>
-          <li>Método VOICE — Verse, Open Ears, Interaction, Connection, Expression</li>
+          <li>Método VOICE completo: Verse, Open Ears, Interaction, Connection, Expression</li>
         </ul>
 
         <details class="terms" id="termos">
@@ -174,7 +213,8 @@
         <div id="success" class="success">
           <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
           <h2>Assinatura confirmada</h2>
-          <p>Sua vaga está garantida. O próximo passo é entrar na Comunidade Voice — é lá que ficam as aulas e os materiais.</p>
+          <p>Sua vaga está garantida. O próximo passo é entrar na Comunidade Voice, é lá que ficam as aulas e os materiais.</p>
+          <p id="successCobranca" style="font-size:13.5px;color:var(--muted)"></p>
           <a class="joinbtn" id="joinBtn" href="#" target="_blank" rel="noopener">Entrar na Comunidade Voice</a>
           <p class="joinnote">Esse convite é pessoal, não compartilhe. Enviamos o mesmo link para o seu e-mail, caso precise depois.</p>
           <div class="ref">Código da assinatura: <strong id="subId">—</strong></div>
@@ -280,7 +320,9 @@
   var payBtn    = document.getElementById('payBtn');
   var alertBox  = document.getElementById('alert');
   var successEl = document.getElementById('success');
+  var PRODUTO = 'Voice Groups';
   var mp = null, mounted = false, busy = false;
+  var PRECO = 250, DIA_COBRANCA = 10, resumoAtual = null;
 
   payBtn.dataset.label = payBtn.querySelector('.label').textContent;
 
@@ -379,6 +421,81 @@
     return calc(12) === parseInt(s[12], 10) && calc(13) === parseInt(s[13], 10);
   }
 
+
+  /* ---------- resumo da cobranca ---------- */
+
+  function brl(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+  function dataCurta(d) {
+    return String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0');
+  }
+  function hojeEmBrasilia() {
+    var iso = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date());
+    var p = iso.split('-').map(Number);
+    return new Date(Date.UTC(p[0], p[1] - 1, p[2]));
+  }
+  function resumoCobranca(precoMensal) {
+    var hoje = hojeEmBrasilia();
+    var dia = hoje.getUTCDate(), ano = hoje.getUTCFullYear(), mes = hoje.getUTCMonth();
+    if (dia === DIA_COBRANCA) {
+      return { valorHoje: precoMensal, dias: null, hoje: hoje,
+               proximaCobranca: new Date(Date.UTC(ano, mes + 1, DIA_COBRANCA)) };
+    }
+    var prox = dia < DIA_COBRANCA
+      ? new Date(Date.UTC(ano, mes, DIA_COBRANCA))
+      : new Date(Date.UTC(ano, mes + 1, DIA_COBRANCA));
+    var dias = Math.round((prox - hoje) / 86400000);
+    return { valorHoje: Math.round((precoMensal / 30) * dias * 100) / 100,
+             dias: dias, hoje: hoje, proximaCobranca: prox };
+  }
+  function pintarResumo() {
+    var r = resumoCobranca(PRECO);
+    resumoAtual = r;
+    document.getElementById('resumoHoje').textContent = brl(r.valorHoje);
+    document.getElementById('resumoProx').textContent = brl(PRECO);
+    document.getElementById('resumoProxLabel').innerHTML =
+      'A partir de ' + dataCurta(r.proximaCobranca) +
+      '<small>todo dia ' + DIA_COBRANCA + ', enquanto a assinatura estiver ativa</small>';
+    var nota = document.getElementById('resumoNota');
+    if (r.dias === null) {
+      nota.textContent = 'mensalidade cheia, hoje é dia de vencimento';
+    } else {
+      nota.textContent = 'proporcional de ' + r.dias + (r.dias === 1 ? ' dia, de ' : ' dias, de ') +
+        dataCurta(r.hoje) + ' até ' + dataCurta(r.proximaCobranca);
+    }
+    document.getElementById('resumo').classList.remove('loading');
+    return r;
+  }
+
+  /* ---------- pixel ---------- */
+
+  var jaInitiate = false;
+  function trackInitiate() {
+    if (jaInitiate || !window.fbq || !resumoAtual) return;
+    jaInitiate = true;
+    fbq('track', 'InitiateCheckout', { value: resumoAtual.valorHoje, currency: 'BRL', content_name: PRODUTO });
+  }
+  function trackAddPayment() {
+    if (!window.fbq || !resumoAtual) return;
+    fbq('track', 'AddPaymentInfo', { value: resumoAtual.valorHoje, currency: 'BRL', content_name: PRODUTO });
+  }
+  function trackCompra(id, valorHoje) {
+    if (!window.fbq || !id) return;
+    var chave = 'cv_purchase_' + id;
+    try { if (sessionStorage.getItem(chave)) return; } catch (e) {}
+    var eventId = 'cv-sub-' + id;
+    fbq('track', 'Purchase', {
+      value: valorHoje, currency: 'BRL', content_name: PRODUTO, content_type: 'subscription'
+    }, { eventID: eventId });
+    fbq('track', 'Subscribe', {
+      value: PRECO, currency: 'BRL', predicted_ltv: Math.round(PRECO * 3 * 100) / 100
+    }, { eventID: eventId + '-sub' });
+    try { sessionStorage.setItem(chave, '1'); } catch (e) {}
+  }
+
+  pintarResumo();
+
   fetch(API + '/config')
     .then(function (r) { return r.json(); })
     .then(function (cfg) {
@@ -390,6 +507,9 @@
         payBtn.querySelector('.label').textContent = cfg.ctaText;
         payBtn.dataset.label = cfg.ctaText;
       }
+      if (cfg.price)      PRECO = Number(cfg.price);
+      if (cfg.billingDay) DIA_COBRANCA = Number(cfg.billingDay);
+      pintarResumo();
 
       mp = new MercadoPago(cfg.publicKey, { locale: 'pt-BR' });
 
@@ -403,7 +523,7 @@
           var box = document.getElementById('form-checkout__' + f[0]);
           var el = mp.fields.create(f[0], { placeholder: f[1], style: style })
                             .mount('form-checkout__' + f[0]);
-          el.on('focus',  function () { box.classList.add('is-focused'); });
+          el.on('focus',  function () { box.classList.add('is-focused'); trackInitiate(); });
           el.on('blur',   function () { box.classList.remove('is-focused'); });
           el.on('error',  function () { fieldError(f[0], true); });
           el.on('change', function () { fieldError(f[0], false); });
@@ -415,6 +535,8 @@
       showAlert('Não conseguimos carregar o formulário de pagamento. Recarregue a página ou fale com a gente pelo WhatsApp.');
       payBtn.disabled = true;
     });
+
+  form.addEventListener('focusin', trackInitiate);
 
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
@@ -440,6 +562,8 @@
     if (docType.value === 'CNPJ' && !validCNPJ(docRaw)) { fieldError('docNumber', true); ok = false; }
     if (!ok) return;
 
+    var rNow = pintarResumo();
+    trackAddPayment();
     setBusy(true);
 
     mp.fields.createCardToken({
@@ -475,11 +599,20 @@
         jb.href = r.body.joinUrl;
         jb.style.display = 'inline-block';
       }
+      var valorHoje = (r.body.valorHoje != null) ? Number(r.body.valorHoje) : rNow.valorHoje;
+      var proxTexto = r.body.proximaCobranca
+        ? r.body.proximaCobranca.split('-').reverse().slice(0, 2).join('/')
+        : dataCurta(rNow.proximaCobranca);
+      document.getElementById('successCobranca').textContent =
+        'Hoje foi cobrado ' + brl(valorHoje) + ', proporcional aos dias até o próximo vencimento. A partir de ' +
+        proxTexto + ', a cobrança é de ' + brl(PRECO) + ' todo dia ' + DIA_COBRANCA + '.';
+
       form.style.display = 'none';
       successEl.classList.add('show');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      trackCompra(r.body.id, valorHoje);
       if (window.dataLayer) {
-        window.dataLayer.push({ event: 'subscription_authorized', value: 250, currency: 'BRL' });
+        window.dataLayer.push({ event: 'subscription_authorized', value: valorHoje, currency: 'BRL' });
       }
     })
     .catch(function (err) {
