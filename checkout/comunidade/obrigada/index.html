@@ -33,12 +33,9 @@ fbq('track', 'PageView');
   body{margin:0;min-height:100vh;display:grid;place-items:center;padding:28px 16px;background:var(--offwhite);color:var(--navy);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
   .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:40px 30px;max-width:480px;width:100%;text-align:center}
   @media(max-width:480px){.card{padding:32px 20px}}
-  .brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:24px}
-  .brand img{width:34px;height:34px;border-radius:9px;display:block}
-  .brand span{font-family:Fraunces,Georgia,serif;font-size:17px}
   .tick{width:60px;height:60px;border-radius:50%;background:#EAF5EE;color:var(--ok);display:grid;place-items:center;margin:0 auto 20px}
   h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:26px;margin:0 0 10px;line-height:1.2}
-  .lead{color:var(--muted);font-size:15px;margin:0}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 4px}
   a.btn{display:inline-block;margin-top:26px;padding:16px 30px;border-radius:10px;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;font-size:15.5px}
   a.btn:hover{background:var(--navy-soft)}
   .warn{margin:12px 0 0;font-size:12px;color:#9AA3B5}
@@ -60,17 +57,12 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
 <!-- META PIXEL — fim -->
 
   <div class="card">
-    <div class="brand">
-      <img src="../logo.png" alt="Comunidade Voice" width="34" height="34">
-      <span>Comunidade Voice</span>
-    </div>
-
     <div class="tick">
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
 
-    <h1>Bem-vinda à Comunidade Voice</h1>
-    <p class="lead">Seu pagamento foi aprovado e seu acesso já está liberado. O e-mail com o link também chegou na sua caixa de entrada.</p>
+    <h1>Assinatura confirmada</h1>
+    <p class="lead">Bem-vinda à <strong>Comunidade Voice</strong>. Seu acesso já está liberado.</p>
 
     <a class="btn" id="joinBtn" href="https://www.comunidadevoice.com.br/join?invitation_token=5227a0f28b93d6402a9a7cab83f44e302361301b-9c521af0-d7da-41cb-b262-22f532289883">Acessar a Comunidade</a>
     <p class="warn">Esse convite é pessoal. Não repasse o link, ele dá acesso à sua conta.</p>
