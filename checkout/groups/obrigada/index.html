@@ -30,8 +30,27 @@
   .billing strong{color:var(--navy);font-weight:600}
   footer{margin-top:24px;font-size:11.5px;color:#9AA3B5;line-height:1.6}
 </style>
+
+<!-- META PIXEL -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1268398628617400');
+fbq('track', 'PageView');
+</script>
+<!-- META PIXEL -->
 </head>
 <body>
+
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></noscript>
+
   <div class="card">
     <div class="tick">
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -57,5 +76,37 @@
 
     <footer>Comunidade Voice · CNPJ 67.185.890/0001-24</footer>
   </div>
+
+<script>
+(function () {
+  "use strict";
+  var PRECO = 250, DIA = 10, PRODUTO = 'Voice Groups';
+  var params = new URLSearchParams(window.location.search);
+  var subId = params.get('preapproval_id') || params.get('preapproval_plan_id') || '';
+  if (!subId || !window.fbq) return;
+  var chave = 'cv_purchase_' + subId;
+  try { if (sessionStorage.getItem(chave)) return; } catch (e) {}
+
+  var iso = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).format(new Date());
+  var p = iso.split('-').map(Number);
+  var hoje = Date.UTC(p[0], p[1] - 1, p[2]), dia = p[2];
+  var prox = (dia === DIA) ? Date.UTC(p[0], p[1], DIA)
+           : (dia < DIA)   ? Date.UTC(p[0], p[1] - 1, DIA)
+                           : Date.UTC(p[0], p[1], DIA);
+  var dias = Math.round((prox - hoje) / 86400000);
+  var valorHoje = (dia === DIA) ? PRECO : Math.round((PRECO / 30) * dias * 100) / 100;
+
+  var eventId = 'cv-sub-' + subId;
+  fbq('track', 'Purchase', {
+    value: valorHoje, currency: 'BRL', content_name: PRODUTO, content_type: 'subscription'
+  }, { eventID: eventId });
+  fbq('track', 'Subscribe', {
+    value: PRECO, currency: 'BRL', predicted_ltv: Math.round(PRECO * 3 * 100) / 100
+  }, { eventID: eventId + '-sub' });
+  try { sessionStorage.setItem(chave, '1'); } catch (e) {}
+})();
+</script>
 </body>
 </html>
