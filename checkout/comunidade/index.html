@@ -191,21 +191,26 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
         </div>
 
         <ul class="feats">
-          <li>Um devocional ao vivo por semana e 4 aulas novas toda semana</li>
-          <li>O Método VOICE inteiro: Verse, Open Ears, Interaction, Connection, Expression</li>
-          <li>Acesso a todas as aulas já publicadas e a todo o material da Comunidade, desde a primeira</li>
+          <li>Um devocional ao vivo por semana, segunda às 7h, com gravação depois</li>
+          <li>4 aulas gravadas novas por semana, liberadas de terça a sexta</li>
+          <li>Acesso a todo o acervo de aulas já publicadas, desde a primeira</li>
           <li>Uma comunidade de mulheres para praticar, tirar dúvida e não desistir no meio do caminho</li>
         </ul>
 
         <details class="terms" id="termos">
           <summary>Condições da assinatura</summary>
           <div class="body">
-            <p>A assinatura é mensal, de R$ 149, com vencimento todo dia 10. A primeira cobrança é proporcional aos dias entre hoje e o próximo dia 10.</p>
-            <p>O compromisso inicial é de 3 mensalidades completas. O período proporcional não entra nessa conta. Se você cancelar antes disso, as mensalidades que faltam seguem devidas, sem multa.</p>
-            <p>Depois das 3 primeiras mensalidades, o cancelamento é livre e sem multa, por escrito no WhatsApp oficial ou em contato@comunidadevoice.com.br. Avisando até o dia 10, você deve só a mensalidade do mês. Avisando depois do vencimento, a mensalidade seguinte também é devida e o acesso continua garantido nesse período.</p>
-            <p>O valor é reajustado uma vez por ano, em fevereiro, pelo IGP-M.</p>
-            <p>A Comunidade tem 30 dias de recesso por ano, 15 no verão e 15 no inverno, acompanhando as férias escolares. Nesse período você recebe aula gravada. O recesso não suspende a cobrança.</p>
-            <p>Pagamento em atraso por mais de 5 dias suspende o acesso. Mais de 30 dias encerra a assinatura. Encerrada a assinatura, você continua com o Devocional Generoso, que é gratuito.</p>
+            <p><strong>Cobrança.</strong> R$ 149 por mês no cartão de crédito, com vencimento todo dia 10. A primeira cobrança é proporcional: você paga apenas pelos dias entre a sua adesão e o próximo dia 10.</p>
+            <p><strong>Arrependimento.</strong> Você pode desistir em até 7 dias corridos do aceite, sem precisar justificar e sem nenhum custo, avisando pelo WhatsApp oficial ou por contato@comunidadevoice.com.br. O valor pago é devolvido integralmente e o acesso é encerrado na data do aviso.</p>
+            <p><strong>Fidelidade.</strong> 3 mensalidades completas. O período proporcional inicial não conta nesse prazo. Não há multa rescisória, mas se você cancelar antes de completá-las as mensalidades restantes seguem devidas.</p>
+            <p><strong>Renovação.</strong> Cumprida a fidelidade, a assinatura renova automaticamente mês a mês, por prazo indeterminado.</p>
+            <p><strong>Cancelamento.</strong> Depois da fidelidade você cancela quando quiser, sem multa, avisando por escrito pelo WhatsApp oficial ou por contato@comunidadevoice.com.br. Se o aviso chegar até o dia 10, é devida apenas a mensalidade daquele mês. Se chegar depois do vencimento, a mensalidade seguinte também é devida, e o seu acesso continua garantido durante todo esse período.</p>
+            <p><strong>Recesso.</strong> 30 dias por ano, 15 no verão e 15 no inverno, em datas avisadas com antecedência. Nesse período o conteúdo fica gravado na plataforma, inclusive o devocional. O recesso não suspende a cobrança nem a contagem da fidelidade.</p>
+            <p><strong>Reajuste.</strong> O valor é corrigido uma vez por ano, em fevereiro, pelo IGP-M.</p>
+            <p><strong>Atraso.</strong> Mais de 5 dias de atraso suspende o acesso até a regularização. Mais de 30 dias encerra a assinatura, com os valores em aberto ainda devidos.</p>
+            <p><strong>Acesso.</strong> É pessoal e intransferível. Encerrada a assinatura, você continua com o Devocional Generoso, que é gratuito.</p>
+            <p><strong>Não incluso.</strong> As aulas de conversação ao vivo em turma são do Voice Groups, contratado à parte.</p>
+            <p style="margin-top:12px"><a href="contrato.pdf" target="_blank" rel="noopener" style="color:var(--navy);font-weight:500">Ler o contrato completo (PDF)</a></p>
           </div>
         </details>
       </div>
@@ -288,7 +293,7 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
 
           <label class="check">
             <input type="checkbox" id="accept" required>
-            <span>Li e aceito as <a href="#termos" id="openTerms">condições da assinatura</a>, incluindo o compromisso de 3 mensalidades e a renovação automática mensal.</span>
+            <span>Li e aceito o <a href="contrato.pdf" target="_blank" rel="noopener" id="openTerms">contrato e as condições da assinatura</a>, incluindo a fidelidade de 3 mensalidades e a renovação automática mensal.</span>
           </label>
           <div class="err-msg" data-for="accept">É preciso aceitar as condições para continuar.</div>
 
@@ -335,13 +340,6 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
   var resumoAtual = null;
 
   payBtn.dataset.label = payBtn.querySelector('.label').textContent;
-
-  document.getElementById('openTerms').addEventListener('click', function (e) {
-    e.preventDefault();
-    var dEl = document.getElementById('termos');
-    dEl.open = true;
-    dEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
 
   /* ---------- helpers ---------- */
 
