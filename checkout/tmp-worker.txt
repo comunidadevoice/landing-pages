@@ -1,0 +1,371 @@
+/**
+ * voice-checkout-api — Comunidade Voice
+ * API do Checkout Transparente da assinatura "Groups Voice".
+ *
+ * Domínio:  https://api.comunidadevoice.com.br
+ * Consumido por: https://lp.comunidadevoice.com.br/checkout/groups/
+ *
+ * Rotas:  GET /config · POST /subscribe · POST /webhook · GET /
+ *
+ * Variáveis de texto:  MP_PUBLIC_KEY, MP_PLAN_ID, PLAN_NAME, PLAN_PRICE_TEXT, CTA_TEXT, BACK_URL,
+ *                      CIRCLE_JOIN_URL, MAILERLITE_GROUP_ID
+ * Segredos (encrypt):  MP_ACCESS_TOKEN, MP_WEBHOOK_SECRET, MAILERLITE_TOKEN
+ */
+
+const MP = 'https://api.mercadopago.com';
+const ORIGINS = [
+  'https://lp.comunidadevoice.com.br',
+  'https://www.lp.comunidadevoice.com.br',
+];
+
+export default {
+  async fetch(request, env, ctx) {
+    const path = new URL(request.url).pathname.replace(/\/+$/, '') || '/';
+    const origin = request.headers.get('Origin') || '';
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: cors(origin) });
+    }
+    if (path === '/config/comunidade' && request.method === 'GET') {
+      return json({
+        publicKey: env.MP_PUBLIC_KEY || '',
+        price: Number(env.PLAN_PRICE_COMUNIDADE || 149),
+        billingDay: Number(env.PLAN_BILLING_DAY || 10),
+        productName: 'Comunidade Voice',
+      }, 200, origin, { 'Cache-Control': 'public, max-age=60' });
+    }
+    if (path === '/subscribe/comunidade' && request.method === 'POST') {
+      return subscribeComunidade(request, env, origin, ctx);
+    }
+    if (path === '/config' && request.method === 'GET') {
+      return json({
+        publicKey: env.MP_PUBLIC_KEY || '',
+        planName:  env.PLAN_NAME || 'Groups Voice',
+        priceText: env.PLAN_PRICE_TEXT || 'R$&nbsp;250',
+        ctaText:   env.CTA_TEXT || 'Assinar por R$ 250/mês',
+      }, 200, origin, { 'Cache-Control': 'public, max-age=60' });
+    }
+    if (path === '/subscribe' && request.method === 'POST') {
+      return subscribe(request, env, origin, ctx);
+    }
+    if (path === '/webhook' && request.method === 'POST') {
+      return webhook(request, env, ctx);
+    }
+    if (path === '/') {
+      return json({ service: 'voice-checkout-api', ok: true }, 200, origin);
+    }
+    return json({ message: 'Rota não encontrada.' }, 404, origin);
+  },
+};
+
+function cors(origin) {
+  const allow = ORIGINS.includes(origin) ? origin : ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allow,
+    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
+  };
+}
+
+function json(data, status, origin, extra) {
+  return new Response(JSON.stringify(data), {
+    status: status || 200,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'X-Content-Type-Options': 'nosniff',
+      ...cors(origin || ''),
+      ...(extra || {}),
+    },
+  });
+}
+
+/* ---------------- criação da assinatura ---------------- */
+
+async function subscribe(request, env, origin, ctx) {
+  let b;
+  try { b = await request.json(); } catch { return json({ message: 'Requisição inválida.' }, 400, origin); }
+
+  const { cardTokenId, payerEmail, payerName, payerPhone, docType, docNumber, acceptedTerms } = b || {};
+
+  if (!cardTokenId || typeof cardTokenId !== 'string')
+    return json({ message: 'Não conseguimos validar o cartão. Tente novamente.' }, 400, origin);
+  if (!payerEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(payerEmail))
+    return json({ message: 'Informe um e-mail válido.' }, 400, origin);
+  if (acceptedTerms !== true)
+    return json({ message: 'É preciso aceitar as condições da assinatura.' }, 400, origin);
+  if (!env.MP_ACCESS_TOKEN || !env.MP_PLAN_ID) {
+    console.error('Faltando MP_ACCESS_TOKEN ou MP_PLAN_ID');
+    return json({ message: 'Pagamento indisponível no momento. Fale com a gente pelo WhatsApp.' }, 500, origin);
+  }
+
+  const payload = {
+    preapproval_plan_id: env.MP_PLAN_ID,
+    card_token_id: cardTokenId,
+    payer_email: String(payerEmail).toLowerCase(),
+    status: 'authorized',
+  };
+  if (env.BACK_URL) payload.back_url = env.BACK_URL;
+
+  let res, data;
+  try {
+    res = await fetch(MP + '/preapproval', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + env.MP_ACCESS_TOKEN,
+        'Content-Type': 'application/json',
+        'X-Idempotency-Key': crypto.randomUUID(),
+      },
+      body: JSON.stringify(payload),
+    });
+    data = await res.json();
+  } catch (e) {
+    console.error('Rede MP:', e);
+    return json({ message: 'Não conseguimos concluir o pagamento agora. Tente de novo em instantes.' }, 502, origin);
+  }
+
+  if (!res.ok) {
+    console.error('Erro MP', res.status, JSON.stringify(data));
+    return json({ message: friendly(data) }, 400, origin);
+  }
+
+  console.log('Assinatura criada', data.id, data.status, payerEmail, payerName || '', docType || '');
+
+  // inscreve no MailerLite -> dispara a automacao com o acesso a Comunidade
+  if (env.MAILERLITE_TOKEN && env.MAILERLITE_GROUP_ID) {
+    ctx.waitUntil(mailerlite(env, payerEmail, payerName, payerPhone));
+  }
+
+  return json({
+    id: data.id,
+    status: data.status,
+    joinUrl: env.CIRCLE_JOIN_URL || null,
+  }, 201, origin);
+}
+
+async function mailerlite(env, email, fullName, phone, groupId, extraFields) {
+  const parts = String(fullName || '').trim().split(/\s+/);
+  const body = {
+    email: String(email).toLowerCase(),
+    groups: [String(groupId || env.MAILERLITE_GROUP_ID)],
+    fields: Object.assign({}, extraFields || {}),
+  };
+  if (parts[0]) body.fields.name = parts[0];
+  if (parts.length > 1) body.fields.last_name = parts.slice(1).join(' ');
+
+  const digits = String(phone || '').replace(/\D/g, '');
+  if (digits.length >= 10) body.fields.phone = '+55' + digits;
+
+  try {
+    const r = await fetch('https://connect.mailerlite.com/api/subscribers', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + env.MAILERLITE_TOKEN,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    const out = await r.text();
+    if (r.ok) console.log('[mailerlite] inscrita', email);
+    else console.error('[mailerlite] erro', r.status, out.slice(0, 400));
+  } catch (e) {
+    console.error('[mailerlite] falhou', e);
+  }
+}
+
+/* ---------------- Comunidade Voice ---------------- */
+
+function resumoCobranca(preco, diaCobranca) {
+  const iso = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).format(new Date());
+  const p = iso.split('-').map(Number);
+  const ano = p[0], mes = p[1] - 1, dia = p[2];
+  const hoje = Date.UTC(ano, mes, dia);
+
+  let prox;
+  if (dia === diaCobranca) prox = Date.UTC(ano, mes + 1, diaCobranca);
+  else if (dia < diaCobranca) prox = Date.UTC(ano, mes, diaCobranca);
+  else prox = Date.UTC(ano, mes + 1, diaCobranca);
+
+  const dias = Math.round((prox - hoje) / 86400000);
+  const valorHoje = (dia === diaCobranca)
+    ? preco
+    : Math.round((preco / 30) * dias * 100) / 100;
+
+  return { valorHoje, dias, proximaCobranca: new Date(prox).toISOString().slice(0, 10) };
+}
+
+async function subscribeComunidade(request, env, origin, ctx) {
+  let b;
+  try { b = await request.json(); } catch { return json({ message: 'Requisição inválida.' }, 400, origin); }
+
+  const { cardTokenId, payerEmail, payerName, payerPhone, docType, docNumber, acceptedTerms } = b || {};
+
+  if (!cardTokenId || typeof cardTokenId !== 'string')
+    return json({ message: 'Não conseguimos validar o cartão. Tente novamente.' }, 400, origin);
+  if (!payerEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(payerEmail))
+    return json({ message: 'Informe um e-mail válido.' }, 400, origin);
+  if (acceptedTerms !== true)
+    return json({ message: 'É preciso aceitar as condições da assinatura.' }, 400, origin);
+  if (!env.MP_ACCESS_TOKEN || !env.MP_PLAN_ID_COMUNIDADE) {
+    console.error('Faltando MP_ACCESS_TOKEN ou MP_PLAN_ID_COMUNIDADE');
+    return json({ message: 'Pagamento indisponível no momento. Fale com a gente pelo WhatsApp.' }, 500, origin);
+  }
+
+  const payload = {
+    preapproval_plan_id: env.MP_PLAN_ID_COMUNIDADE,
+    card_token_id: cardTokenId,
+    payer_email: String(payerEmail).toLowerCase(),
+    status: 'authorized',
+  };
+  if (env.BACK_URL_COMUNIDADE) payload.back_url = env.BACK_URL_COMUNIDADE;
+
+  let res, data;
+  try {
+    res = await fetch(MP + '/preapproval', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + env.MP_ACCESS_TOKEN,
+        'Content-Type': 'application/json',
+        'X-Idempotency-Key': crypto.randomUUID(),
+      },
+      body: JSON.stringify(payload),
+    });
+    data = await res.json();
+  } catch (e) {
+    console.error('Rede MP (comunidade):', e);
+    return json({ message: 'Não conseguimos concluir o pagamento agora. Tente de novo em instantes.' }, 502, origin);
+  }
+
+  if (!res.ok) {
+    console.error('Erro MP comunidade', res.status, JSON.stringify(data));
+    return json({ message: friendly(data) }, 400, origin);
+  }
+
+  const preco = Number(env.PLAN_PRICE_COMUNIDADE || 149);
+  const diaCobranca = Number(env.PLAN_BILLING_DAY || 10);
+  const r = resumoCobranca(preco, diaCobranca);
+
+  console.log('Assinatura Comunidade criada', data.id, data.status, payerEmail, r.valorHoje);
+
+  if (env.MAILERLITE_TOKEN && env.MAILERLITE_GROUP_ID_COMUNIDADE) {
+    const pd = r.proximaCobranca.split('-');
+    ctx.waitUntil(mailerlite(env, payerEmail, payerName, payerPhone, env.MAILERLITE_GROUP_ID_COMUNIDADE, {
+      valor_hoje: r.valorHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      proxima_cobranca: pd[2] + '/' + pd[1] + '/' + pd[0],
+    }));
+  }
+
+  return json({
+    id: data.id,
+    status: data.status,
+    joinUrl: env.CIRCLE_JOIN_URL_COMUNIDADE || env.CIRCLE_JOIN_URL || null,
+    valorHoje: r.valorHoje,
+    proximaCobranca: r.proximaCobranca,
+  }, 201, origin);
+}
+
+function friendly(d) {
+  const cause = ((d && (d.cause || d.causes)) || [])[0] || {};
+  const code = String(cause.code || cause.id || '');
+  const msg = String((d && d.message) || '');
+
+  const map = {
+    '3034': 'Número de cartão inválido.',
+    '3029': 'Data de validade inválida.',
+    '3028': 'Data de validade inválida.',
+    '3030': 'Código de segurança (CVV) inválido.',
+    'E301': 'Número de cartão inválido.',
+    'E302': 'Código de segurança (CVV) inválido.',
+    '316':  'Nome do titular inválido.',
+    '324':  'CPF inválido.',
+    '325':  'Data de validade inválida.',
+    '326':  'Data de validade inválida.',
+  };
+  if (map[code]) return map[code];
+
+  if (/insufficient_amount/.test(msg)) return 'Cartão sem limite disponível para esta cobrança.';
+  if (/bad_filled_security_code/.test(msg)) return 'Código de segurança (CVV) incorreto.';
+  if (/bad_filled_date/.test(msg)) return 'Data de validade incorreta.';
+  if (/bad_filled/.test(msg)) return 'Confira os dados do cartão e tente novamente.';
+  if (/call_for_authorize/.test(msg)) return 'Seu banco precisa autorizar esta cobrança. Ligue para o banco e tente de novo.';
+  if (/high_risk|blacklist/.test(msg)) return 'Pagamento não autorizado pelo emissor. Tente outro cartão.';
+  if (/card_token/i.test(msg)) return 'A sessão do cartão expirou. Preencha os dados novamente.';
+  if (/already has|exists/i.test(msg)) return 'Já existe uma assinatura ativa para este e-mail.';
+  if (/collector|yourself/i.test(msg)) return 'Use um e-mail diferente do e-mail usado na conta da escola.';
+
+  return 'Não foi possível concluir a assinatura. Confira os dados do cartão ou tente outro cartão.';
+}
+
+/* ---------------- webhook ---------------- */
+
+async function webhook(request, env, ctx) {
+  const url = new URL(request.url);
+  const raw = await request.text();
+
+  let evt = {};
+  try { evt = JSON.parse(raw || '{}'); } catch {}
+
+  const dataId = String((evt.data && evt.data.id) || url.searchParams.get('data.id') || '');
+  const type = String(evt.type || url.searchParams.get('type') || '');
+
+  if (env.MP_WEBHOOK_SECRET && !(await validSig(request, env.MP_WEBHOOK_SECRET, dataId))) {
+    console.warn('Webhook com assinatura inválida', type, dataId);
+    return new Response('invalid signature', { status: 401 });
+  }
+
+  ctx.waitUntil(process(type, dataId, env));
+  return new Response('ok', { status: 200 });
+}
+
+async function validSig(request, secret, dataId) {
+  const sig = request.headers.get('x-signature') || '';
+  const reqId = request.headers.get('x-request-id') || '';
+  const parts = {};
+  sig.split(',').forEach(p => {
+    const i = p.indexOf('=');
+    if (i > 0) parts[p.slice(0, i).trim()] = p.slice(i + 1).trim();
+  });
+  if (!parts.ts || !parts.v1) return false;
+
+  const manifest = `id:${dataId};request-id:${reqId};ts:${parts.ts};`;
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const mac = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(manifest));
+  const hex = [...new Uint8Array(mac)].map(x => x.toString(16).padStart(2, '0')).join('');
+
+  if (hex.length !== parts.v1.length) return false;
+  let diff = 0;
+  for (let i = 0; i < hex.length; i++) diff |= hex.charCodeAt(i) ^ parts.v1.charCodeAt(i);
+  return diff === 0;
+}
+
+async function process(type, dataId, env) {
+  if (!dataId || !env.MP_ACCESS_TOKEN) return;
+  const auth = { Authorization: 'Bearer ' + env.MP_ACCESS_TOKEN };
+
+  try {
+    if (type === 'subscription_preapproval') {
+      const s = await (await fetch(MP + '/preapproval/' + dataId, { headers: auth })).json();
+      console.log('[preapproval]', s.id, s.status, s.payer_email);
+      // authorized  -> liberar acesso no Circle + WhatsApp
+      // cancelled / paused -> revogar acesso
+      return;
+    }
+    if (type === 'subscription_authorized_payment') {
+      const p = await (await fetch(MP + '/authorized_payments/' + dataId, { headers: auth })).json();
+      console.log('[mensalidade]', p.id, p.status, p.preapproval_id);
+      // processed  -> mensalidade paga
+      // rejected / recycling -> inadimplência, avisar a aluna
+      return;
+    }
+    console.log('[webhook ignorado]', type, dataId);
+  } catch (e) {
+    console.error('Falha no webhook', type, dataId, e);
+  }
+}
