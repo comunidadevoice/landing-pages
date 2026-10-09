@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assinatura Groups Voice — Comunidade Voice</title>
+<meta name="description" content="Assine o Groups Voice: conversação em inglês ao vivo, em turmas de até 8 alunas.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.comunidadevoice.com.br">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --offwhite:#FAF7F2; --offwhite-2:#F2EDE4;
+    --navy:#16233F; --navy-soft:#2A3A5C;
+    --gold:#C9A227; --gold-soft:#E4C765;
+    --ink:#16233F; --muted:#5D6880; --line:#E0D9CC;
+    --ok:#1E7A4B; --err:#B3261E;
+    --radius:14px; --field-h:52px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--offwhite); color:var(--ink);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:28px 16px 64px}
+
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:26px}
+  .brand-mark{width:34px;height:34px;border-radius:9px;flex:none;background:var(--navy);color:var(--gold-soft);display:grid;place-items:center;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:17px}
+  .brand-name{font-family:Fraunces,Georgia,serif;font-size:18px;letter-spacing:.2px}
+  .brand-name span{color:var(--muted);font-family:Inter,sans-serif;font-size:13px;display:block;letter-spacing:0}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:20px}
+  @media(min-width:900px){.grid{grid-template-columns:1fr 1.05fr;gap:28px;align-items:start}.col-summary{position:sticky;top:28px}}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px 24px}
+  @media(max-width:480px){.card{padding:22px 18px}}
+
+  .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:0 0 8px}
+  h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:30px;line-height:1.15;margin:0 0 6px}
+  .lead{color:var(--muted);margin:0 0 22px;font-size:15px}
+  .price{display:flex;align-items:baseline;gap:8px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .price b{font-family:Fraunces,Georgia,serif;font-size:38px;font-weight:600;line-height:1}
+  .price em{font-style:normal;color:var(--muted);font-size:15px}
+  .price-note{font-size:13px;color:var(--muted);margin:10px 0 0}
+  ul.feats{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:11px}
+  ul.feats li{position:relative;padding-left:26px;font-size:14.5px}
+  ul.feats li::before{content:"";position:absolute;left:0;top:7px;width:14px;height:8px;border-left:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(-45deg)}
+
+  details.terms{margin-top:22px;background:var(--offwhite-2);border-radius:10px;font-size:13px;color:var(--muted);line-height:1.6}
+  details.terms summary{cursor:pointer;padding:13px 16px;font-weight:500;color:var(--navy);list-style:none;display:flex;justify-content:space-between;align-items:center}
+  details.terms summary::-webkit-details-marker{display:none}
+  details.terms summary::after{content:"+";font-size:17px;color:var(--gold);line-height:1}
+  details.terms[open] summary::after{content:"–"}
+  details.terms .body{padding:0 16px 16px}
+  details.terms p{margin:0 0 9px}
+  details.terms strong{color:var(--ink);font-weight:600}
+
+  h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:21px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 22px}
+  .field{margin-bottom:15px}
+  .field label{display:block;font-size:13px;font-weight:500;margin-bottom:6px;color:var(--navy-soft)}
+  .ctl,.mp-field{width:100%;height:var(--field-h);border:1px solid var(--line);border-radius:10px;background:#fff;padding:0 14px;font-size:15px;font-family:inherit;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+  .ctl:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(22,35,63,.08)}
+  .mp-field{padding:0 10px;display:flex;align-items:center}
+  .mp-field iframe{width:100%!important;height:100%!important;border:0}
+  .mp-field.is-focused{border-color:var(--navy);box-shadow:0 0 0 3px rgba(22,35,63,.08)}
+  .mp-field.is-invalid,.ctl.is-invalid{border-color:var(--err)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row-3{display:grid;grid-template-columns:110px 1fr;gap:12px}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .err-msg{font-size:12.5px;color:var(--err);margin-top:6px;display:none}
+  .err-msg.show{display:block}
+
+  .check{display:flex;gap:10px;align-items:flex-start;margin:18px 0 6px;font-size:13.5px;color:var(--muted);line-height:1.5}
+  .check input{margin-top:3px;width:17px;height:17px;accent-color:var(--navy);flex:none}
+  .check a{color:var(--navy)}
+
+  button.pay{width:100%;height:56px;margin-top:16px;border:0;border-radius:10px;background:var(--navy);color:#fff;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .15s,opacity .15s}
+  button.pay:hover:not(:disabled){background:var(--navy-soft)}
+  button.pay:disabled{opacity:.55;cursor:not-allowed}
+  .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+  .is-loading .spinner{display:block}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .secure{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;font-size:12.5px;color:var(--muted)}
+  .secure svg{width:13px;height:13px;flex:none}
+
+  .alert{display:none;margin-bottom:18px;padding:13px 15px;border-radius:10px;font-size:14px;line-height:1.5;border:1px solid}
+  .alert.show{display:block}
+  .alert.error{background:#FDF2F1;border-color:#F0C9C5;color:var(--err)}
+
+  .success{display:none;text-align:center;padding:16px 4px 6px}
+  .success.show{display:block}
+  .success .tick{width:58px;height:58px;border-radius:50%;background:#EAF5EE;color:var(--ok);display:grid;place-items:center;margin:0 auto 18px}
+  .success h2{font-size:24px}
+  .success p{color:var(--muted);font-size:15px;max-width:40ch;margin:10px auto 0}
+  .success .ref{margin-top:20px;padding:12px;background:var(--offwhite-2);border-radius:10px;font-size:12.5px;color:var(--muted);word-break:break-all}
+
+  footer{margin-top:34px;text-align:center;font-size:12px;color:var(--muted);line-height:1.7}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="brand-mark">V</div>
+    <div class="brand-name">Comunidade Voice<span>Pagamento seguro</span></div>
+  </div>
+
+  <div class="grid">
+
+    <section class="col-summary">
+      <div class="card">
+        <p class="eyebrow">Assinatura mensal</p>
+        <h1 id="planName">Groups Voice</h1>
+        <p class="lead">Conversação em inglês ao vivo, em turma pequena, com todo o material da Comunidade Voice incluso.</p>
+
+        <div class="price"><b id="planPrice">R$&nbsp;250</b><em>/mês</em></div>
+        <p class="price-note">Cobrança automática no cartão de crédito, todo mês, na mesma data.</p>
+
+        <ul class="feats">
+          <li>1 aula ao vivo por semana, de 1 hora</li>
+          <li>Turmas de até 8 alunas</li>
+          <li>Acesso completo aos materiais da Comunidade Voice</li>
+          <li>Método VOICE — Verse, Open Ears, Interaction, Connection, Expression</li>
+          <li>Recesso de 30 dias no ano (15 no verão, 15 no inverno), com aula gravada</li>
+        </ul>
+
+        <details class="terms" id="termos">
+          <summary>Condições da assinatura</summary>
+          <div class="body">
+            <p><strong>Fidelidade.</strong> 3 mensalidades completas. O período proporcional inicial não conta nesse prazo.</p>
+            <p><strong>Renovação.</strong> Depois da fidelidade, a assinatura renova automaticamente mês a mês e pode ser cancelada quando você quiser.</p>
+            <p><strong>Saída antecipada.</strong> Não há multa rescisória. Você paga apenas as parcelas já vencidas dentro da fidelidade.</p>
+            <p><strong>Recesso.</strong> 30 dias por ano, divididos em 15 no verão e 15 no inverno, com aula gravada disponibilizada no período.</p>
+            <p><strong>Cobrança.</strong> R$ 250 por mês no cartão de crédito, processados pelo Mercado Pago. O cancelamento pode ser feito a qualquer momento pelo Mercado Pago ou falando com a gente.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+
+        <div id="alert" class="alert error" role="alert"></div>
+
+        <div id="success" class="success">
+          <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h2>Assinatura confirmada</h2>
+          <p>Enviamos a confirmação para o seu e-mail. Em instantes você recebe no WhatsApp as instruções de acesso e o horário da sua turma.</p>
+          <div class="ref">Código da assinatura: <strong id="subId">—</strong></div>
+        </div>
+
+        <form id="form" novalidate>
+          <h2>Dados de pagamento</h2>
+          <p class="sub">Seus dados de cartão vão direto para o Mercado Pago. Nosso servidor não os recebe nem armazena.</p>
+
+          <div class="field">
+            <label for="fullName">Nome completo</label>
+            <input class="ctl" id="fullName" type="text" autocomplete="name" placeholder="Como no seu documento" required>
+            <div class="err-msg" data-for="fullName">Informe seu nome completo.</div>
+          </div>
+
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input class="ctl" id="email" type="email" autocomplete="email" placeholder="voce@email.com" required>
+            <div class="hint">É neste e-mail que chegam o recibo e o acesso.</div>
+            <div class="err-msg" data-for="email">Informe um e-mail válido.</div>
+          </div>
+
+          <div class="field">
+            <label for="docNumber">Documento do titular</label>
+            <div class="row-3">
+              <select class="ctl" id="docType" aria-label="Tipo de documento">
+                <option value="CPF">CPF</option>
+                <option value="CNPJ">CNPJ</option>
+              </select>
+              <input class="ctl" id="docNumber" type="text" inputmode="numeric" placeholder="000.000.000-00" required>
+            </div>
+            <div class="err-msg" data-for="docNumber">Documento inválido.</div>
+          </div>
+
+          <div class="field">
+            <label for="form-checkout__cardNumber">Número do cartão</label>
+            <div class="mp-field" id="form-checkout__cardNumber"></div>
+            <div class="err-msg" data-for="cardNumber">Número de cartão inválido.</div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="form-checkout__expirationDate">Validade</label>
+              <div class="mp-field" id="form-checkout__expirationDate"></div>
+              <div class="err-msg" data-for="expirationDate">Validade inválida.</div>
+            </div>
+            <div class="field">
+              <label for="form-checkout__securityCode">CVV</label>
+              <div class="mp-field" id="form-checkout__securityCode"></div>
+              <div class="err-msg" data-for="securityCode">CVV inválido.</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="cardholderName">Nome impresso no cartão</label>
+            <input class="ctl" id="cardholderName" type="text" autocomplete="cc-name" placeholder="Como aparece no cartão" required>
+            <div class="err-msg" data-for="cardholderName">Informe o nome impresso no cartão.</div>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" id="accept" required>
+            <span>Li e aceito as <a href="#termos" id="openTerms">condições da assinatura</a>, incluindo a fidelidade de 3 mensalidades e a renovação automática mensal.</span>
+          </label>
+          <div class="err-msg" data-for="accept">É preciso aceitar as condições para continuar.</div>
+
+          <button class="pay" id="payBtn" type="submit">
+            <span class="spinner"></span>
+            <span class="label">Assinar por R$ 250/mês</span>
+          </button>
+
+          <div class="secure">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Pagamento processado pelo Mercado Pago
+          </div>
+        </form>
+
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    Comunidade Voice · CNPJ 67.185.890/0001-24<br>
+    Rua João Bernadino da Rosa, 2173 — Pedra Branca, Palhoça/SC — CEP 88137-010<br>
+    <a href="mailto:comunidadeewp@gmail.com">comunidadeewp@gmail.com</a>
+  </footer>
+</div>
+
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+(function () {
+  "use strict";
+
+  var API = 'https://api.comunidadevoice.com.br';
+
+  var form      = document.getElementById('form');
+  var payBtn    = document.getElementById('payBtn');
+  var alertBox  = document.getElementById('alert');
+  var successEl = document.getElementById('success');
+  var mp = null, mounted = false, busy = false;
+
+  payBtn.dataset.label = payBtn.querySelector('.label').textContent;
+
+  document.getElementById('openTerms').addEventListener('click', function (e) {
+    e.preventDefault();
+    var d = document.getElementById('termos');
+    d.open = true;
+    d.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  function showAlert(msg) {
+    alertBox.textContent = msg;
+    alertBox.classList.add('show');
+    alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function clearAlert() { alertBox.classList.remove('show'); }
+
+  function fieldError(name, on) {
+    var msg = document.querySelector('.err-msg[data-for="' + name + '"]');
+    if (msg) msg.classList.toggle('show', !!on);
+    var el = document.getElementById(name) || document.getElementById('form-checkout__' + name);
+    if (el) el.classList.toggle('is-invalid', !!on);
+  }
+  function clearFieldErrors() {
+    document.querySelectorAll('.err-msg').forEach(function (e) { e.classList.remove('show'); });
+    document.querySelectorAll('.is-invalid').forEach(function (e) { e.classList.remove('is-invalid'); });
+  }
+  function setBusy(on) {
+    busy = on;
+    payBtn.disabled = on;
+    payBtn.classList.toggle('is-loading', on);
+    payBtn.querySelector('.label').textContent = on ? 'Processando…' : payBtn.dataset.label;
+  }
+
+  var docType = document.getElementById('docType');
+  var docNumber = document.getElementById('docNumber');
+
+  docNumber.addEventListener('input', function () {
+    var v = docNumber.value.replace(/\D/g, '');
+    if (docType.value === 'CPF') {
+      v = v.slice(0, 11)
+           .replace(/(\d{3})(\d)/, '$1.$2')
+           .replace(/(\d{3})(\d)/, '$1.$2')
+           .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    } else {
+      v = v.slice(0, 14)
+           .replace(/^(\d{2})(\d)/, '$1.$2')
+           .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+           .replace(/\.(\d{3})(\d)/, '.$1/$2')
+           .replace(/(\d{4})(\d)/, '$1-$2');
+    }
+    docNumber.value = v;
+  });
+  docType.addEventListener('change', function () {
+    docNumber.value = '';
+    docNumber.placeholder = docType.value === 'CPF' ? '000.000.000-00' : '00.000.000/0000-00';
+  });
+
+  function validCPF(s) {
+    s = s.replace(/\D/g, '');
+    if (s.length !== 11 || /^(\d)\1{10}$/.test(s)) return false;
+    var sum = 0, r, i;
+    for (i = 1; i <= 9; i++) sum += parseInt(s[i - 1], 10) * (11 - i);
+    r = (sum * 10) % 11; if (r > 9) r = 0;
+    if (r !== parseInt(s[9], 10)) return false;
+    sum = 0;
+    for (i = 1; i <= 10; i++) sum += parseInt(s[i - 1], 10) * (12 - i);
+    r = (sum * 10) % 11; if (r > 9) r = 0;
+    return r === parseInt(s[10], 10);
+  }
+  function validCNPJ(s) {
+    s = s.replace(/\D/g, '');
+    if (s.length !== 14 || /^(\d)\1{13}$/.test(s)) return false;
+    function calc(len) {
+      var nums = s.substring(0, len), pos = len - 7, sum = 0, i;
+      for (i = len; i >= 1; i--) {
+        sum += nums.charAt(len - i) * pos--;
+        if (pos < 2) pos = 9;
+      }
+      var res = sum % 11;
+      return res < 2 ? 0 : 11 - res;
+    }
+    return calc(12) === parseInt(s[12], 10) && calc(13) === parseInt(s[13], 10);
+  }
+
+  fetch(API + '/config')
+    .then(function (r) { return r.json(); })
+    .then(function (cfg) {
+      if (!cfg.publicKey) throw new Error('config');
+
+      if (cfg.planName)  document.getElementById('planName').textContent = cfg.planName;
+      if (cfg.priceText) document.getElementById('planPrice').innerHTML  = cfg.priceText;
+      if (cfg.ctaText) {
+        payBtn.querySelector('.label').textContent = cfg.ctaText;
+        payBtn.dataset.label = cfg.ctaText;
+      }
+
+      mp = new MercadoPago(cfg.publicKey, { locale: 'pt-BR' });
+
+      var style = {
+        height: '100%', fontSize: '15px', color: '#16233F',
+        placeholderColor: '#9AA3B5', fontFamily: 'Inter, sans-serif'
+      };
+
+      [['cardNumber','Número do cartão'],['expirationDate','MM/AA'],['securityCode','CVV']]
+        .forEach(function (f) {
+          var box = document.getElementById('form-checkout__' + f[0]);
+          var el = mp.fields.create(f[0], { placeholder: f[1], style: style })
+                            .mount('form-checkout__' + f[0]);
+          el.on('focus',  function () { box.classList.add('is-focused'); });
+          el.on('blur',   function () { box.classList.remove('is-focused'); });
+          el.on('error',  function () { fieldError(f[0], true); });
+          el.on('change', function () { fieldError(f[0], false); });
+        });
+
+      mounted = true;
+    })
+    .catch(function () {
+      showAlert('Não conseguimos carregar o formulário de pagamento. Recarregue a página ou fale com a gente pelo WhatsApp.');
+      payBtn.disabled = true;
+    });
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    if (busy || !mounted) return;
+
+    clearAlert();
+    clearFieldErrors();
+
+    var fullName       = document.getElementById('fullName').value.trim();
+    var email          = document.getElementById('email').value.trim();
+    var cardholderName = document.getElementById('cardholderName').value.trim();
+    var accept         = document.getElementById('accept').checked;
+    var docRaw         = docNumber.value.replace(/\D/g, '');
+
+    var ok = true;
+    if (fullName.split(/\s+/).length < 2)             { fieldError('fullName', true);       ok = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { fieldError('email', true);          ok = false; }
+    if (!cardholderName)                              { fieldError('cardholderName', true); ok = false; }
+    if (!accept)                                      { fieldError('accept', true);         ok = false; }
+    if (docType.value === 'CPF'  && !validCPF(docRaw))  { fieldError('docNumber', true); ok = false; }
+    if (docType.value === 'CNPJ' && !validCNPJ(docRaw)) { fieldError('docNumber', true); ok = false; }
+    if (!ok) return;
+
+    setBusy(true);
+
+    mp.fields.createCardToken({
+      cardholderName: cardholderName,
+      identificationType: docType.value,
+      identificationNumber: docRaw
+    })
+    .then(function (token) {
+      if (!token || !token.id) throw new Error('token');
+      return fetch(API + '/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cardTokenId: token.id,
+          payerEmail: email,
+          payerName: fullName,
+          docType: docType.value,
+          docNumber: docRaw,
+          acceptedTerms: true
+        })
+      });
+    })
+    .then(function (res) {
+      return res.json().then(function (body) { return { ok: res.ok, body: body }; });
+    })
+    .then(function (r) {
+      if (!r.ok) throw new Error((r.body && r.body.message) || 'Não foi possível concluir a assinatura.');
+
+      document.getElementById('subId').textContent = r.body.id || '—';
+      form.style.display = 'none';
+      successEl.classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.dataLayer) {
+        window.dataLayer.push({ event: 'subscription_authorized', value: 250, currency: 'BRL' });
+      }
+    })
+    .catch(function (err) {
+      setBusy(false);
+      var msg = (err && err.message) ? err.message : '';
+      if (msg === 'token') msg = 'Não conseguimos validar o cartão. Confira os dados e tente de novo.';
+      showAlert(msg || 'Não foi possível concluir a assinatura. Confira os dados do cartão e tente novamente.');
+    });
+  });
+
+  form.addEventListener('input', function (e) {
+    if (e.target.id) fieldError(e.target.id, false);
+    clearAlert();
+  });
+  document.getElementById('accept').addEventListener('change', function () { fieldError('accept', false); });
+})();
+</script>
+</body>
+</html>
