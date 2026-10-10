@@ -170,6 +170,8 @@ async function subscribe(request, env, origin, ctx) {
   if (env.MAILERLITE_TOKEN && env.MAILERLITE_GROUP_ID) {
     const pd = r.proximaCobranca.split('-');
     ctx.waitUntil(mailerlite(env, payerEmail, payerName, payerPhone, env.MAILERLITE_GROUP_ID, {
+      plano: 'Voice Groups',
+      mensalidade: preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       valor_hoje: r.valorHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       proxima_cobranca: pd[2] + '/' + pd[1] + '/' + pd[0],
     }));
@@ -294,6 +296,8 @@ async function subscribeComunidade(request, env, origin, ctx) {
   if (env.MAILERLITE_TOKEN && env.MAILERLITE_GROUP_ID_COMUNIDADE) {
     const pd = r.proximaCobranca.split('-');
     ctx.waitUntil(mailerlite(env, payerEmail, payerName, payerPhone, env.MAILERLITE_GROUP_ID_COMUNIDADE, {
+      plano: 'Comunidade Voice',
+      mensalidade: preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       valor_hoje: r.valorHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       proxima_cobranca: pd[2] + '/' + pd[1] + '/' + pd[0],
     }));
@@ -364,6 +368,8 @@ async function subscribePlano(request, env, origin, ctx, plano) {
   if (env.MAILERLITE_TOKEN && env[plano.envGrupo]) {
     const pd = r.proximaCobranca.split('-');
     ctx.waitUntil(mailerlite(env, payerEmail, payerName, payerPhone, env[plano.envGrupo], {
+      plano: plano.nome,
+      mensalidade: preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       valor_hoje: r.valorHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       proxima_cobranca: pd[2] + '/' + pd[1] + '/' + pd[0],
     }));
