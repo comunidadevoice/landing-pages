@@ -18,6 +18,19 @@ const ORIGINS = [
   'https://www.lp.comunidadevoice.com.br',
 ];
 
+const PLANOS = {
+  one: {
+    nome: 'Voice One', preco: 400,
+    envPlan: 'MP_PLAN_ID_ONE', envPreco: 'PLAN_PRICE_ONE',
+    envGrupo: 'MAILERLITE_GROUP_ID_ONE', envBack: 'BACK_URL_ONE', envJoin: 'CIRCLE_JOIN_URL_ONE',
+  },
+  trinity: {
+    nome: 'Voice Trinity', preco: 600,
+    envPlan: 'MP_PLAN_ID_TRINITY', envPreco: 'PLAN_PRICE_TRINITY',
+    envGrupo: 'MAILERLITE_GROUP_ID_TRINITY', envBack: 'BACK_URL_TRINITY', envJoin: 'CIRCLE_JOIN_URL_TRINITY',
+  },
+};
+
 export default {
   async fetch(request, env, ctx) {
     const path = new URL(request.url).pathname.replace(/\/+$/, '') || '/';
@@ -25,6 +38,21 @@ export default {
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: cors(origin) });
+    }
+    const mPlano = path.match(/^\/(config|subscribe)\/(one|trinity)$/);
+    if (mPlano) {
+      const plano = PLANOS[mPlano[2]];
+      if (mPlano[1] === 'config' && request.method === 'GET') {
+        return json({
+          publicKey: env.MP_PUBLIC_KEY || '',
+          price: Number(env[plano.envPreco] || plano.preco),
+          billingDay: Number(env.PLAN_BILLING_DAY || 10),
+          productName: plano.nome,
+        }, 200, origin, { 'Cache-Control': 'public, max-age=60' });
+      }
+      if (mPlano[1] === 'subscribe' && request.method === 'POST') {
+        return subscribePlano(request, env, origin, ctx, plano);
+      }
     }
     if (path === '/config/comunidade' && request.method === 'GET') {
       return json({
@@ -275,6 +303,76 @@ async function subscribeComunidade(request, env, origin, ctx) {
     id: data.id,
     status: data.status,
     joinUrl: env.CIRCLE_JOIN_URL_COMUNIDADE || env.CIRCLE_JOIN_URL || null,
+    valorHoje: r.valorHoje,
+    proximaCobranca: r.proximaCobranca,
+  }, 201, origin);
+}
+
+async function subscribePlano(request, env, origin, ctx, plano) {
+  let b;
+  try { b = await request.json(); } catch { return json({ message: 'Requisição inválida.' }, 400, origin); }
+
+  const { cardTokenId, payerEmail, payerName, payerPhone, docType, docNumber, acceptedTerms } = b || {};
+
+  if (!cardTokenId || typeof cardTokenId !== 'string')
+    return json({ message: 'Não conseguimos validar o cartão. Tente novamente.' }, 400, origin);
+  if (!payerEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(payerEmail))
+    return json({ message: 'Informe um e-mail válido.' }, 400, origin);
+  if (acceptedTerms !== true)
+    return json({ message: 'É preciso aceitar as condições da assinatura.' }, 400, origin);
+  if (!env.MP_ACCESS_TOKEN || !env[plano.envPlan]) {
+    console.error('Faltando MP_ACCESS_TOKEN ou ' + plano.envPlan);
+    return json({ message: 'Pagamento indisponível no momento. Fale com a gente pelo WhatsApp.' }, 500, origin);
+  }
+
+  const payload = {
+    preapproval_plan_id: env[plano.envPlan],
+    card_token_id: cardTokenId,
+    payer_email: String(payerEmail).toLowerCase(),
+    status: 'authorized',
+  };
+  if (env[plano.envBack]) payload.back_url = env[plano.envBack];
+
+  let res, data;
+  try {
+    res = await fetch(MP + '/preapproval', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + env.MP_ACCESS_TOKEN,
+        'Content-Type': 'application/json',
+        'X-Idempotency-Key': crypto.randomUUID(),
+      },
+      body: JSON.stringify(payload),
+    });
+    data = await res.json();
+  } catch (e) {
+    console.error('Rede MP (' + plano.nome + '):', e);
+    return json({ message: 'Não conseguimos concluir o pagamento agora. Tente de novo em instantes.' }, 502, origin);
+  }
+
+  if (!res.ok) {
+    console.error('Erro MP ' + plano.nome, res.status, JSON.stringify(data));
+    return json({ message: friendly(data) }, 400, origin);
+  }
+
+  const preco = Number(env[plano.envPreco] || plano.preco);
+  const diaCobranca = Number(env.PLAN_BILLING_DAY || 10);
+  const r = resumoCobranca(preco, diaCobranca);
+
+  console.log('Assinatura criada', plano.nome, data.id, data.status, payerEmail, r.valorHoje);
+
+  if (env.MAILERLITE_TOKEN && env[plano.envGrupo]) {
+    const pd = r.proximaCobranca.split('-');
+    ctx.waitUntil(mailerlite(env, payerEmail, payerName, payerPhone, env[plano.envGrupo], {
+      valor_hoje: r.valorHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      proxima_cobranca: pd[2] + '/' + pd[1] + '/' + pd[0],
+    }));
+  }
+
+  return json({
+    id: data.id,
+    status: data.status,
+    joinUrl: env[plano.envJoin] || env.CIRCLE_JOIN_URL || null,
     valorHoje: r.valorHoje,
     proximaCobranca: r.proximaCobranca,
   }, 201, origin);
