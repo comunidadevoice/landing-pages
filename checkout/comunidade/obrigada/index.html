@@ -126,7 +126,9 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
 
       document.getElementById('billing').innerHTML =
         '<strong>Sobre a cobrança.</strong> Hoje foi cobrado ' + brl(r.valorHoje) +
-        ', proporcional aos dias até o próximo vencimento. A partir de ' + dataCurta(r.proximaCobranca) +
+        (r.dias === null ? ', a mensalidade cheia, porque hoje é dia de vencimento.'
+                         : ', proporcional aos dias até o próximo vencimento.') +
+        ' A partir de ' + dataCurta(r.proximaCobranca) +
         ', a cobrança é de ' + brl(preco) + ' todo dia ' + DIA_COBRANCA + '.';
 
       // Purchase só quando veio do redirecionamento do gateway e ainda não foi contado
