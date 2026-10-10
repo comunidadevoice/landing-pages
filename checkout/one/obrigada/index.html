@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assinatura confirmada · Voice One</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.comunidadevoice.com.br">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- META PIXEL — início -->
+<!-- Pixel ID: 1268398628617400 -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1268398628617400');
+fbq('track', 'PageView');
+</script>
+<!-- META PIXEL — fim -->
+
+<style>
+  :root{--offwhite:#FAF7F2;--offwhite-2:#F2EDE4;--navy:#16233F;--navy-soft:#2A3A5C;--gold:#C9A227;--muted:#5D6880;--line:#E0D9CC;--ok:#1E7A4B}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;padding:28px 16px;background:var(--offwhite);color:var(--navy);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:40px 30px;max-width:480px;width:100%;text-align:center}
+  @media(max-width:480px){.card{padding:32px 20px}}
+  .tick{width:60px;height:60px;border-radius:50%;background:#EAF5EE;color:var(--ok);display:grid;place-items:center;margin:0 auto 20px}
+  h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:26px;margin:0 0 10px;line-height:1.2}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 4px}
+  a.btn{display:inline-block;margin-top:26px;padding:16px 30px;border-radius:10px;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;font-size:15.5px}
+  a.btn:hover{background:var(--navy-soft)}
+  .warn{margin:12px 0 0;font-size:12px;color:#9AA3B5}
+  .next{text-align:left;margin:26px 0 0;padding:18px 20px;background:var(--offwhite);border-radius:10px}
+  .next h2{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0 0 12px}
+  .next ol{margin:0;padding-left:18px;font-size:14px;color:var(--muted)}
+  .next li{margin-bottom:8px}
+  .next li:last-child{margin-bottom:0}
+  .billing{text-align:left;margin:22px 0 0;font-size:13px;color:var(--muted);line-height:1.6}
+  .billing strong{color:var(--navy);font-weight:600}
+  footer{margin-top:24px;font-size:11.5px;color:#9AA3B5;line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- META PIXEL — noscript -->
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></noscript>
+<!-- META PIXEL — fim -->
+
+  <div class="card">
+    <div class="tick">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+
+    <h1>Assinatura confirmada</h1>
+    <p class="lead">Bem-vinda ao <strong>Voice One</strong>. Seu acesso já está liberado.</p>
+
+    <a class="btn" id="joinBtn" href="https://www.comunidadevoice.com.br/join?invitation_token=5227a0f28b93d6402a9a7cab83f44e302361301b-9c521af0-d7da-41cb-b262-22f532289883">Acessar a Comunidade</a>
+    <p class="warn">Esse convite é pessoal. Não repasse o link, ele dá acesso à sua conta.</p>
+
+    <div class="next">
+      <h2>Seus próximos passos</h2>
+      <ol>
+        <li>Clique no botão de acesso e crie sua senha. O convite é pessoal e vale só para você.</li>
+        <li>Em até 24h falamos com você no WhatsApp para combinar o dia e o horário da sua mentoria individual. Depois de definidos, eles ficam fixos.</li>
+        <li>Complete seu perfil com uma foto e seu primeiro nome. A Comunidade é de mulheres que se conhecem pelo nome.</li>
+        <li>Comece pela mentoria da semana. Não precisa correr atrás do que passou, a trilha fica disponível para você ver no seu ritmo.</li>
+      </ol>
+    </div>
+
+    <p class="billing" id="billing"><strong>Sobre a cobrança.</strong> A mensalidade é de R$ 400, com vencimento todo dia 10. A primeira cobrança é proporcional aos dias entre a sua adesão e o próximo dia 10.</p>
+
+    <footer>Comunidade Voice · CNPJ 67.185.890/0001-24<br>contato@comunidadevoice.com.br</footer>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  var API = 'https://api.comunidadevoice.com.br';
+  var PRODUTO = 'Voice One';
+  var DIA_COBRANCA = 10;
+
+  function brl(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+  function dataCurta(d) {
+    return String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0');
+  }
+  function hojeEmBrasilia() {
+    var iso = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date());
+    var p = iso.split('-').map(Number);
+    return new Date(Date.UTC(p[0], p[1] - 1, p[2]));
+  }
+  function resumoCobranca(preco) {
+    var hoje = hojeEmBrasilia();
+    var dia = hoje.getUTCDate(), ano = hoje.getUTCFullYear(), mes = hoje.getUTCMonth();
+    if (dia === DIA_COBRANCA) {
+      return { valorHoje: preco, dias: null, hoje: hoje, proximaCobranca: new Date(Date.UTC(ano, mes + 1, DIA_COBRANCA)) };
+    }
+    var prox = dia < DIA_COBRANCA
+      ? new Date(Date.UTC(ano, mes, DIA_COBRANCA))
+      : new Date(Date.UTC(ano, mes + 1, DIA_COBRANCA));
+    var dias = Math.round((prox - hoje) / 86400000);
+    return { valorHoje: Math.round((preco / 30) * dias * 100) / 100, dias: dias, hoje: hoje, proximaCobranca: prox };
+  }
+
+  // id da assinatura devolvido pelo gateway no redirecionamento
+  var params = new URLSearchParams(window.location.search);
+  var subId = params.get('preapproval_id') || params.get('preapproval_plan_id') || '';
+
+  fetch(API + '/config/one')
+    .then(function (r) { return r.json(); })
+    .then(function (cfg) {
+      var preco = Number(cfg.price);
+      if (cfg.billingDay) DIA_COBRANCA = Number(cfg.billingDay);
+      var r = resumoCobranca(preco);
+
+      document.getElementById('billing').innerHTML =
+        '<strong>Sobre a cobrança.</strong> Hoje foi cobrado ' + brl(r.valorHoje) +
+        ', proporcional aos dias até o próximo vencimento. A partir de ' + dataCurta(r.proximaCobranca) +
+        ', a cobrança é de ' + brl(preco) + ' todo dia ' + DIA_COBRANCA + '.';
+
+      // Purchase só quando veio do redirecionamento do gateway e ainda não foi contado
+      if (!subId || !window.fbq) return;
+      var chave = 'cv_purchase_' + subId;
+      try { if (sessionStorage.getItem(chave)) return; } catch (e) {}
+      var eventId = 'cv-sub-' + subId;
+      fbq('track', 'Purchase', {
+        value: r.valorHoje, currency: 'BRL',
+        content_name: PRODUTO, content_type: 'subscription'
+      }, { eventID: eventId });
+      fbq('track', 'Subscribe', {
+        value: preco, currency: 'BRL', predicted_ltv: Math.round(preco * 3 * 100) / 100
+      }, { eventID: eventId + '-sub' });
+      try { sessionStorage.setItem(chave, '1'); } catch (e) {}
+    })
+    .catch(function () { /* mantém o texto estático de cobrança */ });
+})();
+</script>
+</body>
+</html>
