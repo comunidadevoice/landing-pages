@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atualizar cartão · Comunidade Voice</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Atualize o cartão da sua assinatura da Comunidade Voice em menos de um minuto.">
+<link rel="icon" href="../checkout/groups/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<style>
+  :root{
+    --offwhite:#FAF7F2; --offwhite-2:#F2EDE4; --navy:#16233F; --navy-soft:#2A3A5C;
+    --gold:#C9A227; --gold-soft:#E4C765; --muted:#5D6880; --line:#E0D9CC;
+    --ok:#1E7A4B; --err:#B3261E;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--offwhite); color:var(--navy);
+    font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+    font-size:16px; line-height:1.55;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:32px 16px 64px;
+  }
+  .wrap{width:100%; max-width:480px}
+  .brand{display:flex; flex-direction:column; align-items:center; gap:14px; margin-bottom:24px; text-align:center}
+  .brand img{width:64px; height:64px; border-radius:9px}
+  .eyebrow{
+    text-transform:uppercase; font-size:11px; letter-spacing:.14em;
+    color:var(--gold); font-weight:600;
+  }
+  h1{font-family:Fraunces,Georgia,serif; font-weight:600; font-size:26px; line-height:1.2; margin:0}
+  .sub{color:var(--muted); font-size:14px; margin:0; max-width:34ch}
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:14px;
+    padding:24px; box-shadow:0 1px 2px rgba(22,35,63,.04);
+  }
+  label{display:block; font-size:13px; font-weight:500; margin:0 0 6px}
+  .field{margin-bottom:16px}
+  input[type=text], input[type=email]{
+    width:100%; height:46px; padding:0 12px; font:inherit; font-size:15px;
+    color:var(--navy); background:#fff; border:1px solid var(--line); border-radius:10px;
+  }
+  input:focus, .sf.focus{outline:none; border-color:var(--navy-soft); box-shadow:0 0 0 3px rgba(42,58,92,.1)}
+  .sf{height:46px; padding:0 12px; border:1px solid var(--line); border-radius:10px; background:#fff}
+  .sf iframe{height:44px !important}
+  .row{display:flex; gap:12px}
+  .row > *{flex:1; min-width:0}
+  button{
+    width:100%; height:48px; border:0; border-radius:10px; cursor:pointer;
+    background:var(--navy); color:#fff; font:inherit; font-size:15px; font-weight:600;
+    transition:background .15s;
+  }
+  button:hover:not(:disabled){background:var(--navy-soft)}
+  button:disabled{opacity:.55; cursor:not-allowed}
+  .ghost{background:transparent; color:var(--muted); font-weight:500; height:auto; padding:10px 0; font-size:13px; text-decoration:underline}
+  .ghost:hover:not(:disabled){background:transparent; color:var(--navy)}
+  .msg{border-radius:10px; padding:12px 14px; font-size:14px; margin-bottom:16px; display:none}
+  .msg.err{display:block; background:#FBEAE9; color:var(--err); border:1px solid #F0CFCD}
+  .msg.ok{display:block; background:#E8F4EE; color:var(--ok); border:1px solid #C9E5D6}
+  .plan{
+    display:flex; align-items:center; gap:12px; padding:14px;
+    border:1px solid var(--line); border-radius:10px; background:var(--offwhite-2);
+    margin-bottom:10px; cursor:pointer;
+  }
+  .plan.sel{border-color:var(--navy); background:#fff; box-shadow:0 0 0 2px rgba(22,35,63,.08)}
+  .plan input{margin:0; accent-color:var(--navy)}
+  .plan .name{font-weight:600; font-size:15px}
+  .plan .meta{font-size:13px; color:var(--muted)}
+  .note{font-size:12.5px; color:var(--muted); margin-top:16px; text-align:center; line-height:1.5}
+  .note a{color:var(--muted)}
+  .step{display:none}
+  .step.on{display:block}
+  .done{text-align:center}
+  .done .tick{
+    width:52px; height:52px; border-radius:50%; background:#E8F4EE; color:var(--ok);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:26px;
+  }
+  .spin{display:inline-block; width:15px; height:15px; border:2px solid rgba(255,255,255,.35);
+    border-top-color:#fff; border-radius:50%; animation:r .7s linear infinite; vertical-align:-2px; margin-right:8px}
+  @keyframes r{to{transform:rotate(360deg)}}
+  .hint{font-size:12.5px; color:var(--muted); margin:-10px 0 16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <img src="../checkout/groups/logo.png" alt="Comunidade Voice">
+    <div>
+      <div class="eyebrow">Comunidade Voice</div>
+      <h1>Atualizar cartão</h1>
+    </div>
+    <p class="sub">Troque o cartão da sua assinatura em menos de um minuto. Seu plano, seu valor e sua data de cobrança continuam iguais.</p>
+  </div>
+
+  <div class="card">
+
+    <div id="msg" class="msg"></div>
+
+    <!-- Passo 1: identificar -->
+    <div class="step on" id="step1">
+      <div class="field">
+        <label for="email">E-mail usado na sua assinatura</label>
+        <input type="email" id="email" autocomplete="email" placeholder="voce@email.com" inputmode="email">
+      </div>
+      <button id="btnBuscar">Continuar</button>
+    </div>
+
+    <!-- Passo 2: escolher a assinatura (só aparece se houver mais de uma) -->
+    <div class="step" id="step2">
+      <label>Qual assinatura você quer atualizar?</label>
+      <div id="planos"></div>
+      <button id="btnEscolher">Continuar</button>
+      <button class="ghost" id="btnVoltar1">Usar outro e-mail</button>
+    </div>
+
+    <!-- Passo 3: cartão novo -->
+    <div class="step" id="step3">
+      <p class="hint" id="resumo"></p>
+      <div class="field">
+        <label for="cardNumber">Número do cartão</label>
+        <div class="sf" id="cardNumber"></div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="expirationDate">Validade</label>
+          <div class="sf" id="expirationDate"></div>
+        </div>
+        <div class="field">
+          <label for="securityCode">Código de segurança</label>
+          <div class="sf" id="securityCode"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="holder">Nome impresso no cartão</label>
+        <input type="text" id="holder" autocomplete="cc-name" placeholder="Como está escrito no cartão">
+      </div>
+      <div class="field">
+        <label for="doc">CPF do titular do cartão</label>
+        <input type="text" id="doc" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
+      </div>
+      <button id="btnSalvar">Salvar cartão novo</button>
+      <button class="ghost" id="btnVoltar2">Voltar</button>
+    </div>
+
+    <!-- Passo 4: pronto -->
+    <div class="step done" id="step4">
+      <div class="tick">✓</div>
+      <h2 style="font-family:Fraunces,serif; font-size:20px; margin:0 0 8px">Cartão atualizado</h2>
+      <p style="color:var(--muted); font-size:14.5px; margin:0" id="doneTxt"></p>
+    </div>
+
+  </div>
+
+  <p class="note">
+    Seus dados são digitados em campos criptografados da operadora e não passam pelos nossos servidores.<br>
+    Dúvidas? Escreva para <a href="mailto:contato@comunidadevoice.com.br">contato@comunidadevoice.com.br</a>
+  </p>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var API = 'https://api.comunidadevoice.com.br';
+
+  var el = function (id) { return document.getElementById(id); };
+  var msgBox = el('msg');
+  var mp = null, fields = {}, assinaturas = [], escolhida = null, montado = false;
+
+  function show(step) {
+    ['step1', 'step2', 'step3', 'step4'].forEach(function (s) {
+      el(s).classList.toggle('on', s === step);
+    });
+  }
+
+  function msg(text, kind) {
+    msgBox.className = 'msg' + (text ? ' ' + kind : '');
+    msgBox.textContent = text || '';
+  }
+
+  function busy(btn, on, label) {
+    btn.disabled = on;
+    btn.innerHTML = on ? '<span class="spin"></span>' + label : label;
+  }
+
+  function post(path, body) {
+    return fetch(API + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        if (!r.ok) throw new Error(d.message || 'Não foi possível concluir agora. Tente de novo em instantes.');
+        return d;
+      });
+    });
+  }
+
+  /* ---------- CPF ---------- */
+  function soNumeros(s) { return (s || '').replace(/\D/g, ''); }
+
+  function mascaraCPF(v) {
+    v = soNumeros(v).slice(0, 11);
+    if (v.length > 9) return v.replace(/(\d{3})(\d{3})(\d{3})(\d+)/, '$1.$2.$3-$4');
+    if (v.length > 6) return v.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+    if (v.length > 3) return v.replace(/(\d{3})(\d+)/, '$1.$2');
+    return v;
+  }
+
+  function cpfValido(cpf) {
+    cpf = soNumeros(cpf);
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    var i, soma = 0, resto;
+    for (i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i), 10) * (11 - i);
+    resto = (soma * 10) % 11; if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.substring(9, 10), 10)) return false;
+    soma = 0;
+    for (i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i), 10) * (12 - i);
+    resto = (soma * 10) % 11; if (resto === 10 || resto === 11) resto = 0;
+    return resto === parseInt(cpf.substring(10, 11), 10);
+  }
+
+  el('doc').addEventListener('input', function (e) { e.target.value = mascaraCPF(e.target.value); });
+
+  /* ---------- Passo 1: achar a assinatura ---------- */
+  el('btnBuscar').addEventListener('click', function () {
+    var email = el('email').value.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      return msg('Confira o e-mail digitado.', 'err');
+    }
+    msg('');
+    busy(this, true, 'Procurando...');
+    var btn = this;
+
+    post('/cartao/buscar', { email: email })
+      .then(function (d) {
+        assinaturas = d.assinaturas || [];
+        if (!assinaturas.length) {
+          msg('Não encontramos uma assinatura ativa nesse e-mail. Use o mesmo e-mail do seu cadastro ou fale com a gente em contato@comunidadevoice.com.br', 'err');
+          return;
+        }
+        if (assinaturas.length === 1) {
+          escolhida = assinaturas[0];
+          return irParaCartao();
+        }
+        desenharPlanos();
+        show('step2');
+      })
+      .catch(function (e) { msg(e.message, 'err'); })
+      .finally(function () { busy(btn, false, 'Continuar'); });
+  });
+
+  /* ---------- Passo 2: escolher entre várias ---------- */
+  function desenharPlanos() {
+    var box = el('planos');
+    box.innerHTML = '';
+    assinaturas.forEach(function (a, i) {
+      var div = document.createElement('label');
+      div.className = 'plan' + (i === 0 ? ' sel' : '');
+      div.innerHTML =
+        '<input type="radio" name="assin" value="' + i + '"' + (i === 0 ? ' checked' : '') + '>' +
+        '<span><span class="name">' + a.nome + '</span><br>' +
+        '<span class="meta">' + a.valorTexto + (a.proxima ? ' · próxima cobrança em ' + a.proxima : '') + '</span></span>';
+      div.addEventListener('click', function () {
+        Array.prototype.forEach.call(box.children, function (c) { c.classList.remove('sel'); });
+        div.classList.add('sel');
+      });
+      box.appendChild(div);
+    });
+  }
+
+  el('btnEscolher').addEventListener('click', function () {
+    var sel = document.querySelector('input[name=assin]:checked');
+    escolhida = assinaturas[sel ? Number(sel.value) : 0];
+    irParaCartao();
+  });
+
+  el('btnVoltar1').addEventListener('click', function () { msg(''); show('step1'); });
+  el('btnVoltar2').addEventListener('click', function () {
+    msg('');
+    show(assinaturas.length > 1 ? 'step2' : 'step1');
+  });
+
+  /* ---------- Passo 3: campos de cartão ---------- */
+  function irParaCartao() {
+    msg('');
+    el('resumo').textContent = escolhida.nome + ' · ' + escolhida.valorTexto +
+      (escolhida.proxima ? ' · próxima cobrança em ' + escolhida.proxima : '');
+    show('step3');
+    montarCampos();
+  }
+
+  function montarCampos() {
+    if (montado) return;
+    montado = true;
+    fetch(API + '/config')
+      .then(function (r) { return r.json(); })
+      .then(function (cfg) {
+        mp = new MercadoPago(cfg.publicKey);
+        fields.number = mp.fields.create('cardNumber', { placeholder: '0000 0000 0000 0000' }).mount('cardNumber');
+        fields.expiry = mp.fields.create('expirationDate', { placeholder: 'MM/AA' }).mount('expirationDate');
+        fields.cvv = mp.fields.create('securityCode', { placeholder: '123' }).mount('securityCode');
+      })
+      .catch(function () {
+        montado = false;
+        msg('Não conseguimos carregar os campos do cartão. Atualize a página e tente de novo.', 'err');
+      });
+  }
+
+  el('btnSalvar').addEventListener('click', function () {
+    var btn = this;
+    var holder = el('holder').value.trim();
+    var doc = soNumeros(el('doc').value);
+
+    if (holder.length < 3) return msg('Digite o nome como está impresso no cartão.', 'err');
+    if (!cpfValido(doc)) return msg('Confira o CPF do titular do cartão.', 'err');
+    if (!mp) return msg('Os campos do cartão ainda estão carregando. Aguarde um instante.', 'err');
+
+    msg('');
+    busy(btn, true, 'Salvando...');
+
+    mp.fields.createCardToken({
+      cardholderName: holder,
+      identificationType: 'CPF',
+      identificationNumber: doc
+    })
+      .then(function (t) {
+        return post('/cartao/atualizar', {
+          email: el('email').value.trim().toLowerCase(),
+          assinaturaId: escolhida.id,
+          cardTokenId: t.id
+        });
+      })
+      .then(function (d) {
+        el('doneTxt').textContent = 'A partir de agora as cobranças da ' + escolhida.nome +
+          ' vão sair do cartão terminado em ' + (d.finalDoCartao || '••••') +
+          '. Nada mudou no seu plano, no valor nem na data.';
+        show('step4');
+        msg('');
+      })
+      .catch(function (e) {
+        var m = e && e.message ? e.message : '';
+        if (/token|card|invalid/i.test(m) && !/assinatura/i.test(m)) {
+          m = 'Confira os dados do cartão e tente de novo.';
+        }
+        msg(m || 'Não foi possível salvar agora. Tente de novo em instantes.', 'err');
+      })
+      .finally(function () { busy(btn, false, 'Salvar cartão novo'); });
+  });
+
+  el('email').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') el('btnBuscar').click();
+  });
+})();
+</script>
+</body>
+</html>
