@@ -172,7 +172,7 @@
 
   var el = function (id) { return document.getElementById(id); };
   var msgBox = el('msg');
-  var mp = null, fields = {}, assinaturas = [], escolhida = null, montado = false;
+  var mp = null, fields = {}, assinaturas = [], escolhida = null, montado = false, publicKey = '';
 
   function show(step) {
     ['step1', 'step2', 'step3', 'step4'].forEach(function (s) {
@@ -241,6 +241,7 @@
 
     post('/cartao/buscar', { email: email })
       .then(function (d) {
+        publicKey = d.publicKey || '';
         assinaturas = d.assinaturas || [];
         if (!assinaturas.length) {
           msg('Não encontramos uma assinatura ativa nesse e-mail. Use o mesmo e-mail do seu cadastro ou fale com a gente em contato@comunidadevoice.com.br', 'err');
@@ -299,19 +300,20 @@
 
   function montarCampos() {
     if (montado) return;
-    montado = true;
-    fetch(API + '/config')
-      .then(function (r) { return r.json(); })
-      .then(function (cfg) {
-        mp = new MercadoPago(cfg.publicKey);
-        fields.number = mp.fields.create('cardNumber', { placeholder: '0000 0000 0000 0000' }).mount('cardNumber');
-        fields.expiry = mp.fields.create('expirationDate', { placeholder: 'MM/AA' }).mount('expirationDate');
-        fields.cvv = mp.fields.create('securityCode', { placeholder: '123' }).mount('securityCode');
-      })
-      .catch(function () {
-        montado = false;
-        msg('Não conseguimos carregar os campos do cartão. Atualize a página e tente de novo.', 'err');
-      });
+    if (!publicKey) {
+      msg('Não conseguimos carregar os campos do cartão. Atualize a página e tente de novo.', 'err');
+      return;
+    }
+    try {
+      mp = new MercadoPago(publicKey);
+      fields.number = mp.fields.create('cardNumber', { placeholder: '0000 0000 0000 0000' }).mount('cardNumber');
+      fields.expiry = mp.fields.create('expirationDate', { placeholder: 'MM/AA' }).mount('expirationDate');
+      fields.cvv = mp.fields.create('securityCode', { placeholder: '123' }).mount('securityCode');
+      montado = true;
+    } catch (e) {
+      montado = false;
+      msg('Não conseguimos carregar os campos do cartão. Atualize a página e tente de novo.', 'err');
+    }
   }
 
   el('btnSalvar').addEventListener('click', function () {
