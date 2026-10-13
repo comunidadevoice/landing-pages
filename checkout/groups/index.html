@@ -494,8 +494,7 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
   }
   function pintarPreco() {
     var curto = numeroCurto(PRECO);
-    document.getElementById('planPrice').innerHTML = 'R  function brl(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
-nbsp;' + curto;
+    document.getElementById('planPrice').innerHTML = 'R$&nbsp;' + curto;
     var cta = 'Assinar por R$ ' + curto + '/mês';
     payBtn.dataset.label = cta;
     if (!busy) payBtn.querySelector('.label').textContent = cta;
