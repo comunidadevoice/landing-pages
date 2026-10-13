@@ -358,6 +358,7 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
 
           <button class="voltar" id="backBtn" type="button">Voltar e revisar meus dados</button>
           </div>
+          </div>
         </form>
 
       </div>
@@ -377,6 +378,7 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
   "use strict";
 
   var API = 'https://api.comunidadevoice.com.br';
+  var PRODUTO_SLUG = 'groups';
 
   var form      = document.getElementById('form');
   var payBtn    = document.getElementById('payBtn');
@@ -487,6 +489,17 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
   /* ---------- resumo da cobranca ---------- */
 
   function brl(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+  function numeroCurto(v) {
+    return (Math.round(v * 100) % 100 === 0) ? String(Math.round(v)) : v.toFixed(2).replace('.', ',');
+  }
+  function pintarPreco() {
+    var curto = numeroCurto(PRECO);
+    document.getElementById('planPrice').innerHTML = 'R  function brl(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+nbsp;' + curto;
+    var cta = 'Assinar por R$ ' + curto + '/mês';
+    payBtn.dataset.label = cta;
+    if (!busy) payBtn.querySelector('.label').textContent = cta;
+  }
   function dataCurta(d) {
     return String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0');
   }
@@ -560,19 +573,18 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
 
   pintarResumo();
 
-  fetch(API + '/config')
+  fetch(API + '/config/' + PRODUTO_SLUG)
     .then(function (r) { return r.json(); })
     .then(function (cfg) {
       if (!cfg.publicKey) throw new Error('config');
 
-      if (cfg.planName)  document.getElementById('planName').textContent = cfg.planName;
-      if (cfg.priceText) document.getElementById('planPrice').innerHTML  = cfg.priceText;
-      if (cfg.ctaText) {
-        payBtn.querySelector('.label').textContent = cfg.ctaText;
-        payBtn.dataset.label = cfg.ctaText;
+      if (cfg.productName) {
+        PRODUTO = cfg.productName;
+        document.getElementById('planName').textContent = cfg.productName;
       }
       if (cfg.price)      PRECO = Number(cfg.price);
       if (cfg.billingDay) DIA_COBRANCA = Number(cfg.billingDay);
+      pintarPreco();
       pintarResumo();
 
       mp = new MercadoPago(cfg.publicKey, { locale: 'pt-BR' });
@@ -684,7 +696,7 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
     })
     .then(function (token) {
       if (!token || !token.id) throw new Error('token');
-      return fetch(API + '/subscribe', {
+      return fetch(API + '/subscribe/' + PRODUTO_SLUG, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
