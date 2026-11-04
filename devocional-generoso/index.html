@@ -189,7 +189,7 @@ h1 .italic{display:block;font-style:italic;font-weight:400;color:var(--gold-deep
         <a class="cta" id="cta" href="#" target="_blank" rel="noopener">Quero participar gratuitamente <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
 
-      <p class="under">Entre no grupo para receber as informações.</p>
+      <p class="under">Chame no WhatsApp e eu te explico como funciona.</p>
 
       <div class="stats">
         <div class="col"><b>Seg</b><span>Toda semana</span></div>
@@ -232,11 +232,13 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
 (function(){
   "use strict";
 
-  /* ÚNICO lugar do código com o link do grupo */
-  var WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/LhllYaewngQ7JIFjNAuBz3?mode=gi_t";
+  /* ÚNICO lugar do código com o WhatsApp oficial e a mensagem automática */
+  var WHATSAPP_NUMBER = "5548988036116";
+  var WHATSAPP_TEXT = "Oi, Pâmela! Vim pela página do Devocional Generoso e quero saber como participar da mentoria de inglês com propósito.";
+  var WHATSAPP_URL = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(WHATSAPP_TEXT);
 
   var cta = document.getElementById("cta");
-  cta.setAttribute("href", WHATSAPP_GROUP_URL);
+  cta.setAttribute("href", WHATSAPP_URL);
   cta.addEventListener("click", function(){
     if (typeof window.fbq === "function") fbq("track", "Lead");
   });
