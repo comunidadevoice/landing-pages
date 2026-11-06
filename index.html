@@ -955,7 +955,7 @@ details[open] .pl{transform:rotate(45deg)}
     try { org = JSON.parse(sessionStorage.getItem(K) || '{}'); } catch (e) { org = o || {}; }
     var ref = org.utm_campaign ? (org.utm_campaign + '/' + (org.utm_content || '')) : '';
     return 'https://wa.me/5548988036116?text=' +
-      encodeURIComponent((MSG[prod] || MSG.comunidade) + (ref ? '\n[ref: ' + ref + ']' : ''));
+      encodeURIComponent(MSG[prod] || MSG.comunidade);
   }
   // o href ja sai pronto no carregamento: o primeiro toque sempre abre o WhatsApp
   document.querySelectorAll('[data-wa-produto]').forEach(function (el) {
