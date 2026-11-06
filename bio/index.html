@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pâmela Karine — Comunidade Voice</title>
+<meta name="description" content="Inglês com Propósito. Método Voice, Comunidade Voice e contato direto pelo WhatsApp.">
+<meta name="theme-color" content="#4a3324">
+<link rel="icon" href="https://lp.comunidadevoice.com.br/favicon.ico">
+<link rel="apple-touch-icon" href="https://lp.comunidadevoice.com.br/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pâmela Karine — Comunidade Voice">
+<meta property="og:description" content="Inglês com Propósito. Método Voice, Comunidade Voice e contato direto pelo WhatsApp.">
+<meta property="og:image" content="img/pamela.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&display=swap">
+<style>
+  :root { --sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #4a3324; }
+  a { color: #FFFFFF; text-decoration: none; }
+
+  .bio-photo {
+    position: fixed; inset: 0; z-index: 0;
+    background-color: #4a3324;
+    background-image: url(img/pamela.jpg);
+    background-size: cover; background-position: center top; background-repeat: no-repeat;
+  }
+  .bio-name {
+    position: absolute; margin: 0;
+    right: 22px; text-align: right;
+    top: 30px; top: 3svh;
+    font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300;
+    font-size: 44px; font-size: clamp(30px, 5.2svh, 44px);
+    line-height: 1.02; color: #F3E5CD; letter-spacing: 0.01em;
+    text-shadow: 0 1px 16px rgba(42, 25, 14, 0.6);
+  }
+  .bio-name span { display: block; font-size: 15px; font-size: clamp(11px, 1.8svh, 15px); letter-spacing: 0.2em; color: #E8D6BA; margin-top: 4px; }
+
+  .bio-wrap {
+    position: relative; z-index: 1; width: 100%;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+    padding: 500px 16px 300px;
+    padding-top: 58svh;
+  }
+
+  .bio-card {
+    display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;
+    position: relative; overflow: hidden;
+    width: min(400px, 100%); height: 180px; padding: 20px;
+    border-radius: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.24);
+    background-size: cover; background-repeat: no-repeat;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+  .bio-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); }
+
+  .bio-card-1 { background-image: linear-gradient(170deg, #BE9B55, #A3813E); }
+  .bio-card-2 { background-image: linear-gradient(170deg, #F8F1DE, #EBE0C1); }
+  .bio-card-3 { background-image: linear-gradient(170deg, #232B4A, #151B31); }
+
+  .on-light .card-title-left, .on-light .card-sub { color: #1B223D; text-shadow: none; }
+  .on-light .bio-pill { border-color: #1B223D; color: #1B223D; }
+  .bio-card-1 .bio-pill { background: #A68749; }
+  .bio-card-2 .bio-pill { background: #E5D9BA; }
+  .card-mark {
+    position: absolute; top: -54px; font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic; font-weight: 400; font-size: 200px; line-height: 1;
+    color: rgba(27,34,61,0.12);
+  }
+  .on-dark .card-title-left, .on-dark .card-sub { color: #F4EBD3; text-shadow: none; }
+  .on-dark .bio-pill { background: rgba(0, 0, 0, 0.28); border-color: #F4EBD3; color: #F4EBD3; }
+
+  .card-title {
+    position: absolute; top: 20px; right: 22px; max-width: 210px; text-align: right;
+    font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 300;
+    font-size: 26px; line-height: 1.12; color: #FFFFFF; text-shadow: 0 1px 12px rgba(20,12,6,0.7);
+  }
+  .card-title-left {
+    font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 500;
+    font-size: 26px; line-height: 1.12; color: #FFFFFF; text-shadow: 0 1px 12px rgba(20,12,6,0.7);
+    margin-bottom: 10px;
+  }
+  .card-title-big { display: block; font-size: 36px; line-height: 1.05; }
+  .card-title-wide { font-size: 40px; margin-bottom: 30px; }
+  .card-sub {
+    font-family: var(--sans); font-size: 17px; font-weight: 400; letter-spacing: 0.04em;
+    color: #F3E7D7; text-shadow: 0 1px 10px rgba(20,12,6,0.65); margin-bottom: 14px;
+  }
+  .card-title-big-line { font-size: 40px; font-weight: 300; }
+  .card-icon { position: absolute; width: 196px; height: 196px; right: -36px; top: -28px; }
+
+  .bio-pill {
+    display: inline-flex; align-items: center;
+    border-radius: 60px; border: 2px solid #FFFFFF; background: rgba(0, 0, 0, 0.44);
+    color: #FFFFFF; font-family: var(--sans); font-size: 18px; font-weight: 400; line-height: 1.2;
+    padding: 12px 24px;
+    transition: filter 180ms ease, transform 180ms ease;
+  }
+  .bio-card:hover .bio-pill { filter: brightness(1.12); transform: translateY(-1px); }
+
+  @media (min-width: 820px) {
+    .bio-name { position: static; right: auto; left: auto; top: auto; width: 100%; text-align: center; margin: 0 0 20px; }
+    .bio-wrap { padding: 110px 16px 160px; min-height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bio-photo"></div>
+
+<div class="bio-wrap">
+
+  <p class="bio-name">Pâmela Karine<span>@comunidadevoice</span></p>
+
+  <a target="_blank" rel="noopener" class="bio-card bio-card-1 on-light" href="https://lp.comunidadevoice.com.br/">
+    <span class="card-mark" aria-hidden="true" style="right:14px">V</span>
+    <span class="card-title-left card-title-wide" style="margin-bottom:4px">Comunidade Voice</span>
+    <span class="card-sub">Inglês com Propósito</span>
+    <span class="bio-pill">Quero Conhecer</span>
+  </a>
+
+  <a target="_blank" rel="noopener" class="bio-card bio-card-2 on-light" href="https://lp.comunidadevoice.com.br/metodo-voice/">
+    <span class="card-mark" aria-hidden="true" style="right:4px">M</span>
+    <span class="card-title-left card-title-wide" style="margin-bottom:4px">Método Voice</span>
+    <span class="card-sub">Aplique na sua rotina</span>
+    <span class="bio-pill">Curso Prático</span>
+  </a>
+
+  <a target="_blank" rel="noopener" class="bio-card bio-card-3 on-dark" href="https://api.whatsapp.com/send/?phone=5548988036116&amp;text=Oi%21+Vim+pelo+Insta+e+quero+saber+mais+sobre+a+Comunidade+Voice.&amp;type=phone_number&amp;app_absent=0">
+    <svg class="card-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="rgba(244,235,211,0.16)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4 8.8 8.8 0 0 1-3.9-.9L3 21l1.8-5.2a8.2 8.2 0 0 1-1.1-4.1A8.4 8.4 0 0 1 12.2 3 8.4 8.4 0 0 1 21 11.5Z"></path>
+      <path d="M8.6 9.3c0 2.9 2.4 5.3 5.3 5.3"></path>
+    </svg>
+    <span class="card-title-left card-title-big-line">Fale Conosco</span>
+    <span class="bio-pill">WhatsApp</span>
+  </a>
+
+</div>
+
+</body>
+</html>
