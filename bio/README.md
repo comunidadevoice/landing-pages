@@ -20,9 +20,9 @@ Página estática. Nada para instalar, nada para compilar.
 3. Volte no GitHub e marque **Enforce HTTPS** quando liberar.
 
 ## Ícone da aba (favicon)
-Usa o mesmo ícone da LP, carregado de `lp.comunidadevoice.com.br`.
-Para deixar tudo dentro do repositório: baixe `https://lp.comunidadevoice.com.br/favicon.ico`
-e `https://lp.comunidadevoice.com.br/apple-touch-icon.png`, coloque os dois na raiz
+Usa o mesmo ícone da LP, carregado de `comunidadevoice.com.br`.
+Para deixar tudo dentro do repositório: baixe `https://comunidadevoice.com.br/favicon.ico`
+e `https://comunidadevoice.com.br/apple-touch-icon.png`, coloque os dois na raiz
 e troque os dois `<link rel="icon" ...>` do `index.html` por `href="favicon.ico"` e `href="apple-touch-icon.png"`.
 
 ## Layout

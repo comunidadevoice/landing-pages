@@ -39,7 +39,7 @@ Faz parte da família de produtos VOICE (mesmo sistema visual dos projetos
    `https://SEU-USUARIO.github.io/365-palavras-da-fe/`.
 
 ### Domínio próprio (opcional)
-Para usar algo como `lp.comunidadevoice.com.br/palavras/`, aponte o domínio nas
+Para usar algo como `comunidadevoice.com.br/palavras/`, aponte o domínio nas
 configurações de **Pages → Custom domain** e crie o registro DNS conforme as
 instruções do GitHub. (O arquivo `.nojekyll` já está incluído para o Pages servir
 tudo sem processamento.)

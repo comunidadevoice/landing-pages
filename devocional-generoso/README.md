@@ -12,9 +12,9 @@ devocional-generoso/
 
 ## Como subir no GitHub
 
-1. No repositório que serve `lp.comunidadevoice.com.br`, crie a pasta `devocional-generoso/` na raiz.
+1. No repositório que serve `comunidadevoice.com.br`, crie a pasta `devocional-generoso/` na raiz.
 2. Suba os dois arquivos acima dentro dela (Add file → Upload files).
-3. Commit. A página fica em **https://lp.comunidadevoice.com.br/devocional-generoso/**
+3. Commit. A página fica em **https://comunidadevoice.com.br/devocional-generoso/**
 
 ## Dependências da página
 

@@ -1,0 +1,19 @@
+# Links antigos do Circle sem www continuam funcionando
+/join*            https://www.comunidadevoice.com.br/join:splat            301
+/sign_in*         https://www.comunidadevoice.com.br/sign_in:splat         301
+/sign_up*         https://www.comunidadevoice.com.br/sign_up:splat         301
+/sign_out*        https://www.comunidadevoice.com.br/sign_out:splat        301
+/c/*              https://www.comunidadevoice.com.br/c/:splat              301
+/s/*              https://www.comunidadevoice.com.br/s/:splat              301
+/u/*              https://www.comunidadevoice.com.br/u/:splat              301
+/posts/*          https://www.comunidadevoice.com.br/posts/:splat          301
+/members*         https://www.comunidadevoice.com.br/members:splat         301
+/notifications*   https://www.comunidadevoice.com.br/notifications:splat   301
+/messages*        https://www.comunidadevoice.com.br/messages:splat        301
+/settings*        https://www.comunidadevoice.com.br/settings:splat        301
+/feed*            https://www.comunidadevoice.com.br/feed:splat            301
+/events*          https://www.comunidadevoice.com.br/events:splat          301
+/courses*         https://www.comunidadevoice.com.br/courses:splat         301
+/home*            https://www.comunidadevoice.com.br/home:splat            301
+/oauth/*          https://www.comunidadevoice.com.br/oauth/:splat          301
+/api/*            https://www.comunidadevoice.com.br/api/:splat            301

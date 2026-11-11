@@ -25,7 +25,7 @@ COMO SUBIR
 5. Clique em "Confirmar alterações".
 
 6. Espere de 1 a 3 minutos e abra o endereço da pasta. Ex.:
-   https://lp.comunidadevoice.com.br/jogo/
+   https://comunidadevoice.com.br/jogo/
 
 
 CONFERINDO
