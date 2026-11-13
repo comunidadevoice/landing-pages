@@ -34,4 +34,15 @@
   if (!window.clarity) {
     (function (c, l, a, r, i, t, y) { c[a] = function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", CLARITY);
   }
+
+  // ---- Liga a origem (UTM) à pessoa quando ela informa e-mail/telefone (checkout)
+  window.cvToque = function (email, phone) {
+    try {
+      var st = ler(); if (!st.primeiro && !st.ultimo) return;
+      fetch("https://znnepziakycrmohjxrhj.supabase.co/functions/v1/mkt-toque", {
+        method: "POST", headers: { "Content-Type": "application/json" }, keepalive: true,
+        body: JSON.stringify({ email: email, phone: phone, primeiro: st.primeiro, ultimo: st.ultimo, pagina: location.pathname })
+      }).catch(function () {});
+    } catch (e) {}
+  };
 })();

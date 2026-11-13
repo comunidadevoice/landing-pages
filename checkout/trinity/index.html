@@ -686,6 +686,7 @@ src="https://www.facebook.com/tr?id=1268398628617400&ev=PageView&noscript=1"></n
       clearAlert();
       clearFieldErrors();
       if (!validaDados()) return;
+      try { if (window.cvToque) cvToque(document.getElementById('email').value, phone.value); } catch (e) {}
       irPara(2);
     });
   }
