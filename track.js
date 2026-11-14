@@ -35,6 +35,19 @@
     (function (c, l, a, r, i, t, y) { c[a] = function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", CLARITY);
   }
 
+  // ---- Cliques em botões e links: GA4 (evento "clique"), Clarity (marca a gravação) e Pixel (WhatsApp = Contato)
+  //      Nome do botão: data-cv="..." no link; se não tiver, usa o texto do link.
+  document.addEventListener("click", function (e) {
+    try {
+      var a = e.target.closest && e.target.closest("a[href]"); if (!a) return;
+      var nome = (a.getAttribute("data-cv") || a.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80) || a.href;
+      var zap = /wa\.me|whatsapp\.com/.test(a.href), u = ler();
+      if (window.gtag) gtag("event", "clique", { botao: nome, destino: a.href.slice(0, 100), pagina: location.pathname, origem: (u.ultimo && u.ultimo.utm_source) || "", transport_type: "beacon" });
+      if (window.clarity) { clarity("event", "clique: " + nome); clarity("set", "ultimo_clique", nome); }
+      if (window.fbq) { if (zap) fbq("track", "Contact", { content_name: nome }); else fbq("trackCustom", "Clique", { botao: nome, pagina: location.pathname }); }
+    } catch (er) {}
+  }, true);
+
   // ---- Liga a origem (UTM) à pessoa quando ela informa e-mail/telefone (checkout)
   window.cvToque = function (email, phone) {
     try {
